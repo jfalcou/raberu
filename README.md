@@ -1,7 +1,9 @@
-# NAPALM
+<img src="https://github.com/jfalcou/raberu/raw/main/logo.png" alt="RABERU Library logo" data-canonical-src="https://github.com/jfalcou/raberu/raw/main/logo.png" align="left" width="20%" height="20%" />
+
+# RABERU
 
 ## Purpose
-**NAPALM** provides simple types and functions to support :
+**RABERU** provides simple types and functions to support :
   * unordered set of values passed as parameters to function
   * named parameters passed to function
 
@@ -10,7 +12,7 @@
 
 ## License
 This library is licensed under the MIT License as specified in the LICENSE.md file.
-If you use NAPALM in your project or product, feel free to send us an email so we can
+If you use RABERU in your project or product, feel free to send us an email so we can
 advertise it here.
 
 ```

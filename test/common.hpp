@@ -22,6 +22,8 @@ RBR_NAMED_PARAMETER(custom_tag  , custom_ );
 RBR_NAMED_PARAMETER(float       , value_  );
 RBR_NAMED_PARAMETER(std::string , name_   );
 RBR_NAMED_PARAMETER(point       , coord_  );
+RBR_NAMED_PARAMETER(int         , factor_ );
+RBR_NAMED_PARAMETER(double      , ref_    );
 
 namespace rbr
 {

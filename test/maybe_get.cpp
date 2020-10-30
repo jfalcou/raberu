@@ -11,7 +11,7 @@
 #include <raberu.hpp>
 #include "common.hpp"
 
-TTS_CASE("Check settings(...) maybe_get behavior")
+TTS_CASE("Check settings(...) maybe_get behavior - simple parameters")
 {
   auto values = rbr::settings(1337.42);
 
@@ -21,7 +21,18 @@ TTS_CASE("Check settings(...) maybe_get behavior")
   TTS_EQUAL     (*maybe_get<double>(values), 1337.42 );
 }
 
-TTS_CASE("Check settings(...) maybe_get constexpr behavior")
+TTS_CASE("Check settings(...) maybe_get behavior - named parameters")
+{
+  point p{1,3,5};
+  auto values = rbr::settings( coord_ = p);
+
+  TTS_EXPECT_NOT( maybe_get<char>  (values)   );
+  TTS_EXPECT_NOT( maybe_get<float> (values)   );
+  TTS_EXPECT    ( maybe_get<point>(values)    );
+  TTS_EQUAL     (*maybe_get<point>(values), p );
+}
+
+TTS_CASE("Check settings(...) maybe_get constexpr behavior - simple parameters")
 {
   constexpr auto values = rbr::settings(1337.42);
 
@@ -31,21 +42,13 @@ TTS_CASE("Check settings(...) maybe_get constexpr behavior")
   TTS_EXPECT    ( bool_<*maybe_get<double>(values) == 1337.42 >::value);
 }
 
-template<typename... Vs>
-constexpr auto interface(Vs const&... vs ) noexcept
+TTS_CASE("Check settings(...) maybe_get constexpr behavior - named parameters")
 {
-  rbr::settings s(vs...);
-  return rbr::get<int>(s) * rbr::get<double>(s);
-}
+  constexpr point p{1,3,5};
+  constexpr auto values = rbr::settings( coord_ = p);
 
-TTS_CASE("Check settings(...) as function interface")
-{
-  TTS_EQUAL( interface(10  , 3.41), 34.1 );
-  TTS_EQUAL( interface(3.41, 10  ), 34.1 );
-}
-
-TTS_CASE("Check settings(...) as constexpr function interface")
-{
-  TTS_EXPECT( bool_< interface(10  , 3.41) == 34.1>::value );
-  TTS_EXPECT( bool_< interface(3.41, 10  ) == 34.1>::value );
+  TTS_EXPECT_NOT( bool_< maybe_get<char>  (values).has_value()>::value);
+  TTS_EXPECT_NOT( bool_< maybe_get<float> (values).has_value()>::value);
+  TTS_EXPECT    ( bool_< maybe_get<point>(values).has_value() >::value);
+  TTS_EXPECT    ( bool_<*maybe_get<point>(values) == p        >::value);
 }

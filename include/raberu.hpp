@@ -12,94 +12,28 @@
 #include <optional>
 #include <utility>
 
-//==================================================================================================
-// Optional support for exception
-//==================================================================================================
-#if !defined(RABERU_NOEXCEPT)
-#include <stdexcept>
-
 namespace rbr
 {
-  //================================================================================================
-  // Exception thrown when an unknown option is used
-  //================================================================================================
-  struct unknown_option_exception : virtual std::exception
+  //==============================================================================================
+  // Turn any type into a RegularType info carrier
+  //==============================================================================================
+  template<typename T> struct type_
   {
-    virtual const char* what() const noexcept
-    {
-      return "[raberu] Exception - Attempt to retrieve unknown option from settings";
-    }
+    using type = type_<T>;
+    template<typename V> constexpr auto operator=(V&& v) const noexcept;
   };
 }
-#else
-namespace rbr
-{
-  //================================================================================================
-  // Exception thrown when an unknown option is used
-  //================================================================================================
-  struct unknown_option_exception
-  {
-    const char* what() const noexcept { return nullptr; }
-  };
-}
-#endif
 
-//==================================================================================================
-// Tag mechanism
-//==================================================================================================
-namespace rbr
-{
-  //================================================================================================
-  // Extract tag from an Option
-  //================================================================================================
-  template<typename O> struct tag;
-
-  template<typename O> requires requires { typename O::option_tag; }
-  struct tag<O>
-  {
-    using type = typename O::option_tag;
-  };
-
-  template<typename O> using tag_t = typename tag<O>::type;
-
-  //================================================================================================
-  // Concept for options
-  //================================================================================================
-  template<typename Option> concept option = requires(Option o)
-  {
-    typename tag<Option>::type;
-  };
-
-  namespace detail
-  {
-    //==============================================================================================
-    // Turn any type into a RegularType info carrier
-    //==============================================================================================
-    template<typename T> struct box { using type = box<T>; };
-  }
-
-  //================================================================================================
-  // User-facing helper to build option type
-  //================================================================================================
-  template<typename T> using option_ = detail::box<T>;
-}
-
-//==================================================================================================
-// Implementation elements
-//==================================================================================================
 namespace rbr::detail
 {
   //================================================================================================
   // Turn a Type+Value pair into a Callable
   //================================================================================================
-  template<typename Callable>
-  struct typed_value : Callable
+  template<typename Callable> struct typed_value : Callable
   {
     constexpr typed_value( Callable f) noexcept : Callable(f) {}
     using Callable::operator();
   };
-
-  template<typename Callable> typed_value(Callable) -> typed_value<Callable>;
 
   //================================================================================================
   // Build the type->value lambda capture
@@ -112,10 +46,10 @@ namespace rbr::detail
   //================================================================================================
   // Type notifying that we can't find a given key
   //================================================================================================
-  struct unknown_option {};
+  struct unknown_key {};
 
-  template<typename T> inline constexpr bool is_unknown_v                 = false;
-  template<>           inline constexpr bool is_unknown_v<unknown_option> = true;
+  template<typename T> inline constexpr bool is_unknown_v              = false;
+  template<>           inline constexpr bool is_unknown_v<unknown_key> = true;
 
   //================================================================================================
   // Aggregate lambdas and give them a operator(Key)-like interface
@@ -126,84 +60,135 @@ namespace rbr::detail
 
     using Ts::operator()...;
 
-    template<typename K> constexpr auto operator()(box<K> const&) const noexcept
+    template<typename K> constexpr auto operator()(type_<K> const&) const noexcept
     {
-      return unknown_option{};
+      return unknown_key{};
     }
 
     template<typename K, typename U>
-    constexpr decltype(auto) value_or(box<K> const& k, U&& u) const noexcept
+    constexpr decltype(auto) value_or(type_<K> const& k, U&& u) const noexcept
     {
-      // If calling without default would return the key, use the default
-      using found = decltype(this->operator()(box<K>{}));
-
+      using found = decltype(this->operator()(type_<K>{}));
       if constexpr( is_unknown_v<found> ) return std::forward<U>(u);
       else                                return this->operator()(k);
     }
   };
+}
 
-  template<typename... Ts> aggregator(Ts...) -> aggregator<Ts...>;
+namespace rbr
+{
+  //================================================================================================
+  // Extract tag from an Option
+  //================================================================================================
+  template<typename T>
+  template<typename V> constexpr auto type_<T>::operator=(V&& v) const noexcept
+  {
+    return detail::link<type_<T>>(std::forward<V>(v));
+  }
+
+  //================================================================================================
+  // Extract tag from an Option
+  //================================================================================================
+  template<typename O> struct tag
+  {
+    using type = type_<O>;
+  };
+
+  template<typename O> using tag_t = typename tag<O>::type;
 }
 
 //==================================================================================================
-  // settings is an unordered set of value accessible via their type
+// Tag macro
 //==================================================================================================
+#define RBR_NAMED_PARAMETER(TAG,NAME) inline constexpr ::rbr::type_<TAG> const NAME = {}
+
 namespace rbr
 {
-  template<typename... Ts>
-  struct settings : private detail::aggregator< detail::typed_value<Ts>...>
+  //==================================================================================================
+  // settings is an unordered set of values accessible via their types
+  //==================================================================================================
+  template<typename... Ts> struct settings
   {
     using parent = detail::aggregator<detail::typed_value<Ts>...>;
 
-    constexpr settings(detail::typed_value<Ts>&&... opts) : parent(std::forward<Ts>(opts)...)
+    constexpr settings( detail::typed_value<Ts>... ts )
+            : content_( ts... )
     {}
 
-    template<option... Os>
-    constexpr settings( Os&&... opts )
-            : settings( detail::link< tag_t<std::decay_t<Os>> >( std::forward<Os>(opts))... )
+    template<typename... Vs>
+    constexpr settings( Vs&&... v )
+            : content_( detail::link<tag_t<std::decay_t<Vs>>>( std::forward<Vs>(v))... )
     {}
 
-    template<option Option> constexpr auto get() const noexcept
+    static constexpr std::ptrdiff_t size() noexcept { return sizeof...(Ts); }
+
+    template<typename T> static constexpr bool contains() noexcept
     {
-      return parent::operator()(tag_t<Option>{});
+      using found = decltype(std::declval<parent>()(tag_t<T>{}));
+      return !detail::is_unknown_v<found>;
     }
 
-    template<option Option> constexpr std::optional<Option> maybe_get() const noexcept
+    template<typename T> constexpr auto get() const noexcept
     {
-      return parent::value_or(tag_t<Option>{}, std::nullopt);
+      return content_(tag_t<T>{});
     }
 
-    template<option Option> auto try_get() const
+    template<typename T, typename Value> constexpr auto get_or(Value&& v) const noexcept
     {
-      #if !defined(RABERU_NOEXCEPT)
-      using tag = tag_t<Option>;
-      using found = decltype(this->operator()(tag{}));
-
-      if constexpr( detail::is_unknown_v<found> ) throw unknown_option_exception{};
-      else                                        return get<Option>();
-      #else
-      return get<Option>();
-      #endif
+      return content_.value_or(tag_t<T>{}, std::forward<Value>(v));
     }
 
-    template<option Option, typename Value> constexpr auto get_or(Value&& v) const noexcept
+    template<typename T, typename Callable>
+    constexpr decltype(auto) get_or_eval(Callable f) const noexcept
     {
-      return parent::value_or(tag_t<Option>{}, std::forward<Value>(v));
+      if constexpr( contains<T>() ) return get<T>();
+      else                          return f( type_<T>{} );
     }
 
-    template<option Option, typename Callable> constexpr auto get_or_eval(Callable f) const noexcept
+    template<typename T> constexpr auto maybe_get() const noexcept
     {
-      using tag = tag_t<Option>;
-      using found = decltype(this->operator()(tag{}));
-
-      if constexpr( detail::is_unknown_v<found> ) return f();
-      else                                        return get<Option>();
+      if constexpr( contains<T>() ) return std::optional{get<T>()};
+      else                          return std::optional<detail::unknown_key>{};
     }
+
+    parent content_;
   };
 
-  template<option... Os>
-  settings( Os&&... opts ) -> settings< decltype( detail::link< tag_t<std::decay_t<Os>> >
-                                                              ( std::forward<Os>(opts) )
-                                                )...
-                                      >;
+  template<typename... Vs>
+  settings( Vs&&... v ) ->  settings< decltype( detail::link< tag_t<std::decay_t<Vs>>  >
+                                                            ( std::forward<Vs>(v) )
+                                              )...
+                                    >;
+
+  //================================================================================================
+  // Free function helpers
+  //================================================================================================
+  template<typename T, typename... Vs>
+  constexpr bool contains(settings<Vs...> const& s) noexcept
+  {
+    return s.template contains<T>();
+  }
+
+  template<typename T, typename... Vs>
+  constexpr auto get(settings<Vs...> const& s) noexcept
+  {
+    return s.template get<T>();
+  }
+
+  template<typename T, typename V, typename... Vs>
+  constexpr auto get_or(settings<Vs...> const& s, V&& v) noexcept
+  {
+    return s.template get_or<T>(std::forward<V>(v));
+  }
+
+  template<typename T, typename Callable, typename... Vs>
+  constexpr decltype(auto) get_or_eval(settings<Vs...> const& s,Callable f) noexcept
+  {
+    return s.template get_or_eval<T>(f);
+  }
+
+  template<typename T, typename... Vs> constexpr auto maybe_get(settings<Vs...> const& s) noexcept
+  {
+    return s.template maybe_get<T>();
+  }
 }

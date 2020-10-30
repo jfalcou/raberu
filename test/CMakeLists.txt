@@ -83,4 +83,9 @@ add_dependencies(unit raberu.exe)
 ##==================================================================================================
 ## Actual tests
 ##==================================================================================================
-generate_test("raberu" "sandbox.cpp")
+generate_test("raberu" "contains.cpp")
+generate_test("raberu" "get.cpp")
+generate_test("raberu" "get_or.cpp")
+generate_test("raberu" "get_or_eval.cpp")
+generate_test("raberu" "size.cpp")
+generate_test("raberu" "settings.cpp")

@@ -45,11 +45,10 @@ TTS_CASE("Check settings(...) get_or constexpr behavior - simple parameters")
 
 TTS_CASE("Check settings(...) get_or constexpr behavior - named parameters")
 {
-  constexpr point p{4,5,6};
-  constexpr auto values = rbr::settings( coord_ = p);
+  constexpr auto values = rbr::settings( coord_ = 75ULL );
 
   TTS_EXPECT( bool_<get_or<char> (values,-99) == -99>::value );
   TTS_EXPECT( bool_<get_or<int>  (values,-99) == -99>::value );
   TTS_EXPECT( bool_<get_or<float>(values,-99) == -99>::value );
-  TTS_EXPECT( bool_<get_or<point>(values,-99) == p  >::value );
+  TTS_EXPECT( bool_<get_or<coord_tag>(values,-99) == 75ULL >::value );
 }

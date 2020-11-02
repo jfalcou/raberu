@@ -23,13 +23,12 @@ TTS_CASE("Check settings(...) maybe_get behavior - simple parameters")
 
 TTS_CASE("Check settings(...) maybe_get behavior - named parameters")
 {
-  point p{1,3,5};
-  auto values = rbr::settings( coord_ = p);
+  auto values = rbr::settings( coord_ = 8.84 );
 
-  TTS_EXPECT_NOT( maybe_get<char>  (values)   );
-  TTS_EXPECT_NOT( maybe_get<float> (values)   );
-  TTS_EXPECT    ( maybe_get<point>(values)    );
-  TTS_EQUAL     (*maybe_get<point>(values), p );
+  TTS_EXPECT_NOT( maybe_get<char>  (values)           );
+  TTS_EXPECT_NOT( maybe_get<float> (values)           );
+  TTS_EXPECT    ( maybe_get<coord_tag>(values)        );
+  TTS_EQUAL     (*maybe_get<coord_tag>(values), 8.84  );
 }
 
 TTS_CASE("Check settings(...) maybe_get constexpr behavior - simple parameters")
@@ -47,8 +46,8 @@ TTS_CASE("Check settings(...) maybe_get constexpr behavior - named parameters")
   constexpr point p{1,3,5};
   constexpr auto values = rbr::settings( coord_ = p);
 
-  TTS_EXPECT_NOT( bool_< maybe_get<char>  (values).has_value()>::value);
-  TTS_EXPECT_NOT( bool_< maybe_get<float> (values).has_value()>::value);
-  TTS_EXPECT    ( bool_< maybe_get<point>(values).has_value() >::value);
-  TTS_EXPECT    ( bool_<*maybe_get<point>(values) == p        >::value);
+  TTS_EXPECT_NOT( bool_< maybe_get<char>  (values).has_value()    >::value);
+  TTS_EXPECT_NOT( bool_< maybe_get<float> (values).has_value()    >::value);
+  TTS_EXPECT    ( bool_< maybe_get<coord_tag>(values).has_value() >::value);
+  TTS_EXPECT    ( bool_<*maybe_get<coord_tag>(values) == p        >::value);
 }

@@ -59,7 +59,14 @@ namespace rbr
   }
 
 // Tag macro boilerplate
-#define RBR_NAMED_PARAMETER(TAG,NAME) inline constexpr ::rbr::type_<TAG> const NAME = {}
+#define RBR_NAMED_PARAMETER_FROM_TYPE(TYPE,NAME)                                                    \
+inline constexpr ::rbr::type_<TYPE> const NAME = {}                                                 \
+/**/
+
+#define RBR_NAMED_PARAMETER_FROM_TAG(TAG,NAME)                                                      \
+struct TAG {};                                                                                      \
+inline constexpr ::rbr::type_<TAG> const NAME = {}                                                  \
+/**/
 
   // Build a key-value from an option object
   template<typename T>

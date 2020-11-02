@@ -49,7 +49,7 @@ TTS_CASE("Check settings(...) constexpr contains - simple parameters")
 TTS_CASE("Check settings(...) constexpr contains - named parameters")
 {
   TTS_EXPECT(bool_<contains<custom_tag>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value  );
-  TTS_EXPECT(bool_<contains<point>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value   );
+  TTS_EXPECT(bool_<contains<coord_tag>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value   );
   TTS_EXPECT(bool_<contains<float>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value );
 
   TTS_EXPECT_NOT(bool_<contains<double>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value);

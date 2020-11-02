@@ -57,6 +57,6 @@ TTS_CASE("Check settings(...) get constexpr behavior - named parameters")
   constexpr auto values = rbr::settings(custom_ = bar{}, coord_ = p, value_ = 3.f);
 
   TTS_EXPECT( bool_<get<custom_tag>(values).value == 4.2>::value );
-  TTS_EXPECT( bool_<get<point>(values)            == p  >::value );
+  TTS_EXPECT( bool_<get<coord_tag>(values)        == p  >::value );
   TTS_EXPECT( bool_<get<float>(values)            == 3.f>::value );
 }

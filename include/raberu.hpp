@@ -134,7 +134,7 @@ inline constexpr ::rbr::type_<TAG> const NAME = {}                              
 
   // Free function helpers
   template<typename T, typename... Vs>
-  constexpr std::ptrdiff_t size(settings<Vs...> const& s) noexcept
+  constexpr std::ptrdiff_t size(settings<Vs...> const&) noexcept
   {
     return sizeof...(Vs);
   }

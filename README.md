@@ -8,7 +8,7 @@
 
 
 ## Requirements
-**RABERU** requires a C++20 conformat compiler.
+**RABERU** requires a C++20 conformant compiler.
 It is currently test on latest MSVC, g++ 10.2 and clang++ 10.
 
 ## Installation and Usage

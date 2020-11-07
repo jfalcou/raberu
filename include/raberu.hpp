@@ -9,7 +9,6 @@
 //==================================================================================================
 #pragma once
 #include <type_traits>
-#include <optional>
 #include <utility>
 
 namespace rbr
@@ -110,7 +109,7 @@ namespace rbr
     }
 
     template<typename T, typename Callable>
-    constexpr decltype(auto) get_or_eval(Callable f) const noexcept
+    constexpr decltype(auto) get_or_eval(Callable f) const
     {
       if constexpr( contains<T>() ) return get<T>();
       else                          return f( type_t<T>{} );
@@ -126,10 +125,10 @@ namespace rbr
     constexpr auto operator[](T const& tgt) const noexcept { return content_(tgt); }
 
     template<typename T, typename V>
-    constexpr auto operator[](type_or_<T,V> const& tgt) const noexcept
+    constexpr auto operator[](type_or_<T,V> const& tgt) const
     {
-      if constexpr( std::is_invocable_v<V,type_t<T>>)  return get_or_eval<T>(tgt.value);
-      else                                            return get_or<T>(tgt.value);
+      if constexpr( std::is_invocable_v<V,type_t<T>> ) return get_or_eval<T>(tgt.value);
+      else                                             return get_or<T>(tgt.value);
     }
 
     parent content_;

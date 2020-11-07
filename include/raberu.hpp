@@ -46,7 +46,7 @@ namespace rbr
     }
 
     // Type notifying that we can't find a given key
-    struct unknown_key {};
+    struct unknown_key { template<typename... T> unknown_key(T&&...) {} };
 
     // Check if the key we used is correct
     template<typename T> inline constexpr bool is_unknown_v              = false;
@@ -72,10 +72,6 @@ namespace rbr
   {
     return detail::link<type_t<T>>(std::forward<V>(v));
   }
-
-  // Wrap a tag in an optional inducing wrapper
-  template<typename Tag> struct maybe_ {};
-  template<typename Tag> constexpr auto maybe(type_t<Tag> const&) noexcept { return maybe_<Tag>{}; }
 
   // Extract tag from an Option
   template<typename O> struct tag { using type = type_t<O>; };
@@ -120,12 +116,6 @@ namespace rbr
       else                          return f( type_t<T>{} );
     }
 
-    template<typename T> constexpr auto maybe_get() const noexcept
-    {
-      if constexpr( contains<T>() ) return std::optional{get<T>()};
-      else                          return std::optional<detail::unknown_key>{};
-    }
-
     // Named options interface
     template<typename T> static constexpr bool contains(type_t<T> const&) noexcept
     {
@@ -141,9 +131,6 @@ namespace rbr
       if constexpr( std::is_invocable_v<V,type_t<T>>)  return get_or_eval<T>(tgt.value);
       else                                            return get_or<T>(tgt.value);
     }
-
-    template<typename T>
-    constexpr auto operator[](maybe_<T> const&) const noexcept { return maybe_get<T>(); }
 
     parent content_;
   };

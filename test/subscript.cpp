@@ -82,24 +82,3 @@ TTS_CASE("Check settings(...) operator[t | func()] constexpr behavior")
   TTS_EXPECT( bool_<values[value_             | or_else ] == 1337.42f >::value );
   TTS_EXPECT( bool_<values[custom_            | or_else ] == 42.69    >::value );
 }
-
-TTS_CASE("Check settings(...) operator[ maybe(t) ] behavior")
-{
-  auto values = rbr::settings( coord_ = 8.84 );
-
-  TTS_EXPECT_NOT( values[ maybe(rbr::type_<char>) ]       );
-  TTS_EXPECT_NOT( values[ maybe(rbr::type_<int>)  ]       );
-  TTS_EXPECT    ( values[ maybe(coord_)             ]       );
-  TTS_EQUAL     (*values[ maybe(coord_)             ], 8.84 );
-}
-
-TTS_CASE("Check settings(...) operator[ maybe(t) ] constexpr behavior")
-{
-  constexpr point p{1,3,5};
-  constexpr auto values = rbr::settings( coord_ = p);
-
-  TTS_EXPECT_NOT( bool_< values[ maybe(rbr::type_<char>) ].has_value() >::value);
-  TTS_EXPECT_NOT( bool_< values[ maybe(rbr::type_<int>)  ].has_value() >::value);
-  TTS_EXPECT    ( bool_< values[ maybe(coord_)             ].has_value()>::value);
-  TTS_EXPECT    ( bool_<*values[ maybe(coord_)             ] == p       >::value);
-}

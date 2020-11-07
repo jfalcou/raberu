@@ -26,10 +26,9 @@ TTS_CASE("Check settings(...) contains - named parameters")
 {
   using namespace std::literals;
 
-  TTS_EXPECT(contains<custom_tag>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
-  TTS_EXPECT(contains<std::string>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
-  TTS_EXPECT(contains<float>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
-
+  TTS_EXPECT    (contains<custom_tag>(rbr::settings(custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
+  TTS_EXPECT    (contains<std::string>(rbr::settings(custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
+  TTS_EXPECT    (contains<float>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
   TTS_EXPECT_NOT(contains<double>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
   TTS_EXPECT_NOT(contains<short>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
   TTS_EXPECT_NOT(contains<void*>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));

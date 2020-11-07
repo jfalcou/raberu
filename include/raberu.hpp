@@ -14,26 +14,35 @@
 
 namespace rbr
 {
+  // Lightweight container of value
+  template<typename T, typename V> struct type_or_ { V value; };
+
   // Turn any type into a RegularType info carrier
-  template<typename T> struct type_
+  template<typename T> struct type_t
   {
-    using type = type_<T>;
+    using type        = type_t<T>;
     template<typename V> constexpr auto operator=(V&& v) const noexcept;
+    template<typename V> constexpr auto operator|(V&& value) const noexcept
+    {
+      return type_or_<T,V>{std::forward<V>(value)};
+    }
   };
+
+  template<typename T> inline constexpr type_t<T> type_ = {};
 
   namespace detail
   {
     // Turn a Type+Value pair into a Callable
-    template<typename Callable> struct typed_value : Callable
+    template<typename Callable> struct linked_value : Callable
     {
-      constexpr typed_value( Callable f) noexcept : Callable(f) {}
+      constexpr linked_value( Callable f) noexcept : Callable(f) {}
       using Callable::operator();
     };
 
     // Build the type->value lambda capture
     template<typename Key, typename Value> constexpr auto link(Value v) noexcept
     {
-      return typed_value( [v](Key const&) constexpr { return v; } );
+      return linked_value( [v](Key const&) constexpr { return v; } );
     }
 
     // Type notifying that we can't find a given key
@@ -47,44 +56,37 @@ namespace rbr
     template<typename... Ts> struct aggregator : Ts...
     {
       constexpr aggregator(Ts... t) noexcept : Ts(t)... {}
-
       using Ts::operator()...;
 
-      // If not found before, return the unknown_key value
-      template<typename K> constexpr auto operator()(type_<K> const&) const noexcept
+      template<typename K> constexpr auto operator()(type_t<K> const&) const noexcept
       {
+        // If not found before, return the unknown_key value
         return unknown_key{};
       }
     };
   }
 
-// Tag macro boilerplate
-#define RBR_NAMED_PARAMETER_FROM_TYPE(TYPE,NAME)                                                    \
-inline constexpr ::rbr::type_<TYPE> const NAME = {}                                                 \
-/**/
-
-#define RBR_NAMED_PARAMETER_FROM_TAG(TAG,NAME)                                                      \
-struct TAG {};                                                                                      \
-inline constexpr ::rbr::type_<TAG> const NAME = {}                                                  \
-/**/
-
   // Build a key-value from an option object
   template<typename T>
-  template<typename V> constexpr auto type_<T>::operator=(V&& v) const noexcept
+  template<typename V> constexpr auto type_t<T>::operator=(V&& v) const noexcept
   {
-    return detail::link<type_<T>>(std::forward<V>(v));
+    return detail::link<type_t<T>>(std::forward<V>(v));
   }
 
+  // Wrap a tag in an optional inducing wrapper
+  template<typename Tag> struct maybe_ {};
+  template<typename Tag> constexpr auto maybe(type_t<Tag> const&) noexcept { return maybe_<Tag>{}; }
+
   // Extract tag from an Option
-  template<typename O> struct tag { using type = type_<O>; };
-  template<typename O> using tag_t = typename tag<O>::type;
+  template<typename O> struct tag { using type = type_t<O>; };
+  template<typename O> using  tag_t = typename tag<O>::type;
 
   // settings is an unordered set of values accessible via their types
   template<typename... Ts> struct settings
   {
-    using parent = detail::aggregator<detail::typed_value<Ts>...>;
+    using parent = detail::aggregator<detail::linked_value<Ts>...>;
 
-    constexpr settings( detail::typed_value<Ts>... ts ) : content_( ts... ) {}
+    constexpr settings( detail::linked_value<Ts>... ts ) : content_( ts... ) {}
 
     template<typename... Vs>
     constexpr settings( Vs&&... v )
@@ -93,6 +95,7 @@ inline constexpr ::rbr::type_<TAG> const NAME = {}                              
 
     static constexpr std::ptrdiff_t size() noexcept { return sizeof...(Ts); }
 
+    // Type based interface
     template<typename T> static constexpr bool contains() noexcept
     {
       using found = decltype(std::declval<parent>()(tag_t<T>{}));
@@ -114,7 +117,7 @@ inline constexpr ::rbr::type_<TAG> const NAME = {}                              
     constexpr decltype(auto) get_or_eval(Callable f) const noexcept
     {
       if constexpr( contains<T>() ) return get<T>();
-      else                          return f( type_<T>{} );
+      else                          return f( type_t<T>{} );
     }
 
     template<typename T> constexpr auto maybe_get() const noexcept
@@ -122,6 +125,25 @@ inline constexpr ::rbr::type_<TAG> const NAME = {}                              
       if constexpr( contains<T>() ) return std::optional{get<T>()};
       else                          return std::optional<detail::unknown_key>{};
     }
+
+    // Named options interface
+    template<typename T> static constexpr bool contains(type_t<T> const&) noexcept
+    {
+      return contains<T>();
+    }
+
+    template<typename T>
+    constexpr auto operator[](T const& tgt) const noexcept { return content_(tgt); }
+
+    template<typename T, typename V>
+    constexpr auto operator[](type_or_<T,V> const& tgt) const noexcept
+    {
+      if constexpr( std::is_invocable_v<V,type_t<T>>)  return get_or_eval<T>(tgt.value);
+      else                                            return get_or<T>(tgt.value);
+    }
+
+    template<typename T>
+    constexpr auto operator[](maybe_<T> const&) const noexcept { return maybe_get<T>(); }
 
     parent content_;
   };

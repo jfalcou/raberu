@@ -12,32 +12,39 @@
 #include "common.hpp"
 
 template<typename... Vs>
-constexpr auto interface(Vs const&... vs ) noexcept
+constexpr auto typed_interface(Vs const&... vs ) noexcept
 {
   rbr::settings s(vs...);
   return rbr::get<int>(s) * rbr::get<double>(s);
 }
 
+template<typename... Vs>
+constexpr auto named_interface(Vs const&... vs ) noexcept
+{
+  rbr::settings s(vs...);
+  return s[factor_] * s[ref_];
+}
+
 TTS_CASE("Check settings(...) as function interface with simple parameters")
 {
-  TTS_EQUAL( interface(10  , 3.41), 34.1 );
-  TTS_EQUAL( interface(3.41, 10  ), 34.1 );
+  TTS_EQUAL( typed_interface(10  , 3.41), 34.1 );
+  TTS_EQUAL( typed_interface(3.41, 10  ), 34.1 );
 }
 
 TTS_CASE("Check settings(...) as function interface with named parameters")
 {
-  TTS_EQUAL( interface( factor_ = 10  , ref_    = 3.41 ), 34.1 );
-  TTS_EQUAL( interface( ref_    = 3.41, factor_ = 10   ), 34.1 );
+  TTS_EQUAL( named_interface( factor_ = 10  , ref_    = 3.41 ), 34.1 );
+  TTS_EQUAL( named_interface( ref_    = 3.41, factor_ = 10   ), 34.1 );
 }
 
 TTS_CASE("Check settings(...) as constexpr function interface with simple parameters")
 {
-  TTS_EXPECT( bool_< interface(10  , 3.41) == 34.1>::value );
-  TTS_EXPECT( bool_< interface(3.41, 10  ) == 34.1>::value );
+  TTS_EXPECT( bool_< typed_interface(10  , 3.41) == 34.1>::value );
+  TTS_EXPECT( bool_< typed_interface(3.41, 10  ) == 34.1>::value );
 }
 
 TTS_CASE("Check settings(...) as constexpr function interface with named parameters")
 {
-  TTS_EXPECT( bool_< interface( factor_ = 10  , ref_    = 3.41 ) == 34.1>::value );
-  TTS_EXPECT( bool_< interface( ref_    = 3.41, factor_ = 10   ) == 34.1>::value );
+  TTS_EXPECT( bool_< named_interface( factor_ = 10  , ref_    = 3.41 ) == 34.1>::value );
+  TTS_EXPECT( bool_< named_interface( ref_    = 3.41, factor_ = 10   ) == 34.1>::value );
 }

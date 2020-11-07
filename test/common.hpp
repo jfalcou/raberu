@@ -12,24 +12,24 @@
 #include <string>
 #include <array>
 
+template<bool B> using bool_ =  std::bool_constant<B>;
+
 struct foo { int    value = 42;   };
 struct bar { double value = 4.2;  };
 
-
 using point = std::array<int,3>;
 
-RBR_NAMED_PARAMETER_FROM_TAG(custom_tag  , custom_ );
-RBR_NAMED_PARAMETER_FROM_TAG(coord_tag  , coord_  );
+inline constexpr auto custom_  = ::rbr::type_<struct custom_tag>;
+inline constexpr auto coord_   = ::rbr::type_<struct coord_tag>;
 
 namespace rbr
 {
-  template<> struct tag<foo> : type_<custom_tag> {};
-  template<> struct tag<bar> : type_<custom_tag> {};
+  template<> struct tag<foo> : tag<struct custom_tag> {};
+  template<> struct tag<bar> : tag<struct custom_tag> {};
 }
 
-RBR_NAMED_PARAMETER_FROM_TYPE(float       , value_  );
-RBR_NAMED_PARAMETER_FROM_TYPE(std::string , name_   );
-RBR_NAMED_PARAMETER_FROM_TYPE(int         , factor_ );
-RBR_NAMED_PARAMETER_FROM_TYPE(double      , ref_    );
+inline constexpr auto value_  = ::rbr::type_<float>;
+inline constexpr auto name_   = ::rbr::type_<std::string>;
+inline constexpr auto factor_ = ::rbr::type_<int>;
+inline constexpr auto ref_    = ::rbr::type_<double>;
 
-template<bool B> using bool_ =  std::bool_constant<B>;

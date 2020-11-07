@@ -15,7 +15,7 @@ template<typename... Vs>
 constexpr auto typed_interface(Vs const&... vs ) noexcept
 {
   rbr::settings s(vs...);
-  return rbr::get<int>(s) * rbr::get<double>(s);
+  return s[rbr::keyword<int>] * s[rbr::keyword<double>];
 }
 
 template<typename... Vs>

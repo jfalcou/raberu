@@ -17,9 +17,9 @@ namespace rbr
   template<typename T, typename V> struct type_or_ { V value; };
 
   // Turn any type into a RegularType info carrier
-  template<typename T> struct type_t
+  template<typename T> struct keyword_type
   {
-    using type        = type_t<T>;
+    using type        = keyword_type<T>;
     template<typename V> constexpr auto operator=(V&& v) const noexcept;
     template<typename V> constexpr auto operator|(V&& value) const noexcept
     {
@@ -27,7 +27,8 @@ namespace rbr
     }
   };
 
-  template<typename T> inline constexpr type_t<T> type_ = {};
+  // Keyword_type generator
+  template<typename T> inline constexpr const keyword_type<T> keyword = {};
 
   namespace detail
   {
@@ -39,9 +40,15 @@ namespace rbr
     };
 
     // Build the type->value lambda capture
-    template<typename Key, typename Value> constexpr auto link(Value v) noexcept
+    template<typename Key, typename T> constexpr auto link(T&& v) noexcept
     {
-      return linked_value( [v](Key const&) constexpr { return v; } );
+      return linked_value( [value = std::forward<T>(v)](Key const&) constexpr { return value; } );
+    }
+
+    // Don't relink already linked values
+    template<typename Key, typename C> constexpr auto link(linked_value<C>&& v) noexcept
+    {
+      return std::forward<linked_value<C>>(v);
     }
 
     // Type notifying that we can't find a given key
@@ -57,7 +64,7 @@ namespace rbr
       constexpr aggregator(Ts... t) noexcept : Ts(t)... {}
       using Ts::operator()...;
 
-      template<typename K> constexpr auto operator()(type_t<K> const&) const noexcept
+      template<typename K> constexpr auto operator()(keyword_type<K> const&) const noexcept
       {
         // If not found before, return the unknown_key value
         return unknown_key{};
@@ -67,13 +74,13 @@ namespace rbr
 
   // Build a key-value from an option object
   template<typename T>
-  template<typename V> constexpr auto type_t<T>::operator=(V&& v) const noexcept
+  template<typename V> constexpr auto keyword_type<T>::operator=(V&& v) const noexcept
   {
-    return detail::link<type_t<T>>(std::forward<V>(v));
+    return detail::link<keyword_type<T>>(std::forward<V>(v));
   }
 
   // Extract tag from an Option
-  template<typename O> struct tag { using type = type_t<O>; };
+  template<typename O> struct tag { using type = keyword_type<O>; };
   template<typename O> using  tag_t = typename tag<O>::type;
 
   // settings is an unordered set of values accessible via their types
@@ -90,45 +97,24 @@ namespace rbr
 
     static constexpr std::ptrdiff_t size() noexcept { return sizeof...(Ts); }
 
-    // Type based interface
-    template<typename T> static constexpr bool contains() noexcept
+    // Named options interface
+    template<typename T> static constexpr bool contains(keyword_type<T> const&) noexcept
     {
       using found = decltype(std::declval<parent>()(tag_t<T>{}));
       return !detail::is_unknown_v<found>;
     }
 
-    template<typename T> constexpr auto get() const noexcept
+    template<typename T> constexpr auto operator[](keyword_type<T> const& tgt) const noexcept
     {
-      return content_(tag_t<T>{});
+      return content_(tgt);
     }
-
-    template<typename T, typename Value> constexpr auto get_or(Value&& v) const noexcept
-    {
-      if constexpr( contains<T>() ) return get<T>();
-      else                          return std::forward<Value>(v);
-    }
-
-    template<typename T, typename Callable>
-    constexpr decltype(auto) get_or_eval(Callable f) const
-    {
-      if constexpr( contains<T>() ) return get<T>();
-      else                          return f( type_t<T>{} );
-    }
-
-    // Named options interface
-    template<typename T> static constexpr bool contains(type_t<T> const&) noexcept
-    {
-      return contains<T>();
-    }
-
-    template<typename T>
-    constexpr auto operator[](T const& tgt) const noexcept { return content_(tgt); }
 
     template<typename T, typename V>
     constexpr auto operator[](type_or_<T,V> const& tgt) const
     {
-      if constexpr( std::is_invocable_v<V,type_t<T>> ) return get_or_eval<T>(tgt.value);
-      else                                             return get_or<T>(tgt.value);
+      if constexpr( contains(keyword_type<T>{}) )                   return content_( keyword_type<T>{} );
+      else  if constexpr( std::is_invocable_v<V,keyword_type<T>> )  return tgt.value( keyword_type<T>{} );
+      else                                                    return tgt.value;
     }
 
     parent content_;
@@ -139,40 +125,4 @@ namespace rbr
                                                             ( std::forward<Vs>(v) )
                                               )...
                                     >;
-
-  // Free function helpers
-  template<typename T, typename... Vs>
-  constexpr std::ptrdiff_t size(settings<Vs...> const&) noexcept
-  {
-    return sizeof...(Vs);
-  }
-
-  template<typename T, typename... Vs>
-  constexpr bool contains(settings<Vs...> const& s) noexcept
-  {
-    return s.template contains<T>();
-  }
-
-  template<typename T, typename... Vs>
-  constexpr auto get(settings<Vs...> const& s) noexcept
-  {
-    return s.template get<T>();
-  }
-
-  template<typename T, typename V, typename... Vs>
-  constexpr auto get_or(settings<Vs...> const& s, V&& v) noexcept
-  {
-    return s.template get_or<T>(std::forward<V>(v));
-  }
-
-  template<typename T, typename Callable, typename... Vs>
-  constexpr decltype(auto) get_or_eval(settings<Vs...> const& s,Callable f) noexcept
-  {
-    return s.template get_or_eval<T>(f);
-  }
-
-  template<typename T, typename... Vs> constexpr auto maybe_get(settings<Vs...> const& s) noexcept
-  {
-    return s.template maybe_get<T>();
-  }
 }

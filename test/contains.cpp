@@ -11,47 +11,30 @@
 #include <raberu.hpp>
 #include "common.hpp"
 
-TTS_CASE("Check settings(...) contains - simple parameters")
-{
-  TTS_EXPECT(contains<char>(rbr::settings ('3',2,1.f )));
-  TTS_EXPECT(contains<int>(rbr::settings ('3',2,1.f )));
-  TTS_EXPECT(contains<float>(rbr::settings ('3',2,1.f )));
-
-  TTS_EXPECT_NOT(contains<double>(rbr::settings ('3',2,1.f )));
-  TTS_EXPECT_NOT(contains<short>(rbr::settings ('3',2,1.f )));
-  TTS_EXPECT_NOT(contains<void*>(rbr::settings ('3',2,1.f )));
-}
-
-TTS_CASE("Check settings(...) contains - named parameters")
+TTS_CASE("Check settings(...).contains behavior")
 {
   using namespace std::literals;
 
-  TTS_EXPECT    (contains<custom_tag>(rbr::settings(custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
-  TTS_EXPECT    (contains<std::string>(rbr::settings(custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
-  TTS_EXPECT    (contains<float>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
-  TTS_EXPECT_NOT(contains<double>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
-  TTS_EXPECT_NOT(contains<short>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
-  TTS_EXPECT_NOT(contains<void*>(rbr::settings (custom_ = foo{}, name_ = "john"s, value_ = 3.f)));
+  rbr::settings values(custom_ = foo{}, name_ = "john"s, value_ = 3.f);
+
+  TTS_EXPECT    ( values.contains(custom_)            );
+  TTS_EXPECT    ( values.contains(name_)              );
+  TTS_EXPECT    ( values.contains(value_)             );
+  TTS_EXPECT_NOT( values.contains(rbr::keyword<char>) );
+  TTS_EXPECT_NOT( values.contains(rbr::keyword<short>));
+  TTS_EXPECT_NOT( values.contains(rbr::keyword<void*>));
 }
 
-TTS_CASE("Check settings(...) constexpr contains - simple parameters")
+TTS_CASE("Check settings(...).contains constexpr behavior")
 {
-  TTS_EXPECT(bool_<contains<char>(rbr::settings ('3',2,1.f ))>::value  );
-  TTS_EXPECT(bool_<contains<int>(rbr::settings ('3',2,1.f ))>::value   );
-  TTS_EXPECT(bool_<contains<float>(rbr::settings ('3',2,1.f ))>::value );
+  using namespace std::literals;
 
-  TTS_EXPECT_NOT(bool_<contains<double>(rbr::settings ('3',2,1.f ))>::value);
-  TTS_EXPECT_NOT(bool_<contains<short>(rbr::settings ('3',2,1.f ))>::value );
-  TTS_EXPECT_NOT(bool_<contains<void*>(rbr::settings ('3',2,1.f ))>::value );
-}
+  rbr::settings values(custom_ = foo{}, name_ = "john"s, value_ = 3.f);
 
-TTS_CASE("Check settings(...) constexpr contains - named parameters")
-{
-  TTS_EXPECT(bool_<contains<custom_tag>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value  );
-  TTS_EXPECT(bool_<contains<coord_tag>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value   );
-  TTS_EXPECT(bool_<contains<float>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value );
-
-  TTS_EXPECT_NOT(bool_<contains<double>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value);
-  TTS_EXPECT_NOT(bool_<contains<short>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value );
-  TTS_EXPECT_NOT(bool_<contains<void*>(rbr::settings (custom_ = foo{}, coord_ = point{}, value_ = 3.f  ))>::value );
+  TTS_EXPECT    ( bool_<values.contains(custom_)>::value            );
+  TTS_EXPECT    ( bool_<values.contains(name_)  >::value            );
+  TTS_EXPECT    ( bool_<values.contains(value_) >::value            );
+  TTS_EXPECT_NOT( bool_<values.contains(rbr::keyword<char>) >::value);
+  TTS_EXPECT_NOT( bool_<values.contains(rbr::keyword<short>)>::value);
+  TTS_EXPECT_NOT( bool_<values.contains(rbr::keyword<void*>)>::value);
 }

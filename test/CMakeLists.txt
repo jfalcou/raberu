@@ -1,10 +1,10 @@
-## -------------------------------------------------------------------------------------------------
+##==================================================================================================
 ##  RABERU - Fancy Parameters Library
 ##  Copyright 2020 Joel FALCOU
 ##
 ##  Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 ##  SPDX-License-Identifier: MIT
-## -------------------------------------------------------------------------------------------------
+##==================================================================================================
 
 ##==================================================================================================
 ## Compiler options
@@ -73,20 +73,12 @@ function(generate_test root file)
   add_dependencies(unit ${test})
 endfunction()
 
-##==================================================================================================
-## Meta-target
-##==================================================================================================
 add_custom_target(unit)
-add_custom_target(raberu.exe)
-add_dependencies(unit raberu.exe)
 
 ##==================================================================================================
 ## Actual tests
 ##==================================================================================================
 generate_test("raberu" "contains.cpp")
-generate_test("raberu" "get.cpp")
-generate_test("raberu" "get_or.cpp")
-generate_test("raberu" "get_or_eval.cpp")
 generate_test("raberu" "interface.cpp")
 generate_test("raberu" "size.cpp")
-generate_test("raberu" "subscript.cpp")
+generate_test("raberu" "access.cpp")

@@ -19,8 +19,8 @@ struct bar { double value = 4.2;  };
 
 using point = std::array<int,3>;
 
-inline constexpr auto custom_  = ::rbr::type_<struct custom_tag>;
-inline constexpr auto coord_   = ::rbr::type_<struct coord_tag>;
+inline constexpr auto custom_  = ::rbr::keyword<struct custom_tag>;
+inline constexpr auto coord_   = ::rbr::keyword<struct coord_tag>;
 
 namespace rbr
 {
@@ -28,8 +28,8 @@ namespace rbr
   template<> struct tag<bar> : tag<struct custom_tag> {};
 }
 
-inline constexpr auto value_  = ::rbr::type_<float>;
-inline constexpr auto name_   = ::rbr::type_<std::string>;
-inline constexpr auto factor_ = ::rbr::type_<int>;
-inline constexpr auto ref_    = ::rbr::type_<double>;
+inline constexpr auto value_  = ::rbr::keyword<float>;
+inline constexpr auto name_   = ::rbr::keyword<std::string>;
+inline constexpr auto factor_ = ::rbr::keyword<int>;
+inline constexpr auto ref_    = ::rbr::keyword<double>;
 

@@ -1,0 +1,69 @@
+##==================================================================================================
+## RABERU - Fancy Parameters Library
+## Copyright 2020 Joel FALCOU
+##
+## Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+## SPDX-License-Identifier: MIT
+##==================================================================================================
+version: 2.1
+
+##==================================================================================================
+## Docker images
+##==================================================================================================
+docker_gcc: &docker_gcc
+  docker:
+    - image: compilaction/cpp-20:latest
+      environment:
+        COMPILER:  g++-10
+docker_clang: &docker_clang
+  docker:
+    - image: compilaction/cpp-20:latest
+      environment:
+        COMPILER: clang++
+
+##==================================================================================================
+## Build configurations
+##==================================================================================================
+config_gcc_amd64: &config_gcc_amd64
+  <<: *docker_gcc
+config_clang_amd64: &config_clang_amd64
+  <<: *docker_clang
+
+##==================================================================================================
+## Jobs list
+##==================================================================================================
+jobs:
+  ##================================================================================================
+  ## X86/AMD64 Tests
+  ##================================================================================================
+  gcc_amd64:
+    <<: *config_gcc_amd64
+    steps:
+      - checkout
+      - run:
+          name: Running Basic Tests - Release
+          command: VARIANT="Release" OPTIONS="-O3 -DNDEBUG" . .circleci/run.sh
+      - run:
+          name: Running Basic Tests - Debug
+          command: VARIANT="Debug" OPTIONS="-O0 -g" . .circleci/run.sh
+
+  clang_amd64:
+    <<: *config_clang_amd64
+    steps:
+      - checkout
+      - run:
+          name: Running Basic Tests - Release
+          command: VARIANT="Release" OPTIONS="-O3 -DNDEBUG" . .circleci/run.sh
+      - run:
+          name: Running Basic Tests - Debug
+          command: VARIANT="Debug" OPTIONS="-O0 -g" . .circleci/run.sh
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+    ##==============================================================================================
+    ## All tests
+    ##==============================================================================================
+      - gcc_amd64
+      - clang_amd64

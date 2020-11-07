@@ -14,7 +14,10 @@ It is currently test on latest MSVC, g++ 10.2 and clang++ 10.
 ## Installation and Usage
 Installing **RABERU** is rather straight forward.
 
-  1. Dowload the one header file `raberu.hpp` : `wget https://raw.githubusercontent.com/jfalcou/raberu/main/include/raberu.hpp`
+  1. Download the one header file `raberu.hpp` : 
+     ```
+     wget https://raw.githubusercontent.com/jfalcou/raberu/main/include/raberu.hpp
+     ```
   2. Copy it in the location of your choice.
 
 Using **RABERU** boils down to including `raberu.hpp` and compile using C++20.

@@ -1,8 +1,11 @@
-<img src="https://github.com/jfalcou/raberu/raw/main/logo.png" alt="RABERU Library logo" data-canonical-src="https://github.com/jfalcou/raberu/raw/main/logo.png" align="left" width="20%" height="20%" />
+<img src="https://github.com/jfalcou/raberu/raw/main/logo.png" alt="RABERU Library logo" data-canonical-src="https://github.com/jfalcou/raberu/raw/main/logo.png" align="left" width="18%" height="18%" />
 
 # RABERU
 
-[![Build status](https://ci.appveyor.com/api/projects/status/k1x181xn48w6qatt/branch/main?svg=true)](https://ci.appveyor.com/project/jfalcou/raberu/branch/main)
+**The Fancy, Dandy Parameters Library**
+
+**Visual Studio**: [![Build status](https://ci.appveyor.com/api/projects/status/k1x181xn48w6qatt/branch/main?svg=true)](https://ci.appveyor.com/project/jfalcou/raberu/branch/main)&nbsp;&nbsp;**clang/gcc**: [![jfalcou](https://circleci.com/gh/jfalcou/raberu.svg?style=svg)](https://app.circleci.com/pipelines/github/jfalcou/raberu)
+
 
 ## Purpose
 **RABERU** provides simple types and functions to support :
@@ -39,4 +42,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```
+`

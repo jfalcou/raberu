@@ -2,6 +2,8 @@
 
 # RABERU
 
+[![Build status](https://ci.appveyor.com/api/projects/status/k1x181xn48w6qatt/branch/main?svg=true)](https://ci.appveyor.com/project/jfalcou/raberu/branch/main)
+
 ## Purpose
 **RABERU** provides simple types and functions to support :
   * unordered set of values passed as parameters to function

@@ -21,6 +21,19 @@ TTS_CASE("Check settings(...) operator[t] behavior")
   TTS_EQUAL(values[coord_             ] , "Jane Doe"s);
 }
 
+TTS_CASE("Check settings(...) operator[t] life-time handling")
+{
+  using namespace std::literals;
+
+  auto s =  "Jane Doe"s;
+  float f = 42.69f;
+
+  auto values = rbr::settings( coord_ = s, f);
+
+  TTS_EQUAL(&values[rbr::keyword<float>] , &f);
+  TTS_EQUAL(&values[coord_             ] , &s);
+}
+
 TTS_CASE("Check settings(...) operator[t] constexpr behavior")
 {
   constexpr auto values = rbr::settings( coord_ = 75ULL, 42.69f );
@@ -39,6 +52,21 @@ TTS_CASE("Check settings(...) operator[t | v] behavior")
   TTS_EQUAL(values[rbr::keyword<int>    | -99] , -99        );
   TTS_EQUAL(values[rbr::keyword<float>  | -99] , -99        );
   TTS_EQUAL(values[name_                | -99] , "Jane Doe"s);
+}
+
+TTS_CASE("Check settings(...) operator[t | v] life-time handling")
+{
+  using namespace std::literals;
+
+  auto  s   =  "Jane Doe"s;
+  auto  alt =  "Bob Ross"s;
+  float f   = 42.69f;
+
+  auto values = rbr::settings( coord_ = s, f);
+
+  TTS_EQUAL(&values[rbr::keyword<float> | 13.37f  ] , &f);
+  TTS_EQUAL(&values[coord_              | "test"s ] , &s);
+  TTS_EQUAL(&values[name_               | alt     ] , &alt);
 }
 
 TTS_CASE("Check settings(...) operator[t | v] constexpr behavior")

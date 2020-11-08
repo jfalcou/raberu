@@ -42,7 +42,10 @@ namespace rbr
     // Build the type->value lambda capture
     template<typename Key, typename T> constexpr auto link(T&& v) noexcept
     {
-      return linked_value( [value = std::forward<T>(v)](Key const&) constexpr { return value; } );
+      if constexpr( std::is_lvalue_reference_v<T> )
+        return linked_value( [&v](Key const&) constexpr -> decltype(auto) { return v; } );
+      else
+        return linked_value( [w = std::move(v)](Key const&) constexpr -> T const& { return w; } );
     }
 
     // Don't relink already linked values
@@ -104,17 +107,18 @@ namespace rbr
       return !detail::is_unknown_v<found>;
     }
 
-    template<typename T> constexpr auto operator[](keyword_type<T> const& tgt) const noexcept
+    template<typename T>
+    constexpr decltype(auto) operator[](keyword_type<T> const& tgt) const noexcept
     {
       return content_(tgt);
     }
 
     template<typename T, typename V>
-    constexpr auto operator[](type_or_<T,V> const& tgt) const
+    constexpr decltype(auto) operator[](type_or_<T,V> const& tgt) const
     {
-      if constexpr( contains(keyword_type<T>{}) )                   return content_( keyword_type<T>{} );
+            if constexpr( contains(keyword_type<T>{}) )             return content_( keyword_type<T>{} );
       else  if constexpr( std::is_invocable_v<V,keyword_type<T>> )  return tgt.value( keyword_type<T>{} );
-      else                                                    return tgt.value;
+      else                                                          return tgt.value;
     }
 
     parent content_;

@@ -9,7 +9,7 @@
 
 ## Requirements
 **RABERU** requires a C++20 conformant compiler.
-It is currently test on latest MSVC, g++ 10.2 and clang++ 10.
+It is currently tested on latest MSVC, g++ 10.2 and clang++ 10.
 
 ## Installation and Usage
 Installing **RABERU** is rather straight forward.
@@ -45,7 +45,7 @@ from the replication of a given character.
 
 We will first defines two keywords to pass parameters:
   + `letter` to specify the character to replicate
-  + `replications_` to specify the replication count of the character
+  + `replication` to specify the replication count of the character
 
 This is done by creating instances of the `rbr::keyword` template variable. Each instance must be
 defined with an unique tag, usually a locally defined, incomplete type.
@@ -248,7 +248,7 @@ What happens if you try to access a parameters through a keyword that was not us
     }
     ```
 
-Seee [the code in action](https://godbolt.org/z/j4anM5).
+See [the code in action](https://godbolt.org/z/j4anM5).
 
 ### Keyword-less parameters
 **RABERU** supports passing of parameters without keyword. In this case, they're associated with
@@ -263,17 +263,17 @@ handling of keyword as the exact value type must be known to retrieve it.
 template<typename... Vs> auto typed_interface(Vs const&... vs ) noexcept
 {
   rbr::settings s(vs...);
-  return s[rbr::keyword<int>] * s[rbr::keyword<double>];
+  return s[rbr::keyword<int>] / s[rbr::keyword<double>];
 }
 
 int main()
 {
-  std::cout << typed_interface(10   , 3.41) << "\n";
-  std::cout << typed_interface(13.37, 100 ) << "\n";
+  std::cout << typed_interface(6.9 , 420  ) << "\n";
+  std::cout << typed_interface(1337, 100. ) << "\n";
 }
 ```
 
-Seee [the code in action](https://godbolt.org/z/bzGY9K).
+See [the code in action](https://godbolt.org/z/7c3Yj4).
 
 ## License
 This library is licensed under the MIT License as specified in the LICENSE.md file.

@@ -70,4 +70,12 @@ add_custom_target(unit)
 ##==================================================================================================
 ## Actual tests
 ##==================================================================================================
+generate_test("access.cpp")
 generate_test("concepts.cpp")
+generate_test("constraints.cpp")
+generate_test("doc.cpp")
+generate_test("drop.cpp")
+generate_test("get_type.cpp")
+generate_test("interface.cpp")
+generate_test("merge.cpp")
+generate_test("size.cpp")

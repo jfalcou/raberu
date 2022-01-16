@@ -12,7 +12,7 @@ It does so by providing:
 
 # A Short Example
 
-[See it live on Compiler Explorer](https://godbolt.org/z/)
+[See it live on Compiler Explorer](https://godbolt.org/z/oWjP44n57)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
 #include <raberu.hpp>
@@ -38,7 +38,7 @@ int main()
 This library is licensed under the [MIT License](http://opensource.org/licenses/MIT):
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ none
-Copyright : TTS Contributors & Maintainers
+Copyright : RABERU Contributors & Maintainers
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 and associated documentation files (the “Software”), to deal in the Software without restriction,

@@ -99,11 +99,11 @@ namespace rbr
       std::array<char,N> data;
 
       template <std::size_t... Is>
-      constexpr str_(const char (&str)[N + 1], std::index_sequence<Is...>) :data{str[Is]...} {}
-      constexpr str_(const char (&str)[N + 1]) : str_{str, std::make_index_sequence<N>{}} {}
+      constexpr str_(const char (&str)[N], std::index_sequence<Is...>) :data{str[Is]...} {}
+      constexpr str_(const char (&str)[N]) : str_{str, std::make_index_sequence<N>{}} {}
     };
 
-    template<std::size_t N> str_(const char (&str)[N]) -> str_<N - 1>;
+    template<std::size_t N> str_(const char (&str)[N]) -> str_<N>;
   }
 
   template<literals::str_ ID> struct id_
@@ -287,11 +287,11 @@ namespace rbr
   template<typename Tag> constexpr flag_keyword<Tag>  flag(Tag) noexcept { return {}; }
   template<typename Tag> constexpr any_keyword<Tag>   keyword(Tag) noexcept { return {}; }
 
-  template<typename Type, typename Tag>
-  constexpr typed_keyword<Tag, Type> keyword(Tag) noexcept { return {}; }
-
   template<concepts::type_checker Checker, typename Tag>
   constexpr checked_keyword<Tag,Checker> keyword(Tag) noexcept { return {}; }
+
+  template<typename Type, typename Tag>
+  constexpr typed_keyword<Tag, Type> keyword(Tag) noexcept { return {}; }
 
   // Keyword/Flag-type user defined literals
   namespace literals

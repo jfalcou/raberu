@@ -1,8 +1,4 @@
-# Keywords and Options
-
-Next to the direct usage of the `_kw` user-defined literal suffix, keyword
-can be built with more control over their behavior. Let's dive into the
-different variants of keywords and their definition API.
+# Keywords usage
 
 ## Regular keywords
 
@@ -31,7 +27,7 @@ Sometimes, you just want to check if a given parameter has been passed but you d
 
 They work in a similar way than regular keyword parameters but use the `_fl` user-defined literal. Their  value can be retrieved via `rbr::settings::operator[]`. If present, the value returned is `std::true_type`, otherwise `std::false_type` is returned.
 
-[You can see the code and execute it on Compiler Explorer]([Modal window](https://godbolt.org/z/585EY6WEY)).
+[You can see the code and execute it on Compiler Explorer](https://godbolt.org/z/585EY6WEY).
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
 #include <raberu.hpp>
@@ -60,6 +56,58 @@ int main()
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## Typed keywords
-
 ## Checked keywords
+Regular keywords accept value of any types. Flag keyword implicitly behaves as boolean parameters.
+What if you need to have a keyword accepting values of a specific type ? Or, in more complex
+context, what if you need a keyword accepting values which types satisfy an arbitrary set of
+constraints ?
+
+To do so, we'll need to use the `rbr::keyword` factory function.
+
+By default, `rbr::keyword` takes a parameter which type will be used as its unique identifier.
+For example, the declaration:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~c++
+using namespace rbr::literals;
+
+auto color = rbr::keyword("color"_id));
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+is equivalent to:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~c++
+using namespace rbr::literals;
+
+auto color = "color"_kw;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `_id` literal suffix is used to simplify the definition of unique type identifier.
+
+`rbr::keyword` accepts an optional template parameter. If this template parameter is a type,
+the keyword is setup to only accept value of this exact type.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~c++
+using namespace rbr::literals;
+
+// color can only accept unsigned 32 bits integer
+auto color = rbr::keyword<std::uint23_t>("color"_id);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If this template parameter is a type `F` defining an internal template structure named `apply`,
+the keyword is setup to only accept value which type satisfy `F::template apply<T>::value == true`.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~c++
+using namespace rbr::literals;
+
+struct large_type
+{
+  template<typename T> struct apply
+  {
+    static constexpr auto value = sizeof(T) >= 4;
+  };
+};
+
+// entropy can only accept types of at least 32 bits
+inline constexpr auto entropy = rbr::keyword<large_type>( "entropy"_id);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+

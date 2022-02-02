@@ -90,7 +90,7 @@ the keyword is setup to only accept value of this exact type.
 using namespace rbr::literals;
 
 // color can only accept unsigned 32 bits integer
-auto color = rbr::keyword<std::uint23_t>("color"_id);
+auto color = rbr::keyword<std::uint32_t>("color"_id);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If this template parameter is a type `F` defining an internal template structure named `apply`,
@@ -110,4 +110,3 @@ struct large_type
 // entropy can only accept types of at least 32 bits
 inline constexpr auto entropy = rbr::keyword<large_type>( "entropy"_id);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-

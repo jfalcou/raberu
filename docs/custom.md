@@ -52,12 +52,13 @@ int main()
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## Extending RABERU Keywords
+## Custom RABERU Keywords
 
 THe keywords provided by **RABERU** can also be extended to propose a better user experience.
 This includes using user-defined type instead of **RABERU** long symbol to improve diagnostic
 , complex checks or provide custom display when using stream insertion of settings.
 
+### Extending RABERU Keywords
 Let's start again with our unrolling option. This time we want to be able to be sure nobody
 will use it with a non integral constant value and to display the value in a more informative way.
 To do so, we can inherits from `rbr::any_keyword`:
@@ -92,8 +93,8 @@ example.cpp:5:8: note: candidate function (the implicit copy assignment operator
 example.cpp:5:8: note: candidate function (the implicit move assignment operator) not viable: no known conversion from 'float' to 'unrolling' for 1st argument struct unrolling : rbr::any_keyword<unrolling>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Let's now improve the output of the option.
-Currently, the output is like:
+### Custom Keywords Display
+Let's now improve the output of the option. Currently, the output is like:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~c++
 [unrolling] : 8 (std::integral_constant<int, 8>)

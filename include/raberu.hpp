@@ -20,23 +20,26 @@ namespace rbr::detail
   template<typename T, typename V> struct type_or_ { V value; };
 
   // Type -> String converter
-  template<typename T> struct type_name
+  template <typename T> constexpr auto type_name() noexcept
   {
-    static constexpr auto value() noexcept
-    {
-  #if defined(_MSC_VER )
-      std::string_view data(__FUNCSIG__);
-      auto i = data.find('<') + 1;
-      auto j = data.find(">::value");
-      return data.substr(i, j - i);
-  #else
-      std::string_view data(__PRETTY_FUNCTION__);
-      auto i = data.find('=') + 2;
-      auto j = data.find_last_of(']');
-      return data.substr(i, j - i);
+    std::string_view name, prefix, suffix;
+  #ifdef __clang__
+    name = __PRETTY_FUNCTION__;
+    prefix = "auto rbr::detail::type_name() [T = ";
+    suffix = "]";
+  #elif defined(__GNUC__)
+    name = __PRETTY_FUNCTION__;
+    prefix = "constexpr auto rbr::detail::type_name() [with T = ";
+    suffix = "]";
+  #elif defined(_MSC_VER)
+    name = __FUNCSIG__;
+    prefix = "auto __cdecl rbr::detail::type_name<";
+    suffix = ">(void)";
   #endif
-    }
-  };
+    name.remove_prefix(prefix.size());
+    name.remove_suffix(suffix.size());
+    return name;
+  }
 
   // Helpers for working on list of keys as unique lists - needed by merge and some contains_*
   template<typename... Ks> struct keys {};
@@ -108,7 +111,7 @@ namespace rbr
 
   template<literals::str_ ID> struct id_
   {
-    std::ostream& show(std::ostream& os) const
+    friend std::ostream& operator<<(std::ostream& os, id_ const&)
     {
       os << '\''; for(auto e : ID.data) os << e;
       return os << '\'';
@@ -181,6 +184,15 @@ namespace rbr
       return Traits::template apply<std::remove_cvref_t<T>>::value;
     }
 
+    template<typename V>
+    std::ostream& show(std::ostream& os, V const& v) const
+    {
+      if constexpr(  requires(Tag t) { os << Tag{}; } ) os << Tag{};
+      else os << '[' << detail::type_name<Tag>() << ']';
+
+      return os << " : " << v << " (" << detail::type_name<V>() << ')';
+    }
+
     template<typename Type>
     constexpr auto operator=(Type&& v) const noexcept requires( accept<Type>() )
     {
@@ -236,6 +248,15 @@ namespace rbr
       return option<any_keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
     }
 
+    template<typename V>
+    std::ostream& show(std::ostream& os, V const& v) const
+    {
+      if constexpr(  requires(Tag t) { os << Tag{}; } ) os << Tag{};
+      else os << '[' << detail::type_name<Tag>() << ']';
+
+      return os << " : " << v << " (" << detail::type_name<V>() << ')';
+    }
+
     template<typename Type>
     constexpr auto operator|(Type&& v) const noexcept requires( accept<Type>() )
     {
@@ -259,9 +280,14 @@ namespace rbr
       return std::is_same_v<std::true_type, T>;
     }
 
-    using tag_type      = Keyword;
-    using keyword_type  = flag_keyword;
-    using stored_value_type    = std::true_type;
+    std::ostream& show(std::ostream& os, bool) const
+    {
+      return os << Keyword{} << " : set";
+    }
+
+    using tag_type          = Keyword;
+    using keyword_type      = flag_keyword;
+    using stored_value_type = std::true_type;
 
     template<typename Type>
     constexpr auto operator=(Type&&) const noexcept
@@ -369,16 +395,12 @@ namespace rbr
 
     friend std::ostream& operator<<(std::ostream& os, settings const& s)
     {
-      auto show = [&]<typename T>(T t) -> std::ostream&
+      auto show = [&]<typename T, typename V>(T t, V const& v) -> std::ostream&
       {
-        if constexpr( requires(T t) { t.show(os); } ) return t.show(os);
-        else                                          return os << detail::type_name<T>::value();
+        return t.show(os,v) << "\n";
       };
 
-      ( ( show(typename Opts::keyword_type::tag_type{})
-          << " : " << s[typename Opts::keyword_type{}]
-          << " (" << detail::type_name<typename Opts::stored_value_type>::value() << ")\n"
-        ),...);
+      (show(typename Opts::keyword_type{}, s[typename Opts::keyword_type{}]), ...);
 
       return os;
     }

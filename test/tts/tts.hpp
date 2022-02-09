@@ -473,18 +473,22 @@ namespace tts
 }(EXPR)                                                                                             \
 
 #define TTS_CONSTEXPR_EXPECT(EXPR)                                                                  \
-[&]()                                                                                               \
+[]<typename C>(C )                                                                                  \
 {                                                                                                   \
-  static_assert((EXPR), "[TTS] - Error: " TTS_STRING(EXPR) " evaluates to false at compile-time."); \
+  static_assert ( C::value                                                                          \
+                , "[TTS] - Error: " TTS_STRING(EXPR) " evaluates to false at compile-time."         \
+                );                                                                                  \
   ::tts::global_runtime.pass();                                                                     \
-}()                                                                                                 \
+}(std::bool_constant<EXPR>{})                                                                       \
 
 #define TTS_CONSTEXPR_EXPECT_NOT(EXPR)                                                              \
-[&]()                                                                                               \
+[]<typename C>(C )                                                                                  \
 {                                                                                                   \
-  static_assert(!(EXPR), "[TTS] - Error: " TTS_STRING(EXPR) " evaluates to true at compile-time."); \
+  static_assert ( !C::value                                                                         \
+                , "[TTS] - Error: " TTS_STRING(EXPR) " evaluates to true at compile-time."          \
+                );                                                                                  \
   ::tts::global_runtime.pass();                                                                     \
-}()                                                                                                 \
+}(std::bool_constant<EXPR>{})                                                                       \
 
 namespace tts::detail
 {

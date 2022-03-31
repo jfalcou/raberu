@@ -6,8 +6,9 @@
 */
 //==================================================================================================
 #pragma once
-#include <ostream>
 #include <array>
+#include <cstring>
+#include <ostream>
 #include <string_view>
 #include <type_traits>
 #include <utility>
@@ -104,6 +105,9 @@ namespace rbr
       template <std::size_t... Is>
       constexpr str_(const char (&str)[N], std::index_sequence<Is...>) :data{str[Is]...} {}
       constexpr str_(const char (&str)[N]) : str_{str, std::make_index_sequence<N>{}} {}
+
+      static constexpr  auto  size()  { return N; }
+      auto value() const { return std::string_view(&data[0],strlen(&data[0])); }
     };
 
     template<std::size_t N> str_(const char (&str)[N]) -> str_<N>;
@@ -113,8 +117,7 @@ namespace rbr
   {
     friend std::ostream& operator<<(std::ostream& os, id_ const&)
     {
-      os << '\''; for(auto e : ID.data) os << e;
-      return os << '\'';
+      return os << '\'' << ID.value() << '\'';
     }
   };
 

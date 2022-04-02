@@ -174,101 +174,103 @@ namespace rbr
     Value contents;
   };
 
-  // checked_keyword implementation
-  template<typename Tag, typename Traits> struct checked_keyword
+// Base class for custom keyword
+  template<typename Keyword> struct as_keyword
   {
-    using tag_type  = Tag;
+    using tag_type  = Keyword;
 
+    template<typename T> static constexpr bool accept()
+    {
+      if constexpr( requires(Keyword) { Keyword::template check<T>(); } )
+        return Keyword::template check<T>();
+      else
+        return true;
+    }
+
+    template<typename Type>
+    constexpr auto operator=(Type&& v) const noexcept requires( accept<Type>() )
+    {
+      return option<Keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
+    }
+
+    template<typename V> std::ostream& show(std::ostream& os, V const& v) const
+    {
+      if constexpr(  requires(Keyword t) { t.display(os,v); } ) return Keyword{}.display(os,v);
+      else
+      {
+        os << '[' << detail::type_name<Keyword>() << ']';
+        return os << " : " << v << " (" << detail::type_name<V>() << ')';
+      }
+    }
+
+    template<typename Type>
+    constexpr auto operator|(Type&& v) const noexcept requires( accept<Type>() )
+    {
+      return detail::type_or_<Keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
+    }
+
+    template<typename Func> constexpr auto operator|(call<Func>&& v) const noexcept
+    {
+      return detail::type_or_<Keyword,call<Func>>{RBR_FWD(v)};
+    }
+  };
+
+  // checked_keyword implementation
+  template<typename Tag, typename Traits>
+  struct checked_keyword : as_keyword<checked_keyword<Tag, Traits>>
+  {
     constexpr checked_keyword() {}
     constexpr checked_keyword(Tag, Traits) {}
 
-    template<typename T> static constexpr bool accept()
+    template<typename T> static constexpr bool check()
     {
       return Traits::template apply<std::remove_cvref_t<T>>::value;
     }
 
     template<typename V>
-    std::ostream& show(std::ostream& os, V const& v) const
+    std::ostream& display(std::ostream& os, V const& v) const
     {
       if constexpr(  requires(Tag t) { os << Tag{}; } ) os << Tag{};
       else os << '[' << detail::type_name<Tag>() << ']';
 
-      return os << " : " << v << " (" << detail::type_name<V>() << ')';
+      os << " ::: " << v << " (" << detail::type_name<V>() << ") checked by '";
+      return os << detail::type_name<Traits>() << '\'';
     }
 
-    template<typename Type>
-    constexpr auto operator=(Type&& v) const noexcept requires( accept<Type>() )
-    {
-      return option<checked_keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
-    }
-
-    template<typename Type>
-    constexpr auto operator|(Type&& v) const noexcept requires( accept<Type>() )
-    {
-      return detail::type_or_<checked_keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
-    }
-
-    template<typename Func> constexpr auto operator|(call<Func>&& v) const noexcept
-    {
-      return detail::type_or_<checked_keyword,call<Func>>{RBR_FWD(v)};
-    }
+    using as_keyword<checked_keyword<Tag, Traits>>::operator=;
   };
 
   // Keyword accepting a precise type as input
-  template<typename Tag, typename Value> struct typed_keyword
+  template<typename Tag, typename Value>
+  struct typed_keyword  : as_keyword<typed_keyword<Tag, Value>>
   {
-    using tag_type  = Tag;
+    template<typename T> static constexpr bool check() { return std::is_same_v<T,Value>; }
 
-    template<typename T> static constexpr bool accept() { return std::is_same_v<T,Value>; }
+    using as_keyword<typed_keyword<Tag, Value>>::operator=;
 
-    template<typename Type>
-    constexpr auto operator=(Type&& v) const noexcept requires( accept<Type>() )
+    template<typename V>
+    std::ostream& display(std::ostream& os, V const& v) const
     {
-      return option<typed_keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
-    }
+      if constexpr(  requires(Tag t) { os << Tag{}; } ) os << Tag{};
+      else os << '[' << detail::type_name<Tag>() << ']';
 
-    template<typename Type>
-    constexpr auto operator|(Type&& v) const noexcept requires( accept<Type>() )
-    {
-      return detail::type_or_<typed_keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
-    }
-
-    template<typename Func> constexpr auto operator|(call<Func>&& v) const noexcept
-    {
-      return detail::type_or_<typed_keyword,call<Func>>{RBR_FWD(v)};
+      return os << " : " << v << " [[" << detail::type_name<V>() << "]]";
     }
   };
 
   // Keyword accepting any type as input
-  template<typename Tag> struct any_keyword
+  template<typename Tag>
+  struct any_keyword   : as_keyword<any_keyword<Tag>>
   {
-    using tag_type  = Tag;
-    template<typename T> static constexpr bool accept() { return true; }
-
-    template<typename Type>
-    constexpr auto operator=(Type&& v) const noexcept requires( accept<Type>() )
-    {
-      return option<any_keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
-    }
+    using as_keyword<any_keyword<Tag>>::operator=;
 
     template<typename V>
-    std::ostream& show(std::ostream& os, V const& v) const
+    std::ostream& display(std::ostream& os, V const& v) const
     {
-      if constexpr(  requires(Tag t) { os << Tag{}; } ) os << Tag{};
-      else os << '[' << detail::type_name<Tag>() << ']';
+      if constexpr(requires(Tag t) { os << Tag{}; })  os << Tag{};
+      else                                            os << '[' << detail::type_name<Tag>() << ']';
 
       return os << " : " << v << " (" << detail::type_name<V>() << ')';
-    }
-
-    template<typename Type>
-    constexpr auto operator|(Type&& v) const noexcept requires( accept<Type>() )
-    {
-      return detail::type_or_<any_keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
-    }
-
-    template<typename Func> constexpr auto operator|(call<Func>&& v) const noexcept
-    {
-      return detail::type_or_<any_keyword,call<Func>>{RBR_FWD(v)};
     }
   };
 
@@ -391,7 +393,7 @@ namespace rbr
     template<concepts::keyword Key, typename Value>
     constexpr auto operator[](detail::type_or_<Key, Value> const & tgt) const
     {
-            if constexpr( contains(Key{}) )                     return (*this)[Key{}];
+      if constexpr( contains(Key{}) )                           return (*this)[Key{}];
       else  if constexpr( requires(Value t) { t.perform(); } )  return tgt.value.perform();
       else                                                      return tgt.value;
     }

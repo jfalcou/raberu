@@ -259,11 +259,11 @@ int main()
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 'surname' : john (std::__cxx11::basic_string<char>)
 'value' : 3 (float)
-'aligned' : 1 (std::integral_constant<bool, true>)
-'transparent' : 1 (std::integral_constant<bool, true>)
+'aligned' : set
+'transparent' : set
 
 
 'surname' : john (std::__cxx11::basic_string<char>)
 'value' : 3 (float)
-'transparent' : 1 (std::integral_constant<bool, true>)
+'transparent' : set
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

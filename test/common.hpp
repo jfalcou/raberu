@@ -9,6 +9,7 @@
 #include <raberu.hpp>
 #include <array>
 #include <string>
+#include <type_traits>
 
 using namespace rbr::literals;
 
@@ -44,13 +45,7 @@ inline constexpr auto factor_ = ::rbr::keyword<small_type>("factor"_id);
 inline constexpr auto is_transparent_ = ::rbr::flag("is_transparent"_id);
 inline constexpr auto is_modal_       = "is_modal"_fl;
 
-struct is_integral_constant
-{
-  template<typename T>      struct apply                               : std::false_type {};
-  template<typename T, T N> struct apply<std::integral_constant<T,N>>  : std::true_type {};
-};
-
-struct unrolling : rbr::checked_keyword<unrolling, is_integral_constant>
+struct unrolling : rbr::as_keyword<unrolling>
 {
   template<int N>
   constexpr auto operator=(std::integral_constant<int,N> const&) const noexcept
@@ -58,7 +53,7 @@ struct unrolling : rbr::checked_keyword<unrolling, is_integral_constant>
     return rbr::option<unrolling,std::integral_constant<int,N>>{};
   }
 
-  std::ostream& name(std::ostream& os) const { return os << "Unroll Factor: "; }
+  std::ostream& display(std::ostream& os, auto v) const { return os << "Unroll Factor: " << v; }
 };
 
 template<int N> inline constexpr auto unroll = (unrolling{} = std::integral_constant<int,N>{});

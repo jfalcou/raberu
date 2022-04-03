@@ -15,10 +15,45 @@
 
 #define RBR_FWD(...) static_cast<decltype(__VA_ARGS__) &&>(__VA_ARGS__)
 
+namespace rbr::concepts
+{
+  // Keyword concept
+  template<typename K> concept keyword = requires( K k )
+  {
+    typename K::tag_type;
+    { K::template accept<int>() } -> std::same_as<bool>;
+  };
+
+  // Option concept
+  template<typename O> concept option = requires( O const& o )
+  {
+    { o(typename std::remove_cvref_t<O>::keyword_type{}) }
+    -> std::same_as<typename std::remove_cvref_t<O>::stored_value_type>;
+  };
+
+  // Type checker concept
+  template<typename C> concept type_checker = requires( C const& )
+  {
+    typename C::template apply<int>::type;
+  };
+
+  // keyword parameter exact match
+  template<typename Option, auto Keyword>
+  concept exactly = std::same_as< typename Option::keyword_type
+                                , std::remove_cvref_t<decltype(Keyword)>
+                                >;
+}
+
 namespace rbr::detail
 {
   // Lightweight container of value in alternatives
-  template<typename T, typename V> struct type_or_ { V value; };
+  template<concepts::keyword T, typename V> struct type_or_
+  {
+    V value;
+
+    template<concepts::option... Os>
+    constexpr decltype(auto) operator()(Os&&... os) const { return fetch(*this, RBR_FWD(os)...); }
+  };
 
   // Type -> String converter
   template <typename T> constexpr auto type_name() noexcept
@@ -126,35 +161,6 @@ namespace rbr
     template<str_ ID> constexpr auto operator""_id() noexcept { return id_<ID>{}; }
   }
 
-  namespace concepts
-  {
-    // Keyword concept
-    template<typename K> concept keyword = requires( K k )
-    {
-      typename K::tag_type;
-      { K::template accept<int>() } -> std::same_as<bool>;
-    };
-
-    // Option concept
-    template<typename O> concept option = requires( O const& o )
-    {
-      { o(typename std::remove_cvref_t<O>::keyword_type{}) }
-      -> std::same_as<typename std::remove_cvref_t<O>::stored_value_type>;
-    };
-
-    // Type checker concept
-    template<typename C> concept type_checker = requires( C const& )
-    {
-      typename C::template apply<int>::type;
-    };
-
-    // keyword parameter exact match
-    template<typename Option, auto Keyword>
-    concept exactly = std::same_as< typename Option::keyword_type
-                                  , std::remove_cvref_t<decltype(Keyword)>
-                                  >;
-  }
-
   // Callable alternative wrapper
   template<typename Func>
   struct call
@@ -213,6 +219,9 @@ namespace rbr
     {
       return detail::type_or_<Keyword,call<Func>>{RBR_FWD(v)};
     }
+
+    template<concepts::option... Os>
+    constexpr decltype(auto) operator()(Os&&... o) const { return fetch(Keyword{}, RBR_FWD(o)...); }
   };
 
   // checked_keyword implementation
@@ -312,6 +321,14 @@ namespace rbr
     }
 
     constexpr std::true_type operator()(keyword_type const&) const noexcept { return {}; }
+
+    template<typename O0, typename O1, typename... Os>
+    constexpr decltype(auto) operator()(O0&&, O1&&, Os&&... ) const
+    {
+      return    std::same_as<keyword_type , typename std::remove_cvref_t<O0>::keyword_type>
+            ||  std::same_as<keyword_type , typename std::remove_cvref_t<O1>::keyword_type>
+            || (std::same_as<keyword_type, typename std::remove_cvref_t<Os>::keyword_type> || ...);
+    }
   };
 
   // Keyword builder
@@ -489,6 +506,32 @@ namespace rbr
       // Rebuild a new settings by going over the keys that we keep
       return rbr::settings{ (Ks{} = os[Ks{}] )...};
     }(selected_keys_t{});
+  }
+
+  // Standalone fetch one keyword inside N
+  template<concepts::keyword K, concepts::option... Os>
+  constexpr decltype(auto) fetch(K const& kw, Os const&... os)
+  {
+    auto const opts = settings(os...);
+    return opts[kw];
+  }
+
+  template<concepts::keyword K, typename V, concepts::option... Os>
+  constexpr decltype(auto) fetch(detail::type_or_<K, V> const& kw, Os const&... os)
+  {
+    auto const opts = settings(os...);
+    return opts[kw];
+  }
+
+  namespace result
+  {
+    template<auto Keyword, concepts::option... Os> struct fetch
+    {
+      using type = decltype( rbr::fetch(Keyword, Os{}...) );
+    };
+
+    template<auto Keyword, concepts::option... Os>
+    using fetch_t = typename fetch<Keyword,Os...>::type;
   }
 }
 

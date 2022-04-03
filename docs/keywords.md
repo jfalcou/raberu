@@ -110,3 +110,107 @@ struct large_type
 // entropy can only accept types of at least 32 bits
 inline constexpr auto entropy = rbr::keyword<large_type>( "entropy"_id);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Keywords retrieval
+
+Value associated to a given keyword can be retrieved from a pack of options directly.
+
+## `rbr::fetch`
+
+**Synopsis:**
+```c++
+namespace rbr
+{
+  template<concepts::keyword K, concepts::option... Os>
+  constexpr decltype(auto) fetch(K const& kw, Os const&... os);               //  1
+
+  template<concepts::keyword K, typename D, concepts::option... Os>
+  constexpr decltype(auto) fetch(type_or_<K,V> const& kw, Os const&... os);   //  2
+}
+```
+
+1. Retrieves the value associate to a given `rbr::concepts::keyword` from the variadic list `os...`.
+2. Retrieves the value associate to a given `rbr::concepts::keyword` with default values
+   from the variadic list `os...`.
+
+**Example:**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+#include <raberu.hpp>
+#include <iostream>
+
+int main()
+{
+  using namespace rbr::literals;
+
+  int i = 77;
+
+  std::cout << rbr::fetch("size"_kw, "size"_kw = 75ULL, "modal"_fl ) << "\n";
+  std::cout << rbr::fetch("modal"_fl, "size"_kw = 75ULL, "modal"_fl ) << "\n";
+  std::cout << rbr::fetch("value"_kw | 13.37, "size"_kw = 75ULL, "modal"_fl ) << "\n";
+  std::cout << rbr::fetch("value"_kw | rbr::call([&]() { return ++i; }), "size"_kw = 75ULL, "modal"_fl )  << "\n\n";
+
+  std::cout << "i = " << i << "\n";
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Expected output:**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+75
+1
+13.37
+78
+
+i = 78
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## `rbr::result::fetch`
+
+**Synopsis:**
+```c++
+namespace rbr::result
+{
+  template<auto Keyword, concepts::option... Os> struct fetch
+  {
+    using type = decltype( rbr::fetch(Keyword, Os{}...) );
+  };
+
+  template<auto Keyword, concepts::option... Os>
+  using fetch_t = typename fetch<Keyword,Os...>::type;
+}
+```
+
+Computes the type associated to a given call to `rbr::fetch`.
+
+## Direct retrieval
+Any given `rbr::concepts::keyword` or  `rbr::concepts::keyword` with default values
+can use its `operator()` to fetch its associated value.
+
+**Example:**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+#include <raberu.hpp>
+#include <iostream>
+
+int main()
+{
+  using namespace rbr::literals;
+
+  int i = 77;
+
+  std::cout << ("size"_kw)("size"_kw = 75ULL, "modal"_fl ) << "\n";
+  std::cout << ("modal"_fl)("size"_kw = 75ULL, "modal"_fl ) << "\n";
+  std::cout << ("value"_kw | 13.37)("size"_kw = 75ULL, "modal"_fl ) << "\n";
+  std::cout << ("value"_kw | rbr::call([&]() { return ++i; }))( "size"_kw = 75ULL, "modal"_fl )  << "\n\n";
+
+  std::cout << "i = " << i << "\n";
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Expected output:**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+75
+1
+13.37
+78
+
+i = 78
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

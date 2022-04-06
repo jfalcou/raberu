@@ -169,10 +169,7 @@ i = 78
 ```c++
 namespace rbr::result
 {
-  template<auto Keyword, concepts::option... Os> struct fetch
-  {
-    using type = decltype( rbr::fetch(Keyword, Os{}...) );
-  };
+  template<auto Keyword, concepts::option... Os> struct fetch;
 
   template<auto Keyword, concepts::option... Os>
   using fetch_t = typename fetch<Keyword,Os...>::type;

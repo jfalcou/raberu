@@ -433,23 +433,6 @@ namespace rbr
   template<concepts::option... Opts>
   settings(Opts&&... opts) -> settings<std::remove_cvref_t<Opts>...>;
 
-  // Traits to fetch type of an option from the type of a Settings
-  template<typename Settings, auto Keyword, typename Default = unknown_key>
-  struct get_type
-  {
-    using base = std::remove_cvref_t<decltype( std::declval<Settings>()[Keyword])>;
-    using type = std::conditional_t< std::same_as<base,unknown_key>, Default, base>;
-  };
-
-  template<typename Settings, auto Keyword>
-  struct get_type<Settings,Keyword>
-  {
-    using type = std::remove_cvref_t<decltype( std::declval<Settings>()[Keyword])>;
-  };
-
-  template<typename Settings, auto Keyword, typename Default = unknown_key>
-  using get_type_t = typename get_type<Settings,Keyword,Default>::type;
-
   // Merge settings
   template<concepts::option... K1s, concepts::option... K2s>
   constexpr auto merge(settings<K1s...> const& opts, settings<K2s...> const& defs) noexcept
@@ -523,15 +506,30 @@ namespace rbr
     return opts[kw];
   }
 
+  template<typename K, concepts::option... Os>
+  constexpr decltype(auto) fetch(K const& kw, settings<Os...> const& opts)
+  {
+    return opts[kw];
+  }
+
   namespace result
   {
-    template<auto Keyword, concepts::option... Os> struct fetch
+    template<auto Keyword, typename... Sources> struct fetch;
+
+    template<auto Keyword, concepts::option... Os>
+    struct fetch<Keyword, Os...>
     {
       using type = decltype( rbr::fetch(Keyword, Os{}...) );
     };
 
     template<auto Keyword, concepts::option... Os>
-    using fetch_t = typename fetch<Keyword,Os...>::type;
+    struct fetch<Keyword,rbr::settings<Os...>>
+    {
+      using type = decltype( rbr::fetch(Keyword, Os{}...) );
+    };
+
+    template<auto Keyword, typename... Sources>
+    using fetch_t = typename fetch<Keyword,Sources...>::type;
   }
 }
 

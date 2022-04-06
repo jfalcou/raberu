@@ -178,6 +178,19 @@ false
 true
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+### `rbr::result::fetch`
+
+**Synopsis:**
+```c++
+namespace rbr::result
+{
+  template<auto Keyword, concepts::option... Os> struct fetch<Keyword, rbr::settings<Os...>>;
+}
+```
+
+Computes the type associated to a given call to `rbr::settings::operator[]`.
+This is a convenience overload for `rbr::result::fetch`.
+
 ## Settings manipulation
 
 ### Merging settings

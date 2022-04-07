@@ -5,7 +5,9 @@
   SPDX-License-Identifier: MIT
 */
 //==================================================================================================
-#pragma once
+#ifndef RABERU_HPP_INCLUDED
+#define RABERU_HPP_INCLUDED
+
 #include <array>
 #include <cstring>
 #include <ostream>
@@ -575,3 +577,4 @@ namespace rbr
 }
 
 #undef RBR_FWD
+#endif

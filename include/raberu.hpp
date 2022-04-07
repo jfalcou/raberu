@@ -185,6 +185,8 @@ namespace rbr
   {
     using tag_type  = Keyword;
 
+    inline constexpr auto operator<=>(as_keyword const&) const noexcept = default;
+
     template<typename T> static constexpr bool accept()
     {
       if constexpr( requires(Keyword) { Keyword::template check<T>(); } )
@@ -530,6 +532,45 @@ namespace rbr
 
     template<auto Keyword, typename... Sources>
     using fetch_t = typename fetch<Keyword,Sources...>::type;
+  }
+
+  // Global keyword/value_type types extractors
+  template<typename... T> struct types {};
+
+  namespace result
+  {
+    template<typename Settings, template<typename...> class List = types> struct keywords;
+    template<typename Settings, template<typename...> class List = types> struct values;
+
+    template<typename... Opts, template<typename...> class List>
+    struct keywords<settings<Opts...>, List>
+    {
+      using type = List<typename Opts::keyword_type...>;
+    };
+
+    template<typename... Opts, template<typename...> class List>
+    struct values<settings<Opts...>, List>
+    {
+      using type = List<typename Opts::stored_value_type...>;
+    };
+
+    template<typename Settings, template<typename...> class List = types>
+    using keywords_t = typename keywords<Settings,List>::type;
+
+    template<typename Settings, template<typename...> class List = types>
+    using values_t = typename values<Settings,List>::type;
+  }
+
+  template<template<typename...> class List, typename... Opts>
+  auto keywords(rbr::settings<Opts...> const&)
+  {
+    return result::keywords_t<rbr::settings<Opts...>,List>{typename Opts::keyword_type{}...};
+  }
+
+  template<template<typename...> class List, typename... Opts>
+  auto values(rbr::settings<Opts...> const& o)
+  {
+    return result::values_t<rbr::settings<Opts...>,List>{ o[typename Opts::keyword_type{}]... };
   }
 }
 

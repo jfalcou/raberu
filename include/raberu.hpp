@@ -33,6 +33,12 @@ namespace rbr::concepts
     -> std::same_as<typename std::remove_cvref_t<O>::stored_value_type>;
   };
 
+  // Settings concept
+  template<typename S> concept settings = requires( S const& s )
+  {
+    typename S::rbr_settings;
+  };
+
   // Type checker concept
   template<typename C> concept type_checker = requires( C const& )
   {
@@ -373,6 +379,7 @@ namespace rbr
   // Settings is a group of options
   template<concepts::option... Opts> struct settings
   {
+    using rbr_settings = void;
     using base = aggregator<Opts...>;
     constexpr settings(Opts const&... opts) : content_(opts...) {}
 
@@ -510,8 +517,8 @@ namespace rbr
     return opts[kw];
   }
 
-  template<typename K, concepts::option... Os>
-  constexpr decltype(auto) fetch(K const& kw, settings<Os...> const& opts)
+  template<typename K, concepts::settings Settings>
+  constexpr decltype(auto) fetch(K const& kw, Settings const& opts)
   {
     return opts[kw];
   }
@@ -526,10 +533,10 @@ namespace rbr
       using type = decltype( rbr::fetch(Keyword, Os{}...) );
     };
 
-    template<auto Keyword, concepts::option... Os>
-    struct fetch<Keyword,rbr::settings<Os...>>
+    template<auto Keyword, concepts::settings Settings>
+    struct fetch<Keyword, Settings>
     {
-      using type = decltype( rbr::fetch(Keyword, Os{}...) );
+      using type = decltype( rbr::fetch(Keyword, std::declval<Settings>()) );
     };
 
     template<auto Keyword, typename... Sources>

@@ -133,7 +133,10 @@ namespace tts
     return global_runtime.report(fails,invalids);
   }
 }
+#include <chrono>
+#include <cmath>
 #include <initializer_list>
+#include <random>
 #include <sstream>
 #include <string>
 namespace tts
@@ -186,11 +189,38 @@ namespace tts
     {
       return value({f},that);
     }
+    bool is_valid() { return argc && argv != nullptr; }
     int argc;
     char const** argv;
   };
-  inline ::tts::options arguments;
-  inline bool           verbose_status;
+  namespace detail
+  {
+    inline ::tts::options current_arguments = {0,nullptr};
+    inline std::int32_t   current_seed      = -1;
+  }
+  inline void initialize(int argc, const char** argv)
+  {
+    if(!detail::current_arguments.is_valid())
+      detail::current_arguments = ::tts::options{argc,argv};
+  }
+  inline ::tts::options const& arguments()
+  {
+    return detail::current_arguments;
+  }
+  inline std::int32_t random_seed(int base_seed = -1)
+  {
+    if(detail::current_seed == -1)
+    {
+      auto s = ::tts::arguments().value( "--seed", base_seed );
+      if(s == -1 )
+      {
+        auto now = std::chrono::high_resolution_clock::now();
+        s        = static_cast<std::int32_t>(now.time_since_epoch().count());
+      }
+      detail::current_seed = s;
+    }
+    return detail::current_seed;
+  }
 }
 #if !defined(TTS_CUSTOM_DRIVER_FUNCTION)
 #  define TTS_CUSTOM_DRIVER_FUNCTION main
@@ -202,10 +232,9 @@ namespace tts::detail { struct fatal_signal {}; }
 #if defined(TTS_MAIN)
 int TTS_CUSTOM_DRIVER_FUNCTION([[maybe_unused]] int argc,[[maybe_unused]] char const** argv)
 {
-  ::tts::arguments = ::tts::options{argc,argv};
-  if( ::tts::arguments[{"-h","--help"}] )
+  ::tts::initialize(argc,argv);
+  if( ::tts::arguments()[{"-h","--help"}] )
     return ::tts::usage(argv[0]);
-  ::tts::verbose_status =  ::tts::arguments[{"-p","--pass"}];
   auto nb_tests = ::tts::detail::suite.size();
   std::size_t done_tests = 0;
   try
@@ -237,6 +266,22 @@ int TTS_CUSTOM_DRIVER_FUNCTION([[maybe_unused]] int argc,[[maybe_unused]] char c
   else                                      return 0;
 }
 #endif
+#include <iomanip>
+#include <sstream>
+#include <type_traits>
+namespace tts
+{
+  template<typename T>
+  concept support_std_to_string = requires(T e) { std::to_string(e); };
+  template<typename T>
+  concept support_to_string = requires(T e) { to_string(e); };
+  template<typename T>
+  concept has_to_string = requires(T e) { e.to_string(); };
+  template<typename T>
+  concept sequence = requires(T e) {std::begin(e); std::end(e); };
+  template<typename T>
+  concept streamable = requires(T e, std::ostream& o) { o << e; };
+}
 #ifndef TTS_FUNCTION
 #define TTS_FUNCTION TTS_UNIQUE(tts_function)
 #endif
@@ -246,11 +291,33 @@ int TTS_CUSTOM_DRIVER_FUNCTION([[maybe_unused]] int argc,[[maybe_unused]] char c
 #define TTS_UNIQUE3(ID, LINE) ID##LINE
 #define TTS_UNIQUE2(ID, LINE) TTS_UNIQUE3(ID, LINE)
 #define TTS_UNIQUE(ID)        TTS_UNIQUE2(ID, __COUNTER__)
-#define TTS_CAT(x, y)                     TTS_CAT_I(x, y)
-#define TTS_CAT_I(x, y)                   x##y
+#define TTS_CAT(x, y)   TTS_CAT_I(x, y)
+#define TTS_CAT_I(x, y) x##y
 #define TTS_STRING(...)   TTS_STRING_((__VA_ARGS__))
 #define TTS_STRING__(...) #__VA_ARGS__
 #define TTS_STRING_(TXT)  TTS_STRING__ TXT
+#define TTS_COUNT(...) TTS_COUNT_(__VA_ARGS__, 7, 6, 5, 4, 3, 2, 1, 0)
+#define TTS_COUNT_(A0, A1, A2, A3, A4, A5, A6, A7, ...) A7
+#define TTS_ARG0()
+#define TTS_ARG1(A0)                          auto A0
+#define TTS_ARG2(A0, A1)                      auto A0, auto A1
+#define TTS_ARG3(A0, A1, A2)                  TTS_ARG2(A0, A1)                , auto A2
+#define TTS_ARG4(A0, A1, A2, A3)              TTS_ARG3(A0, A1, A2)            , auto A3
+#define TTS_ARG5(A0, A1, A2, A3, A4)          TTS_ARG4(A0, A1, A2, A3)        , auto A4
+#define TTS_ARG6(A0, A1, A2, A3, A4, A5)      TTS_ARG5(A0, A1, A2, A3, A4)    , auto A5
+#define TTS_ARG7(A0, A1, A2, A3, A4, A5, A6)  TTS_ARG6(A0, A1, A2, A3, A4, A5), auto A6
+#define TTS_ARG(...) TTS_CAT(TTS_ARG, TTS_COUNT(__VA_ARGS__))(__VA_ARGS__)
+#define TTS_VAL(x)                    x
+#define TTS_REVERSE_1(a)              (a)
+#define TTS_REVERSE_2(a,b)            (b, a)
+#define TTS_REVERSE_3(a,b,c)          (c, b, a)
+#define TTS_REVERSE_4(a,b,c,d)        (d, c, b, a)
+#define TTS_REVERSE_5(a,b,c,d,e)      (e, d, c, b, a)
+#define TTS_REVERSE_6(a,b,c,d,e,f)    (f, e, d, c, b, a)
+#define TTS_REVERSE_7(a,b,c,d,e,f,g)  (g, f, e, d, c, b, a)
+#define TTS_REVERSE_IMPL(N,...) TTS_VAL(TTS_REVERSE_ ## N(__VA_ARGS__))
+#define TTS_REVERSE_(N,...)     TTS_REVERSE_IMPL( N, __VA_ARGS__)
+#define TTS_REVERSE(...)        TTS_REVERSE_( TTS_COUNT(__VA_ARGS__), __VA_ARGS__)
 #define TTS_REMOVE_PARENS(x)              TTS_EVAL((TTS_REMOVE_PARENS_I x), x)
 #define TTS_REMOVE_PARENS_I(...)          1, 1
 #define TTS_APPLY(macro, args)            TTS_APPLY_I(macro, args)
@@ -292,6 +359,7 @@ namespace tts
   template<typename T> inline auto const typename_ = detail::typename_impl<T>::value();
   template<typename T> constexpr auto name(T const&){ return typename_<T>; }
 }
+#include <cstdint>
 namespace tts
 {
   template<typename... Ts>
@@ -345,11 +413,59 @@ namespace tts::detail
   struct test_captures<Generator> : test_captures<typename Generator::types_list>
   {};
 }
+namespace tts::detail
+{
+  template<typename Generator, typename... Types> struct test_generators
+  {
+    test_generators(const char* id, Generator g, Types...) : name(id), generator(g) {}
+    auto operator+(auto body)
+    {
+      std::mt19937 gen(::tts::random_seed());
+      return test::acknowledge( { name
+                                , [*this,body,gen]() mutable
+                                  {
+                                    ( ( (current_type = " with [T = " + typename_<Types> + "]")
+                                      , std::apply(body, generator(type<Types>{}, gen))
+                                      ), ...
+                                    );
+                                    current_type.clear();
+                                  }
+                                }
+                              );
+    }
+    std::string name;
+    Generator   generator;
+  };
+  template<typename Generator, typename... Types>
+  test_generators(const char*,Generator,Types...) -> test_generators<Generator,Types...>;
+  template<typename Generator, typename... Types>
+  struct  test_generators<Generator, types<Types...>>
+        : test_generators<Generator,Types...>
+  {
+    using parent = test_generators<Generator,Types...>;
+    test_generators(const char* id, Generator g, types<Types...>) : parent(id,g,Types{}...) {}
+  };
+  template<typename Generator, typename TypeGenerator>
+  requires requires(TypeGenerator g) { typename TypeGenerator::types_list; }
+  struct  test_generators<Generator,TypeGenerator>
+        : test_generators<Generator,typename TypeGenerator::types_list>
+  {
+    using parent = test_generators<Generator,typename TypeGenerator::types_list>;
+    test_generators ( const char* id, Generator g, TypeGenerator )
+                    : parent(id,g,typename TypeGenerator::types_list{}) {}
+  };
+}
+#define TTS_PROTOTYPE(...) []__VA_ARGS__
 #define TTS_CASE(ID)                                                                                \
-static bool const TTS_CAT(case_,TTS_FUNCTION) = ::tts::detail::test_capture{ID} + []()              \
+static bool const TTS_CAT(case_,TTS_FUNCTION) = ::tts::detail::test_capture{ID} + TTS_PROTOTYPE(()) \
 
 #define TTS_CASE_TPL(ID,...)                                                                        \
-static bool const TTS_CAT(case_,TTS_FUNCTION) = ::tts::detail::test_captures<__VA_ARGS__>{ID} + []  \
+static bool const TTS_CAT(case_,TTS_FUNCTION) = ::tts::detail::test_captures<__VA_ARGS__>{ID}       \
+                                              + TTS_PROTOTYPE()                                     \
+
+#define TTS_CASE_WITH(ID, TYPES, GENERATOR)                                                         \
+static bool const TTS_CAT(case_,TTS_FUNCTION)                                                       \
+                  = ::tts::detail::test_generators{ID,GENERATOR,TYPES{}} + TTS_PROTOTYPE()          \
 
 #include <string_view>
 #include <ostream>
@@ -490,6 +606,340 @@ namespace tts
   ::tts::global_runtime.pass();                                                                     \
 }(std::bool_constant<EXPR>{})                                                                       \
 
+#include <cmath>
+#include <limits>
+#include <numeric>
+#include <random>
+#include <type_traits>
+namespace tts
+{
+  namespace detail
+  {
+    template<typename T> auto dec(T x)  { return x-T(1); }
+    template<typename T> auto inc(T x)  { return x+T(1); }
+    template<typename T> T    abs_s(T x)
+    {
+      if constexpr( std::is_unsigned_v<T>) return x;
+      else
+      {
+        return x == std::numeric_limits<T>::min() ? std::numeric_limits<T>::max()
+                                                  : (x<0 ? -x : x);
+      }
+    }
+    template< typename T = double > struct fp_realistic_distribution
+    {
+      using result_type = T;
+      struct param_type
+      {
+        T a, b;
+        param_type(T aa, T bb) : a(aa),  b(bb) {};
+      };
+      fp_realistic_distribution() : fp_realistic_distribution(0.0, 0.1, 300) { }
+      fp_realistic_distribution(T aa, T bb)
+        : a(std::min(aa, bb)),
+          b(std::max(aa, bb)),
+          nb(300),
+          sd(T(0),T(1)),
+          ird(1, nb-1){
+      };
+      explicit fp_realistic_distribution( const param_type& params )
+        : a(params.a),
+          b(params.b),
+          nb(300),
+          sd(T(0),T(1)),
+          ird(1, nb-1){};
+      void reset(){
+        sd.reset();
+        ird.reset();
+      };
+      template< class Generator > result_type operator()( Generator& gen )
+      {
+        return (*this)(gen, a, b);
+      }
+      template< class Generator > result_type operator()( Generator& gen, result_type aa, result_type bb)
+      {
+        result_type res;
+        if(aa == bb) res = aa;
+        else if(bb <= aa+result_type(0.5)) res = aa+(bb-aa)*sd(gen);
+        else if((aa >= 0 && bb <= 1) || (bb <= 0 && aa >= -1)) res = aa+(bb-aa)*sd(gen);
+        else if(aa >= -1 && bb <= 1) res =((sd(gen)*(bb-aa) > -aa) ? aa : bb)*sd(gen);
+        else
+        {
+          auto i = ird(gen);
+          if (aa >= 1)
+          {
+            auto la =  std::log2(aa);
+            auto f =  std::log2(bb)-la;
+            auto rand = sd(gen);
+            auto x = la+f*(i-1+rand)/nb;
+            res = std::min(std::exp2(x), bb);
+          }
+          else if (bb <= -1)
+          {
+            res = -(*this)(gen, std::abs(bb), std::abs(aa));
+          }
+          else if (aa >= 0)
+          {
+            if(i == 1)
+            {
+              auto r = sd(gen);
+              if (r> aa) res =r;
+              else {i = 2;res = 0; }
+            }
+            else res = (*this)(gen, result_type(1), bb);
+          }
+          else if (bb <= 0)
+          {
+            if(i == 1)
+            {
+              auto r = sd(gen);
+              if (r> -bb) res =-r;
+              else { i = 2; res = 0;}
+            }
+            else res = (*this)(gen, result_type(-1), aa);
+          }
+          else
+          {
+            auto z = result_type(0);
+            auto choice = sd(gen)*std::midpoint(bb, -aa) <  bb/2;
+            if (choice)
+            {
+              res = (*this)(gen, z, bb);
+            }
+            else
+            {
+              res = (*this)(gen, aa, z);
+            }
+          }
+        }
+        return res;
+      }
+      template< class Generator > result_type operator()( Generator& g, const param_type& params );
+      param_type  param() const noexcept { return {a, b}; }
+      void        param( const param_type& params ) noexcept
+      {
+        a = params.a;
+        b = params.b;
+      }
+      result_type min()  const noexcept {return a; };
+      result_type max()  const noexcept {return b; };
+    private:
+      T a;
+      T b;
+      int nb;
+      std::uniform_real_distribution<T> sd;
+      std::uniform_int_distribution<int> ird;
+    };
+    template< typename T = int32_t > struct integral_realistic_distribution
+    {
+      using result_type = T;
+      struct param_type
+      {
+        T a;
+        T b;
+        param_type(T aa, T bb) : a(aa),  b(bb){};
+      };
+      integral_realistic_distribution() : integral_realistic_distribution(std::numeric_limits<T>::min(), std::numeric_limits<T>::max()) { }
+      integral_realistic_distribution( T aa, T bb, int nbb = 300)
+        : a(std::min(aa, bb)),
+          b(std::max(aa, bb)),
+          nb(nbb),
+          sd(0.0, 1.0),
+          ird(a, b),
+          ird2(1, nb) {};
+      explicit integral_realistic_distribution( const param_type& params )
+        : a(params.a),
+          b(params.b),
+          nb(params.nb),
+          sd(0.0, 1.0),
+          ird(a, b),
+          ird2(1, nb) {};
+      void reset(){
+        ird.reset();
+        ird2.reset();
+      };
+      template< class Generator > result_type operator()( Generator& gen )
+      {
+        return (*this)(gen, a, b);
+      }
+      template< class Generator > result_type operator()( Generator& gen, result_type aa, result_type bb)
+      {
+        result_type res(0);
+        if(detail::abs_s(aa) < 256 && detail::abs_s(bb) < 256)
+        {
+          res = ird(gen);
+        }
+        auto l2 = [](auto x){return std::log2(detail::inc(double(x)));   };
+        auto e2 = [](auto x){return detail::dec(T(std::round(std::exp2(x)))); };
+        if(aa == bb) res = aa;
+        else
+        {
+          auto i = ird2(gen);
+          if (aa >= 0)
+          {
+            auto la =  l2(aa);
+            auto lb =  l2(bb);
+            auto f =   lb-la;
+            auto rand = sd(gen);
+            auto x = la+f*(i-1+rand)/nb;
+            res = e2(x);
+          }
+          else if (bb <= 0)
+          {
+            res = -(*this)(gen, detail::abs_s(bb), detail::abs_s(aa));
+          }
+          else
+          {
+            auto z = result_type(0);
+            auto choice = sd(gen)*std::midpoint(detail::abs_s(bb), detail::abs_s(aa)) <  bb/2;
+            if (choice)
+            {
+              res = (*this)(gen, z,detail::abs_s(bb));
+            }
+            else
+            {
+              res = -(*this)(gen, z, detail::abs_s(aa));
+            }
+          }
+        }
+        return res;
+      }
+      template< class Generator > result_type operator()( Generator& g, const param_type& params );
+      param_type param() const noexcept { return {a, b}; }
+      void param( const param_type& params ) noexcept
+      {
+        a = params.a;
+        b = params.b;
+      }
+      result_type min()  const noexcept { return a; };
+      result_type max()  const noexcept { return b; };
+    private:
+      T a;
+      T b;
+      int nb;
+      std::uniform_real_distribution<float> sd;
+      std::uniform_int_distribution<int> ird;
+      std::uniform_int_distribution<int> ird2;
+    };
+  }
+  template<typename T>
+  struct realistic_distribution : tts::detail::integral_realistic_distribution<T>
+  {
+    using parent = tts::detail::integral_realistic_distribution<T>;
+    using parent::parent;
+  };
+  template<typename T>
+  requires(std::is_floating_point_v<T>)
+  struct realistic_distribution<T>  : tts::detail::fp_realistic_distribution<T>
+  {
+    using parent = tts::detail::fp_realistic_distribution<T>;
+    using parent::parent;
+  };
+}
+#include <tuple>
+namespace tts
+{
+  template<typename T, typename V> auto as_value(V const& v) { return static_cast<T>(v); }
+  template<typename T> auto produce(type<T> const& t, auto g, auto& rng, auto... others)
+  {
+    return g(t,rng, others...);
+  }
+  template<typename... G> inline auto generate(G... g)
+  {
+    return [=](auto const& t, auto& rng, auto... others)
+    {
+      return std::make_tuple(produce(t,g,rng,others...)...);
+    };
+  }
+  template<tts::sequence T>
+  auto produce(type<T> const& t, auto g, auto& rng, auto... args)
+  {
+    using value_type = std::remove_cvref_t<decltype(*std::begin(std::declval<T>()))>;
+    T that;
+    auto b = std::begin(that);
+    auto e = std::end(that);
+    auto sz = e - b;
+    for(std::ptrdiff_t i=0;i<sz;++i)
+    {
+      *b++ = as_value<value_type>(g(tts::type<value_type>{},rng,i,sz,args...));
+    }
+    return that;
+  }
+  template<typename T> struct value
+  {
+    value(T v) : seed(v) {}
+    template<typename U>
+    auto operator()(tts::type<U>, auto&, auto...) const
+    {
+      return as_value<U>(seed);
+    }
+    T seed;
+  };
+  template<typename T, typename U = T> struct ramp
+  {
+    ramp(T s)       : start(s), step(1)   {}
+    ramp(T s, U st) : start(s), step(st)  {}
+    template<typename D>
+    auto operator()(tts::type<D>, auto&) const { return as_value<D>(start); }
+    template<typename D>
+    auto operator()(tts::type<D>, auto&, auto idx, auto...) const
+    {
+      return as_value<D>(start)+idx*as_value<D>(step);
+    }
+    T start;
+    U step;
+  };
+  template<typename T, typename U = T> struct reverse_ramp
+  {
+    reverse_ramp(T s)       : start(s), step(1)   {}
+    reverse_ramp(T s, U st) : start(s), step(st)  {}
+    template<typename D>
+    auto operator()(tts::type<D>, auto&) const { return as_value<D>(start); }
+    template<typename D>
+    auto operator()(tts::type<D>, auto&, auto idx, auto sz, auto...) const
+    {
+      return as_value<D>(start)+(sz-1-idx)*as_value<D>(step);
+    }
+    T start;
+    U step;
+  };
+  template<typename T, typename U = T> struct between
+  {
+     between(T s, U st) : first(s), last(st)  {}
+    template<typename D>
+    auto operator()(tts::type<D>, auto&) const { return as_value<D>(first); }
+    template<typename D>
+    auto operator()(tts::type<D>, auto&, auto idx, auto sz, auto...) const
+    {
+      auto w1   = as_value<D>(first);
+      auto w2   = as_value<D>(last);
+      auto step = (sz-1) ? (w2-w1)/(sz-1) : 0;
+      return std::min( as_value<D>(w1 + idx*step), w2);
+    }
+    T first;
+    U last;
+  };
+  template<typename Distribution> struct sample
+  {
+    sample(Distribution d)  : dist(std::move(d))  {}
+    template<typename D> auto operator()(tts::type<D>, auto& rng, auto...)
+    {
+      return as_value<D>(dist(rng));
+    }
+    Distribution dist;
+  };
+  template<typename Mx, typename Mn> struct randoms
+  {
+    randoms(Mn mn, Mx mx)  : mini(mn), maxi(mx)  {}
+    template<typename D> auto operator()(tts::type<D>, auto& rng, auto...)
+    {
+      static tts::realistic_distribution<D> dist(as_value<D>(mini), as_value<D>(maxi));
+      return dist(rng);
+    }
+    Mn mini;
+    Mx maxi;
+  };
+}
 namespace tts::detail
 {
   template<typename L, typename R>
@@ -528,16 +978,6 @@ namespace tts::detail
 #include <type_traits>
 namespace tts
 {
-  template<typename T>
-  concept support_std_to_string = requires(T e) { std::to_string(e); };
-  template<typename T>
-  concept support_to_string = requires(T e) { to_string(e); };
-  template<typename T>
-  concept has_to_string = requires(T e) { e.to_string(); };
-  template<typename T>
-  concept sequence = requires(T e) {std::begin(e); std::end(e); };
-  template<typename T>
-  concept streamable = requires(T e, std::ostream& o) { o << e; };
   template<typename T> std::string as_string(T const& e)
   {
     if constexpr( std::is_pointer_v<T> )
@@ -548,9 +988,9 @@ namespace tts
     }
     else if constexpr( std::floating_point<T> )
     {
-      auto precision = ::tts::arguments.value({"--precision"}, -1);
-      bool hexmode   = ::tts::arguments[{"-x","--hex"}];
-      bool scimode   = ::tts::arguments[{"-s","--scientific"}];
+      auto precision = ::tts::arguments().value({"--precision"}, -1);
+      bool hexmode   = ::tts::arguments()[{"-x","--hex"}];
+      bool scimode   = ::tts::arguments()[{"-s","--scientific"}];
       std::ostringstream os;
       if(precision != -1 ) os << std::setprecision(precision);
             if(hexmode) os << std::hexfloat   << e << std::defaultfloat;
@@ -642,22 +1082,78 @@ namespace tts
 #define TTS_CONSTEXPR_GREATER(LHS, RHS)        TTS_CONSTEXPR_RELATION(LHS,RHS, gt , ">"  , "<=")
 #define TTS_CONSTEXPR_LESS_EQUAL(LHS, RHS)     TTS_CONSTEXPR_RELATION(LHS,RHS, le , "<=" , ">" )
 #define TTS_CONSTEXPR_GREATER_EQUAL(LHS, RHS)  TTS_CONSTEXPR_RELATION(LHS,RHS, ge , ">=" , "<=")
-#define TTS_TYPE_IS(TYPE, REF)                                                                      \
+#define TTS_TYPE_IS(TYPE, REF, ...)     TTS_TYPE_IS_ ## __VA_ARGS__ (TYPE, REF)
+#define TTS_TYPE_IS_(TYPE, REF)         TTS_TYPE_IS_IMPL(TYPE, REF,TTS_FAIL)
+#define TTS_TYPE_IS_REQUIRED(TYPE, REF) TTS_TYPE_IS_IMPL(TYPE, REF,TTS_FATAL)
+#define TTS_TYPE_IS_IMPL(TYPE, REF, FAILURE)                                                        \
+[&]<typename T, typename R>(::tts::type<T>, ::tts::type<R>)                                         \
 {                                                                                                   \
-  static_assert ( std::is_same_v<TTS_REMOVE_PARENS(TYPE),TTS_REMOVE_PARENS(REF)>                    \
-                , "[TTS] - ** FAILURE** : " TTS_STRING(TTS_REMOVE_PARENS(TYPE))                     \
-                  " is not the same as " TTS_STRING(TTS_REMOVE_PARENS(REF)) "."                     \
-                );                                                                                  \
-  ::tts::global_runtime.pass();                                                                     \
-}
-#define TTS_EXPR_IS(EXPR, TYPE)                                                                     \
+  if constexpr( std::is_same_v<T,R> )                                                               \
+  {                                                                                                 \
+    ::tts::global_runtime.pass(); return ::tts::logger{false};                                      \
+  }                                                                                                 \
+  else                                                                                              \
+  {                                                                                                 \
+    FAILURE ( "Type: "  << TTS_STRING(TTS_REMOVE_PARENS(TYPE)) << " is not the same as "            \
+                        << TTS_STRING(TTS_REMOVE_PARENS(REF))  << " because "                       \
+                        << ::tts::typename_<T> << " is not " << ::tts::typename_<R>                 \
+            );                                                                                      \
+    return ::tts::logger{};                                                                         \
+  }                                                                                                 \
+}(::tts::type<TTS_REMOVE_PARENS(TYPE)>{}, ::tts::type<TTS_REMOVE_PARENS(REF)>{})                    \
+
+#define TTS_EXPR_IS(EXPR, TYPE, ...)     TTS_EXPR_IS_ ## __VA_ARGS__ (EXPR, TYPE)
+#define TTS_EXPR_IS_(EXPR, TYPE)         TTS_EXPR_IS_IMPL(EXPR, TYPE,TTS_FAIL)
+#define TTS_EXPR_IS_REQUIRED(EXPR, TYPE) TTS_EXPR_IS_IMPL(EXPR, TYPE,TTS_FATAL)
+#define TTS_EXPR_IS_IMPL(EXPR, TYPE, FAILURE)                                                       \
+[&]<typename T, typename R>(::tts::type<T>, ::tts::type<R>)                                         \
 {                                                                                                   \
-  static_assert ( std::is_same_v<decltype(TTS_REMOVE_PARENS(EXPR)),TTS_REMOVE_PARENS(TYPE)>         \
-                , "[TTS] - ** FAILURE** : " TTS_STRING(TTS_REMOVE_PARENS(EXPR))                     \
-                  " does not evaluates to an instance of " TTS_STRING(TTS_REMOVE_PARENS(TYPE)) "."  \
-                );                                                                                  \
-  ::tts::global_runtime.pass();                                                                     \
-}
+  if constexpr( std::is_same_v<T,R> )                                                               \
+  {                                                                                                 \
+    ::tts::global_runtime.pass(); return ::tts::logger{false};                                      \
+  }                                                                                                 \
+  else                                                                                              \
+  {                                                                                                 \
+    FAILURE (   "Type: "  << TTS_STRING(TTS_REMOVE_PARENS(EXPR))  << " is not the same as "         \
+                          << TTS_STRING(TTS_REMOVE_PARENS(TYPE)) << " because "                     \
+                          << ::tts::typename_<T> << " is not " << ::tts::typename_<R>               \
+            );                                                                                      \
+    return ::tts::logger{};                                                                         \
+  }                                                                                                 \
+}(::tts::type<decltype(TTS_REMOVE_PARENS(EXPR))>{}, ::tts::type<TTS_REMOVE_PARENS(TYPE)>{})         \
+
+#define TTS_EXPECT_COMPILES_IMPL(EXPR, ...)                                                             \
+[&]( TTS_ARG(__VA_ARGS__) )                                                                           \
+{                                                                                                     \
+  if constexpr( requires TTS_REMOVE_PARENS(EXPR) )                                                    \
+  {                                                                                                   \
+    ::tts::global_runtime.pass(); return ::tts::logger{false};                                        \
+  }                                                                                                   \
+  else                                                                                                \
+  {                                                                                                   \
+    TTS_FAIL(     "Expression: " << TTS_STRING(TTS_REMOVE_PARENS(EXPR))                               \
+              <<  " does not compile as expected."                                                    \
+            );                                                                                        \
+    return ::tts::logger{};                                                                           \
+  }                                                                                                   \
+}(__VA_ARGS__)                                                                                        \
+
+#define TTS_EXPECT_COMPILES(...) TTS_VAL(TTS_EXPECT_COMPILES_IMPL TTS_REVERSE(__VA_ARGS__) )
+#define TTS_EXPECT_NOT_COMPILES_IMPL(EXPR, ...)                                                       \
+[&]( TTS_ARG(__VA_ARGS__) )                                                                           \
+{                                                                                                     \
+  if constexpr( !(requires TTS_REMOVE_PARENS(EXPR)) )                                                 \
+  {                                                                                                   \
+    ::tts::global_runtime.pass(); return ::tts::logger{false};                                        \
+  }                                                                                                   \
+  else                                                                                                \
+  {                                                                                                   \
+    TTS_FAIL("Expression: " << TTS_STRING(TTS_REMOVE_PARENS(EXPR)) << " compiles unexpectedly." );    \
+    return ::tts::logger{};                                                                           \
+  }                                                                                                   \
+}(__VA_ARGS__)                                                                                        \
+
+#define TTS_EXPECT_NOT_COMPILES(...) TTS_VAL(TTS_EXPECT_NOT_COMPILES_IMPL TTS_REVERSE(__VA_ARGS__))
 #define TTS_THROW_IMPL(EXPR, EXCEPTION, FAILURE)                                                    \
 [&]()                                                                                               \
 {                                                                                                   \
@@ -706,10 +1202,24 @@ namespace tts
 #include <cstdint>
 #include <type_traits>
 #include <utility>
+#if !defined(__cpp_lib_bit_cast)
+# include <cstring>
+#endif
 namespace tts::detail
 {
-  inline auto as_int(float a)   noexcept  { return std::bit_cast<std::int32_t>(a); }
-  inline auto as_int(double a)  noexcept  { return std::bit_cast<std::int64_t>(a); }
+#if !defined(__cpp_lib_bit_cast)
+  template <class To, class From>
+  To bit_cast(const From& src) noexcept requires(sizeof(To) == sizeof(From))
+  {
+    To dst;
+    std::memcpy(&dst, &src, sizeof(To));
+    return dst;
+  }
+#else
+  using std::bit_cast;
+#endif
+  inline auto as_int(float a)   noexcept  { return bit_cast<std::int32_t>(a); }
+  inline auto as_int(double a)  noexcept  { return bit_cast<std::int64_t>(a); }
   template<typename T> inline auto bitinteger(T a) noexcept
   {
     auto ia = as_int(a);
@@ -853,3 +1363,69 @@ namespace tts
 #define TTS_RELATIVE_EQUAL(L,R,N,...) TTS_PRECISION(L,R,N,"%"   , ::tts::relative_distance, __VA_ARGS__ )
 #define TTS_ULP_EQUAL(L,R,N,...)      TTS_PRECISION(L,R,N,"ULP" , ::tts::ulp_distance     , __VA_ARGS__ )
 #define TTS_IEEE_EQUAL(L,R,...)       TTS_ULP_EQUAL(L, R, 0, __VA_ARGS__ )
+#include <type_traits>
+namespace tts::detail
+{
+  template<typename T, typename U> struct failure
+  {
+    std::size_t index;
+    T original;
+    U other;
+  };
+}
+#define TTS_ALL_IMPL(SEQ1,SEQ2,OP,N,UNIT,FAILURE)                                                   \
+[](auto const& a, auto const& b)                                                                    \
+{                                                                                                   \
+  if( std::size(b) != std::size(a) )                                                                \
+  {                                                                                                 \
+    FAILURE ( "Expected: "  << TTS_STRING(SEQ1) << " == " << TTS_STRING(SEQ2)                       \
+                            << " but sizes does not match: "                                        \
+                            << "size(" TTS_STRING(SEQ1) ") = " << std::size(a)                      \
+                            << " while size(" TTS_STRING(SEQ2) ") = " << std::size(b)               \
+            );                                                                                      \
+    return ::tts::logger{};                                                                         \
+  }                                                                                                 \
+                                                                                                    \
+  auto ba = std::begin(a);                                                                          \
+  auto bb = std::begin(b);                                                                          \
+  auto ea = std::end(a);                                                                            \
+                                                                                                    \
+  std::vector < ::tts::detail::failure< std::remove_cvref_t<decltype(*ba)>                          \
+                                      , std::remove_cvref_t<decltype(*bb)>                          \
+                                      >                                                             \
+              > failures;                                                                           \
+  std::size_t i = 0;                                                                                \
+                                                                                                    \
+  while(ba != ea)                                                                                   \
+  {                                                                                                 \
+    if( OP(*ba,*bb) > N )  failures.push_back({i++,*ba,*bb});                                       \
+    ba++;                                                                                           \
+    bb++;                                                                                           \
+  }                                                                                                 \
+                                                                                                    \
+  if( !failures.empty( ) )                                                                          \
+  {                                                                                                 \
+    FAILURE ( "Expected: "  << TTS_STRING(SEQ1) << " == " << TTS_STRING(SEQ2)                       \
+                            << " but values differ from more than " << N << " "<< UNIT              \
+            );                                                                                      \
+                                                                                                    \
+    for(auto f : failures)                                                                          \
+      std::cout << "    @[" << f.index << "] : " << f.original << " and " << f.other                \
+                << " differ by " << OP(f.original,f.other) << " " << UNIT << "\n";                  \
+                                                                                                    \
+    std::cout << "\n";                                                                              \
+    return ::tts::logger{};                                                                         \
+  }                                                                                                 \
+                                                                                                    \
+  ::tts::global_runtime.pass();                                                                     \
+  return ::tts::logger{false};                                                                      \
+}(SEQ1, SEQ2)                                                                                       \
+
+#define TTS_ALL(L,R,F,N,U, ...)     TTS_ALL_ ## __VA_ARGS__ (L,R,F,N,U)
+#define TTS_ALL_(L,R,F,N,U)         TTS_ALL_IMPL(L,R,F,N,U,TTS_FAIL)
+#define TTS_ALL_REQUIRED(L,R,F,N,U) TTS_ALL_IMPL(L,R,F,N,U,TTS_FATAL)
+#define TTS_ALL_ABSOLUTE_EQUAL(L,R,N,...) TTS_ALL(L,R, ::tts::absolute_distance,N,"unit", __VA_ARGS__ )
+#define TTS_ALL_RELATIVE_EQUAL(L,R,N,...) TTS_ALL(L,R, ::tts::relative_distance,N,"%"   , __VA_ARGS__ )
+#define TTS_ALL_ULP_EQUAL(L,R,N,...)      TTS_ALL(L,R, ::tts::ulp_distance     ,N,"ULP" , __VA_ARGS__ )
+#define TTS_ALL_IEEE_EQUAL(S1,S2,...)     TTS_ALL_ULP_EQUAL(S1,S2,0, __VA_ARGS__)
+#define TTS_ALL_EQUAL(L,R,...)            TTS_ALL_ABSOLUTE_EQUAL(L,R, 0 __VA_ARGS__ )

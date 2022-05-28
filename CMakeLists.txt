@@ -39,7 +39,8 @@ add_library(raberu::raberu ALIAS raberu_lib)
 ##==================================================================================================
 ## Options
 ##==================================================================================================
-option( RABERU_BUILD_TEST  "Build tests for raberu" ON )
+option( RABERU_BUILD_TEST  "Build tests for raberu" ON  )
+option( RABERU_BUILD_DOCS  "Build docs for raberu"  OFF )
 
 ##==================================================================================================
 ## Test target
@@ -53,20 +54,22 @@ endif()
 ##==================================================================================================
 ## Add Doxygen building target
 ##==================================================================================================
-find_package(Doxygen QUIET)
+if( KUMI_BUILD_DOCS )
+  find_package(Doxygen QUIET)
 
-if (DOXYGEN_FOUND)
-  message( STATUS "[raberu] Doxygen available")
-else (DOXYGEN_FOUND)
-  message( STATUS "[raberu] Doxygen need to be installed to generate the doxygen documentation")
-endif (DOXYGEN_FOUND)
+  if (DOXYGEN_FOUND)
+    message( STATUS "[raberu] Doxygen available")
+  else (DOXYGEN_FOUND)
+    message( STATUS "[raberu] Doxygen need to be installed to generate the doxygen documentation")
+  endif (DOXYGEN_FOUND)
 
-if (DOXYGEN_FOUND)
-  set(DOXYGEN_CONFIG ${PROJECT_SOURCE_DIR}/doc/Doxyfile)
-  add_custom_target ( doxygen
-                      COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_CONFIG}
-                      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/doc
-                      COMMENT "[raberu] Generating API documentation with Doxygen"
-                      VERBATIM
-                    )
-endif (DOXYGEN_FOUND)
+  if (DOXYGEN_FOUND)
+    set(DOXYGEN_CONFIG ${PROJECT_SOURCE_DIR}/doc/Doxyfile)
+    add_custom_target ( rbr-doxygen
+                        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_CONFIG}
+                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/doc
+                        COMMENT "[raberu] Generating API documentation with Doxygen"
+                        VERBATIM
+                      )
+  endif (DOXYGEN_FOUND)
+endif()

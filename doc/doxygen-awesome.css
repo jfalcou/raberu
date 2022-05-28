@@ -29,14 +29,14 @@ SOFTWARE.
 
 html {
     /* primary theme color. This will affect the entire websites color scheme: links, arrows, labels, ... */
-    --primary-dark-color: hsl(293, 40%, 30%);
-    --primary-color: hsl(293, 40%, 50%);
-    --primary-light-color: hsl(293, 40%, 70%);
+    --primary-dark-color: hsl(0, 100%, 10%);
+    --primary-color: hsl(0, 100%, 25%);
+    --primary-light-color: hsl(0, 100%, 40%);
 
     /* page base colors */
     --page-background-color: white;
-    --page-foreground-color: hsl(293, 40%, 30%);
-    --page-secondary-foreground-color: hsl(293, 40%, 50%);
+    --page-foreground-color: hsl(0, 100%, 10%);
+    --page-secondary-foreground-color: hsl(0, 100%, 25%);
 
     /* color for all separators on the website: hr, borders, ... */
     --separator-color: #dedede;

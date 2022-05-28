@@ -17,35 +17,67 @@
 
 #define RBR_FWD(...) static_cast<decltype(__VA_ARGS__) &&>(__VA_ARGS__)
 
+//==================================================================================================
+//! @namespace rbr
+//! @brief Main Raberu namespace
+//==================================================================================================
+
+//================================================================================================
+//! @defgroup utility   Helper types and function
+//! @brief    Tools for interacting with Raberu components
+//!
+//! @defgroup main   Main Raberu Components
+//! @brief    Main Raberu components
+//================================================================================================
+
+//==================================================================================================
+//! @namespace concepts
+//! @brief Raberu Concepts namespace
+//==================================================================================================
 namespace rbr::concepts
 {
-  // Keyword concept
+  //================================================================================================
+  //! @brief Keyword concept
+  //!
+  //! A Keyword type is able to be bound to a value as an [Option](@ref rbr::concepts::option)
+  //================================================================================================
   template<typename K> concept keyword = requires( K k )
   {
     typename K::tag_type;
     { K::template accept<int>() } -> std::same_as<bool>;
   };
 
-  // Option concept
+  //================================================================================================
+  //! @brief Option concept
+  //!
+  //! An Option type can be aggregated in a [Settings](@ref rbr::concepts::settings) and be
+  //! fetched later
+  //================================================================================================
   template<typename O> concept option = requires( O const& o )
   {
     { o(typename std::remove_cvref_t<O>::keyword_type{}) }
     -> std::same_as<typename std::remove_cvref_t<O>::stored_value_type>;
   };
 
-  // Settings concept
+  //================================================================================================
+  //! @brief Settings concept
+  //!
+  //! A Settings is a group of [Options](@ref rbr::concepts::option)
+  //================================================================================================
   template<typename S> concept settings = requires( S const& s )
   {
     typename S::rbr_settings;
   };
 
-  // Type checker concept
-  template<typename C> concept type_checker = requires( C const& )
-  {
-    typename C::template apply<int>::type;
-  };
-
-  // keyword parameter exact match
+  //================================================================================================
+  //! @brief Exact match concept helper
+  //!
+  //! rbr::concepts::exactly is to be used to constraint functions template parameter to be an
+  //! instantiation of a precise [Keyword](@ref rbr::concepts::keyword)
+  //!
+  //! @tparam Option  Type to constraint
+  //! @tparam Keyword Keyword to match
+  //================================================================================================
   template<typename Option, auto Keyword>
   concept exactly = std::same_as< typename Option::keyword_type
                                 , std::remove_cvref_t<decltype(Keyword)>
@@ -138,9 +170,17 @@ namespace rbr::detail
 
 namespace rbr
 {
-  // ID user defined literals
+  //================================================================================================
+  //! @namespace literals
+  //! @brief Raberu literals namespace
+  //================================================================================================
   namespace literals
   {
+    //==============================================================================================
+    //! @ingroup utility
+    //! @brief Compile-time static string
+    //! @tparam N Size of the embedded string
+    //==============================================================================================
     template<std::size_t N> struct str_
     {
       std::array<char,N> data;
@@ -156,8 +196,14 @@ namespace rbr
     template<std::size_t N> str_(const char (&str)[N]) -> str_<N>;
   }
 
+  //================================================================================================
+  //! @ingroup utility
+  //! @brief Compile-time text based ID
+  //! @tparam ID Compile-time string for the ID
+  //================================================================================================
   template<literals::str_ ID> struct id_
   {
+    /// Inserts an rbr::id_ in an output stream
     friend std::ostream& operator<<(std::ostream& os, id_ const&)
     {
       return os << '\'' << ID.value() << '\'';
@@ -166,19 +212,31 @@ namespace rbr
 
   namespace literals
   {
+    //==============================================================================================
+    //! @ingroup utility
+    //! @brief Forms an ID constant literal
+    //! @return An instance of rbr::id_ for the specified string
+    //==============================================================================================
     template<str_ ID> constexpr auto operator""_id() noexcept { return id_<ID>{}; }
   }
 
-  // Callable alternative wrapper
-  template<typename Func>
-  struct call
+  //================================================================================================
+  //! @ingroup main
+  //! @brief Callable object wrapper for functional default value
+  //! @tparam Func Callable object to keep
+  //================================================================================================
+  template<typename Func> struct call
   {
     constexpr call(Func f) : callable(f) {}
     constexpr auto perform() const { return callable(); }
     Func callable;
   };
 
-  // Option implementation
+  //================================================================================================
+  //! @ingroup main
+  //! @brief Callable object wrapper for functional default value
+  //! @tparam Func Callable object to keep
+  //================================================================================================
   template<concepts::keyword Keyword, typename Value> struct option
   {
     using stored_value_type    = Value;
@@ -188,30 +246,82 @@ namespace rbr
     Value contents;
   };
 
-// Base class for custom keyword
+  //================================================================================================
+  //! @ingroup main
+  //! @brief Base class for keyword definition
+  //!
+  //! rbr::as_keyword provides an CRTP base class for keyword-like types. It is internally used
+  //! to provide specific keyword constructors but can be used to define user-defined keyword.
+  //!
+  //! @tparam Keyword Keyword type being defined
+  //================================================================================================
   template<typename Keyword> struct as_keyword
   {
+    /// Derived keyword type
     using tag_type  = Keyword;
 
+    /// Keyword comparison
     inline constexpr auto operator<=>(as_keyword const&) const noexcept = default;
 
+    //==============================================================================================
+    //! @brief Compile-time validation of value
+    //!
+    //! When a value is bound to a [Keyword](@ref rbr::concepts::keyword) to form an
+    //! [Option](@ref rbr::concepts::option), one can validate this binding by checking arbitrary
+    //! properties on the value type. This is done by the accept() member.
+    //!
+    //! If `Keyword` defines a `check` static template member variable, it will be used as the
+    //! return value of accept(). Otherwise, true is returned, thus automatically validating any
+    //! value type.
+    //!
+    //! @tparam T Type to validate
+    //! @return `true` if T is accepted by current keyword, `false` otherwise.
+    //!
+    //! ## Example:
+    //! @snippet doc/accept.cpp Custom Accept
+    //==============================================================================================
     template<typename T> static constexpr bool accept()
     {
-      if constexpr( requires(Keyword) { Keyword::template check<T>(); } )
-        return Keyword::template check<T>();
-      else
-        return true;
+      if constexpr( requires{ Keyword::template check<T>; } ) return Keyword::template check<T>;
+      else                                                    return true;
     }
 
+    //==============================================================================================
+    //! @brief Assignment of a value to a keyword
+    //!
+    //! Bind a value to current [Keyword](@ref rbr::concepts::keyword) and returns an instance of
+    //! an [Option](@ref rbr::concepts::option).
+    //!
+    //! @param v Bound value
+    //! @return An rbr::option binding the keyword to `v`.
+    //==============================================================================================
     template<typename Type>
-    constexpr auto operator=(Type&& v) const noexcept requires( accept<Type>() )
+    constexpr auto operator=(Type&& v) const noexcept
+    requires( accept<std::remove_cvref_t<Type>>() )
     {
       return option<Keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
     }
 
+    constexpr auto operator=(as_keyword const&) const noexcept { return *this; }
+
+    //==============================================================================================
+    //! @brief Stream insertion function
+    //!
+    //! Display a textual description of current keyword and bound value over an output stream.
+    //!
+    //! If `Keyword` defines a `display` member variable, it will be used to perform this display.
+    //! Otherwise, the typename name of the keyword and its value will be displayed.
+    //!
+    //! @param os Output stream
+    //! @param v  Value bound to current keyword
+    //! @return The up-to-date output stream
+    //!
+    //! ## Example:
+    //! @snippet doc/show.cpp Custom Show
+    //==============================================================================================
     template<typename V> std::ostream& show(std::ostream& os, V const& v) const
     {
-      if constexpr(  requires(Keyword t) { t.display(os,v); } ) return Keyword{}.display(os,v);
+      if constexpr( requires(Keyword t) { t.display(os,v); } ) return Keyword{}.display(os,v);
       else
       {
         os << '[' << detail::type_name<Keyword>() << ']';
@@ -219,75 +329,103 @@ namespace rbr
       }
     }
 
+    /// Specify a default value for the keyword
     template<typename Type>
     constexpr auto operator|(Type&& v) const noexcept requires( accept<Type>() )
     {
       return detail::type_or_<Keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
     }
 
+    /// Specify a Callable object as a default value for the keyword
     template<typename Func> constexpr auto operator|(call<Func>&& v) const noexcept
     {
       return detail::type_or_<Keyword,call<Func>>{RBR_FWD(v)};
     }
 
+    //==============================================================================================
+    //! @brief Keyword fetching from options set
+    //!
+    //! @param o Set of options to inspect
+    //! @return f current keyword is present in `o...`, return its bound value. Otherwise,
+    //! returns an instance of rbr::unknown_key.
+    //!
+    //! ## Example:
+    //! @include doc/keyword_fetch.cpp
+    //==============================================================================================
     template<concepts::option... Os>
     constexpr decltype(auto) operator()(Os&&... o) const { return fetch(Keyword{}, RBR_FWD(o)...); }
   };
 
-  // checked_keyword implementation
-  template<typename Tag, typename Traits>
-  struct checked_keyword : as_keyword<checked_keyword<Tag, Traits>>
+  //================================================================================================
+  //! @ingroup main
+  //! @brief Checked keyword
+  //!
+  //! A Checked keyword is a keyword that verify if a value's type satisfies a predicates before
+  //! binding it
+  //!
+  //! @tparam ID        Unique identifier for the keyword
+  //! @tparam Checker   Unary template meta-function acting as predicate
+  //================================================================================================
+  template<typename ID, template<class> class Checker>
+  struct checked_keyword : as_keyword<checked_keyword<ID, Checker>>
   {
-    constexpr checked_keyword() {}
-    constexpr checked_keyword(Tag, Traits) {}
-
-    template<typename T> static constexpr bool check()
-    {
-      return Traits::template apply<std::remove_cvref_t<T>>::value;
-    }
+    using as_keyword<checked_keyword<ID, Checker>>::operator=;
+    template<typename T> static constexpr bool check = Checker<T>::value;
 
     template<typename V>
     std::ostream& display(std::ostream& os, V const& v) const
     {
-      if constexpr(  requires(Tag t) { os << Tag{}; } ) os << Tag{};
-      else os << '[' << detail::type_name<Tag>() << ']';
+      if constexpr(  requires(ID t) { os << ID{}; } ) os << ID{};
+      else os << '[' << detail::type_name<ID>() << ']';
 
       os << " ::: " << v << " (" << detail::type_name<V>() << ") checked by '";
-      return os << detail::type_name<Traits>() << '\'';
+      return os << detail::type_name<Checker<V>>() << '\'';
     }
-
-    using as_keyword<checked_keyword<Tag, Traits>>::operator=;
   };
 
-  // Keyword accepting a precise type as input
-  template<typename Tag, typename Value>
-  struct typed_keyword  : as_keyword<typed_keyword<Tag, Value>>
+  //================================================================================================
+  //! @ingroup main
+  //! @brief Typed keyword
+  //!
+  //! A Typed keyword is a keyword that verify if a value's type is exactly matching a type.
+  //!
+  //! @tparam ID    Unique identifier for the keyword
+  //! @tparam Type  Type to accept
+  //================================================================================================
+  template<typename ID, typename Type>
+  struct typed_keyword  : as_keyword<typed_keyword<ID, Type>>
   {
-    template<typename T> static constexpr bool check() { return std::is_same_v<T,Value>; }
-
-    using as_keyword<typed_keyword<Tag, Value>>::operator=;
+    using as_keyword<typed_keyword<ID, Type>>::operator=;
+    template<typename T> static constexpr bool check = std::is_same_v<T,Type>;
 
     template<typename V>
     std::ostream& display(std::ostream& os, V const& v) const
     {
-      if constexpr(  requires(Tag t) { os << Tag{}; } ) os << Tag{};
-      else os << '[' << detail::type_name<Tag>() << ']';
+      if constexpr(  requires(ID t) { os << ID{}; } ) os << ID{};
+      else os << '[' << detail::type_name<ID>() << ']';
 
       return os << " : " << v << " [[" << detail::type_name<V>() << "]]";
     }
   };
 
-  // Keyword accepting any type as input
-  template<typename Tag>
-  struct any_keyword   : as_keyword<any_keyword<Tag>>
+  //================================================================================================
+  //! @ingroup main
+  //! @brief Regular keyword
+  //!
+  //! A Regular keyword is a keyword that accepts any types.
+  //!
+  //! @tparam ID    Unique identifier for the keyword
+  //================================================================================================
+  template<typename ID>
+  struct any_keyword   : as_keyword<any_keyword<ID>>
   {
-    using as_keyword<any_keyword<Tag>>::operator=;
+    using as_keyword<any_keyword<ID>>::operator=;
 
     template<typename V>
     std::ostream& display(std::ostream& os, V const& v) const
     {
-      if constexpr(requires(Tag t) { os << Tag{}; })  os << Tag{};
-      else                                            os << '[' << detail::type_name<Tag>() << ']';
+      if constexpr(requires(ID t) { os << ID{}; })  os << ID{};
+      else                                            os << '[' << detail::type_name<ID>() << ']';
 
       return os << " : " << v << " (" << detail::type_name<V>() << ')';
     }
@@ -343,13 +481,41 @@ namespace rbr
 
   // Keyword builder
   template<typename Tag> constexpr flag_keyword<Tag>  flag(Tag) noexcept { return {}; }
-  template<typename Tag> constexpr any_keyword<Tag>   keyword(Tag) noexcept { return {}; }
 
-  template<concepts::type_checker Checker, typename Tag>
-  constexpr checked_keyword<Tag,Checker> keyword(Tag) noexcept { return {}; }
+  //================================================================================================
+  //! @related rbr::any_keyword
+  //! @brief Create a regular keyword for reuse
+  //! @param  id  Unique rbr::id_ for the keyword being built
+  //! @return An instance of rbr::any_keyword
+  //! ## Example:
+  //! @include doc/regular.cpp
+  //================================================================================================
+  template<typename ID>
+  constexpr any_keyword<ID> keyword([[maybe_unused]] ID id) noexcept { return {}; }
 
-  template<typename Type, typename Tag>
-  constexpr typed_keyword<Tag, Type> keyword(Tag) noexcept { return {}; }
+  //================================================================================================
+  //! @related rbr::checked_keyword
+  //! @brief Create a checked keyword for reuse
+  //! @tparam Checker Unary template meta-function to use for validation
+  //! @param  id  Unique rbr::id_ for the keyword being built
+  //! @return An instance of rbr::checked_keyword
+  //! ## Example:
+  //! @include doc/checked.cpp
+  //================================================================================================
+  template<template<class> class Checker, typename ID>
+  constexpr checked_keyword<ID,Checker> keyword([[maybe_unused]] ID id) noexcept { return {}; }
+
+  //================================================================================================
+  //! @related rbr::typed_keyword
+  //! @brief Create a typed Keyword for reuse
+  //! @tparam Type Type accepted by the keyword
+  //! @param  id  Unique rbr::id_ for the keyword being built
+  //! @return An instance of rbr::checked_keyword
+  //! ## Example:
+  //! @include doc/checked.cpp
+  //================================================================================================
+  template<typename Type, typename ID>
+  constexpr typed_keyword<ID, Type> keyword([[maybe_unused]] ID id) noexcept { return {}; }
 
   // Keyword/Flag-type user defined literals
   namespace literals
@@ -361,7 +527,7 @@ namespace rbr
     constexpr auto operator""_fl() noexcept { return flag_keyword<id_<ID>>{}; }
   }
 
-  // Tag for when something is not found in an aggregator
+  /// Type indicating that a [Keyword](@ref rbr::concepts::keyword) is not available
   struct unknown_key {};
 
   // Option calls aggregator
@@ -376,7 +542,7 @@ namespace rbr
     }
   };
 
-  // Settings is a group of options
+  //! @brief Settings is a group of options
   template<concepts::option... Opts> struct settings
   {
     using rbr_settings = void;

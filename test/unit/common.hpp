@@ -29,10 +29,8 @@ struct bar
   friend std::ostream& operator<<(std::ostream& os, bar b) { return os << b.value; }
 };
 
-struct small_type
-{
-  template<typename T> struct apply : std::bool_constant<(sizeof(T) < 4)> {};
-};
+template<typename T>
+struct small_type : std::bool_constant<(sizeof(T) < 4)> {};
 
 inline constexpr auto custom_ = ::rbr::keyword("custom"_id);
 inline constexpr auto coord_  = "coord"_kw;

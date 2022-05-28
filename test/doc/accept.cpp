@@ -1,10 +1,8 @@
-//==================================================================================================
 /**
   RABERU - Fancy Parameters Library
   Copyright : RABERU Contributors & Maintainers
   SPDX-License-Identifier: MIT
 **/
-//==================================================================================================
 #define TTS_MAIN
 #include <tts/tts.hpp>
 
@@ -25,6 +23,6 @@ inline constexpr real_keyword real = {};
 
 TTS_CASE("Check accept() customization point")
 {
-  TTS_EXPECT_COMPILES(real, { real = 4.f;   } );
-  TTS_EXPECT_NOT_COMPILES(real, { real = 8ULL;  } );
+  TTS_EXPECT_COMPILES     (real , { real = 4.f;   } );
+  TTS_EXPECT_NOT_COMPILES (real , { real = 8ULL;  } );
 };

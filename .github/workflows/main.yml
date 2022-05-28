@@ -27,3 +27,12 @@ jobs:
         uses: ./.github/actions/run_tests
         with:
           compiler: 'clang++'
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch current branch
+        uses: actions/checkout@v2
+      - name: Build RABERU as an external dependency
+        run: |
+          ls

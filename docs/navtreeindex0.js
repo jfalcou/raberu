@@ -1,14 +1,5 @@
 var NAVTREEINDEX0 =
 {
-"Tutorial.html":[2],
-"Tutorial.html#autotoc_md26":[2,1,0],
-"Tutorial.html#autotoc_md27":[2,1,1],
-"Tutorial.html#autotoc_md28":[2,1,2],
-"Tutorial.html#autotoc_md29":[2,2,0],
-"Tutorial.html#autotoc_md30":[2,2,1],
-"Tutorial.html#tutorial_01":[2,0],
-"Tutorial.html#tutorial_02":[2,1],
-"Tutorial.html#tutorial_03":[2,2],
 "annotated.html":[9,0],
 "changelog.html":[4],
 "changelog.html#autotoc_md33":[4,0],
@@ -17,8 +8,8 @@ var NAVTREEINDEX0 =
 "changelog.html#autotoc_md36":[4,1],
 "changelog.html#autotoc_md37":[4,1,0],
 "classes.html":[9,1],
-"conceptrbr_1_1concepts_1_1exactly.html":[7,0,0,0,3],
 "conceptrbr_1_1concepts_1_1exactly.html":[8,0,0,3],
+"conceptrbr_1_1concepts_1_1exactly.html":[7,0,0,0,3],
 "conceptrbr_1_1concepts_1_1keyword.html":[7,0,0,0,0],
 "conceptrbr_1_1concepts_1_1keyword.html":[8,0,0,0],
 "conceptrbr_1_1concepts_1_1option.html":[7,0,0,0,1],
@@ -118,6 +109,15 @@ var NAVTREEINDEX0 =
 "structrbr_1_1typed__keyword.html#ad8afe5ffee5a87a2dea65e75d8f9c501":[6,1,0,5,2],
 "structrbr_1_1typed__keyword.html#aeda963b782a4126c0f6165f08d4c8d32":[6,1,0,5,4],
 "structrbr_1_1types.html":[6,0,3],
+"structrbr_1_1unknown__key.html":[7,0,0,13],
 "structrbr_1_1unknown__key.html":[9,0,0,11],
-"structrbr_1_1unknown__key.html":[7,0,0,13]
+"tutorial.html":[2],
+"tutorial.html#autotoc_md26":[2,1,0],
+"tutorial.html#autotoc_md27":[2,1,1],
+"tutorial.html#autotoc_md28":[2,1,2],
+"tutorial.html#autotoc_md29":[2,2,0],
+"tutorial.html#autotoc_md30":[2,2,1],
+"tutorial.html#tutorial_01":[2,0],
+"tutorial.html#tutorial_02":[2,1],
+"tutorial.html#tutorial_03":[2,2]
 };

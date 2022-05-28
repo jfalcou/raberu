@@ -1,11 +1,11 @@
 #error DO NOT INCLUDE - DOCUMENTATION PURPOSE ONLY
 
 //==================================================================================================
-//! \page Tutorial Keyword, Options, Settings
+//! \page tutorial Tutorial: Basic of RABERU
 //!
 //! **RABERU** main tool is the rbr::settings class that helps aggregate values into a set of parameters that later be queried. Let's build a small example of a function building a string from the replication of a given character.
 //!
-//! \section tutorial_01 RABERU 101
+//! \section tutorial_01 Tutorial Keyword, Options, Settings
 //!
 //! Let's define a small function - `replicate` - that takes a character `c` and an integer `n` as parameters and return a string containing `c` repeated `n` times.
 //! As we want our users to have maximum flexibility, we will pass those parameters as keyword/value pairs.

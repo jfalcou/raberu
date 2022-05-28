@@ -34,19 +34,19 @@ var NAVTREE =
       [ "CMake FetchContent", "md_raberu_doc_page01_setup.html#autotoc_md24", null ],
       [ "CPM Integration", "md_raberu_doc_page01_setup.html#autotoc_md25", null ]
     ] ],
-    [ "Keyword, Options, Settings", "Tutorial.html", [
-      [ "RABERU 101", "Tutorial.html#tutorial_01", null ],
-      [ "Flavor of Keywords", "Tutorial.html#tutorial_02", [
-        [ "Regular keywords", "Tutorial.html#autotoc_md26", null ],
-        [ "Flags", "Tutorial.html#autotoc_md27", null ],
-        [ "Checked keywords", "Tutorial.html#autotoc_md28", null ]
+    [ "Tutorial: Basic of RABERU", "tutorial.html", [
+      [ "Tutorial Keyword, Options, Settings", "tutorial.html#tutorial_01", null ],
+      [ "Flavor of Keywords", "tutorial.html#tutorial_02", [
+        [ "Regular keywords", "tutorial.html#autotoc_md26", null ],
+        [ "Flags", "tutorial.html#autotoc_md27", null ],
+        [ "Checked keywords", "tutorial.html#autotoc_md28", null ]
       ] ],
-      [ "Settings", "Tutorial.html#tutorial_03", [
-        [ "Defining a Settings", "Tutorial.html#autotoc_md29", null ],
-        [ "Stream insertion", "Tutorial.html#autotoc_md30", null ]
+      [ "Settings", "tutorial.html#tutorial_03", [
+        [ "Defining a Settings", "tutorial.html#autotoc_md29", null ],
+        [ "Stream insertion", "tutorial.html#autotoc_md30", null ]
       ] ]
     ] ],
-    [ "Customizing Keyword", "custom.html", [
+    [ "Tutorial: Customizing Keyword", "custom.html", [
       [ "Using Pre-bound keyword", "custom.html#custom_01", null ],
       [ "Custom RABERU Keywords", "custom.html#custom_02", [
         [ "Extending RABERU Keywords", "custom.html#autotoc_md31", null ],
@@ -88,7 +88,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"Tutorial.html"
+"annotated.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,7 +1,7 @@
 #error DO NOT INCLUDE - DOCUMENTATION PURPOSE ONLY
 
 //==================================================================================================
-//! \page custom Customizing Keyword
+//! \page custom Tutorial: Customizing Keyword
 //!
 //! \section custom_01 Using Pre-bound keyword
 //!

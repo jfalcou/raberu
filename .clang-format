@@ -36,10 +36,8 @@ ExperimentalAutoDetectBinPacking: false
 FixNamespaceComments: false
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex:           '^<eve/'
-    Priority:        0
   - Regex:           '<[[:alnum:].]+>'
-    Priority:        1
+    Priority:        0
 #IndentCaseBlocks: true
 IndentCaseLabels: false
 IndentPPDirectives: AfterHash

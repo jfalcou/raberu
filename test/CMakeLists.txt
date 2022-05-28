@@ -11,7 +11,7 @@ add_library(raberu_test INTERFACE)
 
 target_compile_features ( raberu_test INTERFACE  cxx_std_20 )
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  target_compile_options( raberu_test INTERFACE /W3 /EHsc)
+  target_compile_options( raberu_test INTERFACE /W3 /EHsc /Zc:preprocessor)
 else()
   target_compile_options( raberu_test INTERFACE -Werror -Wall -Wextra)
 endif()
@@ -28,7 +28,7 @@ function(generate_test file)
   string(REPLACE ".cpp" ".exe" base ${file})
   string(REPLACE "/"    "." base ${base})
   string(REPLACE "\\"   "." base ${base})
-  set(test "${base}")
+  set(test "rbr-${base}")
 
   add_executable( ${test}  "${file}")
   target_link_libraries(${test} PUBLIC raberu_test)
@@ -40,20 +40,14 @@ function(generate_test file)
   if (CMAKE_CROSSCOMPILING_CMD)
     add_test( NAME ${test}
               WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/unit"
-              COMMAND ${CMAKE_CROSSCOMPILING_CMD} $<TARGET_FILE:${test}> --no-color --pass
+              COMMAND ${CMAKE_CROSSCOMPILING_CMD} $<TARGET_FILE:${test}>
             )
   else()
     add_test( NAME ${test}
               WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/unit"
-              COMMAND $<TARGET_FILE:${test}> --no-color --pass
+              COMMAND $<TARGET_FILE:${test}>
             )
   endif()
-
-  set_target_properties ( ${test} PROPERTIES
-                          EXCLUDE_FROM_DEFAULT_BUILD TRUE
-                          EXCLUDE_FROM_ALL TRUE
-                          ${MAKE_UNIT_TARGET_PROPERTIES}
-                        )
 
   target_include_directories( ${test}
                               PRIVATE
@@ -62,21 +56,13 @@ function(generate_test file)
                               ${PROJECT_SOURCE_DIR}/include
                             )
 
-  add_dependencies(unit ${test})
+  add_dependencies(rbr-unit ${test})
 endfunction()
 
-add_custom_target(unit)
+add_custom_target(rbr-unit)
 
 ##==================================================================================================
 ## Actual tests
 ##==================================================================================================
-generate_test("access.cpp")
-generate_test("concepts.cpp")
-generate_test("constraints.cpp")
-generate_test("doc.cpp")
-generate_test("drop.cpp")
-generate_test("fetch.cpp")
-generate_test("extract_types.cpp")
-generate_test("interface.cpp")
-generate_test("merge.cpp")
-generate_test("size.cpp")
+include(${PROJECT_SOURCE_DIR}/test/unit.cmake)
+include(${PROJECT_SOURCE_DIR}/test/doc.cmake)

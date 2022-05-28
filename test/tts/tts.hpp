@@ -852,7 +852,7 @@ namespace tts
     };
   }
   template<tts::sequence T>
-  auto produce(type<T> const& t, auto g, auto& rng, auto... args)
+  auto produce(type<T> const&, auto g, auto& rng, auto... args)
   {
     using value_type = std::remove_cvref_t<decltype(*std::begin(std::declval<T>()))>;
     T that;

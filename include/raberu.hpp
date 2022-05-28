@@ -302,6 +302,8 @@ namespace rbr
       return option<Keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
     }
 
+    constexpr as_keyword() =default;
+    constexpr as_keyword(as_keyword const&) =default;
     constexpr auto operator=(as_keyword const&) const noexcept { return *this; }
 
     //==============================================================================================

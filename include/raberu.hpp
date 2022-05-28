@@ -22,16 +22,30 @@
 //! @brief Main Raberu namespace
 //==================================================================================================
 
-//================================================================================================
+//==================================================================================================
+//! @defgroup main Main RABERU components
+//!
+//! @ingroup  main
+//! @{
+//!   @defgroup kwds Keywords definitions and handling
+//!   @brief    Functions and types to handle RABERU keywords
+//!
+//!   @defgroup stng Settings definitions and handling
+//!   @brief    Functions and types to handle RABERU settings
+//! @}
+//!
 //! @defgroup utility   Helper types and function
 //! @brief    Tools for interacting with Raberu components
 //!
-//! @defgroup main   Main Raberu Components
-//! @brief    Main Raberu components
-//================================================================================================
+//! @ingroup  utility
+//! @{
+//!   @defgroup udls   User-defined Literal operators
+//!   @brief    UDL operators
+//! @}
+//==================================================================================================
 
 //==================================================================================================
-//! @namespace concepts
+//! @namespace rbr::concepts
 //! @brief Raberu Concepts namespace
 //==================================================================================================
 namespace rbr::concepts
@@ -171,7 +185,7 @@ namespace rbr::detail
 namespace rbr
 {
   //================================================================================================
-  //! @namespace literals
+  //! @namespace rbr::literals
   //! @brief Raberu literals namespace
   //================================================================================================
   namespace literals
@@ -213,7 +227,7 @@ namespace rbr
   namespace literals
   {
     //==============================================================================================
-    //! @ingroup utility
+    //! @ingroup udls
     //! @brief Forms an ID constant literal
     //! @return An instance of rbr::id_ for the specified string
     //==============================================================================================
@@ -221,7 +235,7 @@ namespace rbr
   }
 
   //================================================================================================
-  //! @ingroup main
+  //! @ingroup kwds
   //! @brief Callable object wrapper for functional default value
   //! @tparam Func Callable object to keep
   //================================================================================================
@@ -233,7 +247,7 @@ namespace rbr
   };
 
   //================================================================================================
-  //! @ingroup main
+  //! @ingroup stng
   //! @brief Callable object wrapper for functional default value
   //! @tparam Func Callable object to keep
   //================================================================================================
@@ -247,7 +261,7 @@ namespace rbr
   };
 
   //================================================================================================
-  //! @ingroup main
+  //! @ingroup kwds
   //! @brief Base class for keyword definition
   //!
   //! rbr::as_keyword provides an CRTP base class for keyword-like types. It is internally used
@@ -302,10 +316,6 @@ namespace rbr
       return option<Keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
     }
 
-    constexpr as_keyword() =default;
-    constexpr as_keyword(as_keyword const&) =default;
-    constexpr auto operator=(as_keyword const&) const noexcept { return *this; }
-
     //==============================================================================================
     //! @brief Stream insertion function
     //!
@@ -359,7 +369,7 @@ namespace rbr
   };
 
   //================================================================================================
-  //! @ingroup main
+  //! @ingroup kwds
   //! @brief Checked keyword
   //!
   //! A Checked keyword is a keyword that verify if a value's type satisfies a predicates before
@@ -386,7 +396,7 @@ namespace rbr
   };
 
   //================================================================================================
-  //! @ingroup main
+  //! @ingroup kwds
   //! @brief Typed keyword
   //!
   //! A Typed keyword is a keyword that verify if a value's type is exactly matching a type.
@@ -411,7 +421,7 @@ namespace rbr
   };
 
   //================================================================================================
-  //! @ingroup main
+  //! @ingroup kwds
   //! @brief Regular keyword
   //!
   //! A Regular keyword is a keyword that accepts any types.
@@ -423,6 +433,9 @@ namespace rbr
   {
     using as_keyword<any_keyword<ID>>::operator=;
 
+    /// ID type associated to the keyword
+    using id_type = ID;
+
     template<typename V>
     std::ostream& display(std::ostream& os, V const& v) const
     {
@@ -433,31 +446,38 @@ namespace rbr
     }
   };
 
-  // Flags are keyword/options which value is given by its sole presence
-  template<typename Keyword> struct flag_keyword
+  //================================================================================================
+  //! @ingroup kwds
+  //! @brief Flag keyword
+  //!
+  //! A Flag keyword is a keyword which value is given by its mere presence. It accepts no binding
+  //! and return a value convertible to `bool` when set in a rbr::settings.
+  //!
+  //! By design, a flag is also its own rbr::option.
+  //!
+  //! @tparam ID    Unique identifier for the keyword
+  //================================================================================================
+  template<typename ID> struct flag_keyword
   {
     constexpr flag_keyword() {}
-    constexpr flag_keyword(Keyword const&) {}
+    constexpr flag_keyword(ID const&) {}
+
+    /// ID type associated to the keyword
+    using id_type = ID;
 
     template<typename T> static constexpr bool accept()
     {
       return std::is_same_v<std::true_type, T>;
     }
 
-    std::ostream& show(std::ostream& os, bool) const
-    {
-      return os << Keyword{} << " : set";
-    }
+    std::ostream& show(std::ostream& os, bool) const { return os << ID{} << " : set"; }
 
-    using tag_type          = Keyword;
+    using tag_type          = ID;
     using keyword_type      = flag_keyword;
     using stored_value_type = std::true_type;
 
     template<typename Type>
-    constexpr auto operator=(Type&&) const noexcept
-    {
-      return *this;
-    }
+    constexpr auto operator=(Type&&) const noexcept { return *this; }
 
     template<typename Type>
     constexpr auto operator|(Type&& v) const noexcept
@@ -475,16 +495,26 @@ namespace rbr
     template<typename O0, typename O1, typename... Os>
     constexpr decltype(auto) operator()(O0&&, O1&&, Os&&... ) const
     {
-      return    std::same_as<keyword_type , typename std::remove_cvref_t<O0>::keyword_type>
-            ||  std::same_as<keyword_type , typename std::remove_cvref_t<O1>::keyword_type>
+      return    std::same_as<keyword_type, typename std::remove_cvref_t<O0>::keyword_type>
+            ||  std::same_as<keyword_type, typename std::remove_cvref_t<O1>::keyword_type>
             || (std::same_as<keyword_type, typename std::remove_cvref_t<Os>::keyword_type> || ...);
     }
   };
 
-  // Keyword builder
-  template<typename Tag> constexpr flag_keyword<Tag>  flag(Tag) noexcept { return {}; }
+  //================================================================================================
+  //! @ingroup kwds
+  //! @related rbr::flag_keyword
+  //! @brief Create a flag keyword for reuse
+  //! @param  id  Unique rbr::id_ for the keyword being built
+  //! @return An instance of rbr::flag_keyword
+  //! ## Example:
+  //! @include doc/flag.cpp
+  //================================================================================================
+  template<typename Tag>
+  constexpr flag_keyword<Tag>  flag([[maybe_unused]] Tag id) noexcept { return {}; }
 
   //================================================================================================
+  //! @ingroup kwds
   //! @related rbr::any_keyword
   //! @brief Create a regular keyword for reuse
   //! @param  id  Unique rbr::id_ for the keyword being built
@@ -496,6 +526,7 @@ namespace rbr
   constexpr any_keyword<ID> keyword([[maybe_unused]] ID id) noexcept { return {}; }
 
   //================================================================================================
+  //! @ingroup kwds
   //! @related rbr::checked_keyword
   //! @brief Create a checked keyword for reuse
   //! @tparam Checker Unary template meta-function to use for validation
@@ -508,6 +539,7 @@ namespace rbr
   constexpr checked_keyword<ID,Checker> keyword([[maybe_unused]] ID id) noexcept { return {}; }
 
   //================================================================================================
+  //! @ingroup kwds
   //! @related rbr::typed_keyword
   //! @brief Create a typed Keyword for reuse
   //! @tparam Type Type accepted by the keyword
@@ -519,12 +551,23 @@ namespace rbr
   template<typename Type, typename ID>
   constexpr typed_keyword<ID, Type> keyword([[maybe_unused]] ID id) noexcept { return {}; }
 
-  // Keyword/Flag-type user defined literals
   namespace literals
   {
+    //==============================================================================================
+    //! @ingroup udls
+    //! @related rbr::any_keyword
+    //! @brief Forms an instance of rbr::any_keyword from a literal string
+    //! @return An instance of rbr::any_keyword using the specified string as ID
+    //==============================================================================================
     template<str_ ID>
     constexpr auto operator""_kw() noexcept { return any_keyword<id_<ID>>{}; }
 
+    //==============================================================================================
+    //! @ingroup udls
+    //! @related rbr::flag_keyword
+    //! @brief Forms an instance of rbr::flag_keyword from a literal string
+    //! @return An instance of rbr::flag_keyword using the specified string as ID
+    //==============================================================================================
     template<str_ ID>
     constexpr auto operator""_fl() noexcept { return flag_keyword<id_<ID>>{}; }
   }
@@ -544,27 +587,63 @@ namespace rbr
     }
   };
 
-  //! @brief Settings is a group of options
+  //================================================================================================
+  //! @ingroup stng
+  //! @brief Defines a group of options for processing
+  //!
+  //! rbr::settings acts as an aggregation of [Options](@ref rbr::concepts::option) (ie pair of
+  //! [Keyword](@ref rbr::concepts::keyword)/value) that provides an user-interface for accessing
+  //! or managing said [Options](@ref rbr::concepts::option) and to gather informations.
+  //!
+  //! @tparam Opts  List of [options](@ref rbr::concepts::option) aggregated
+  //================================================================================================
   template<concepts::option... Opts> struct settings
   {
     using rbr_settings = void;
     using base = aggregator<Opts...>;
+
+    /// Constructor from a variadic pack of rbr::concepts::option
     constexpr settings(Opts const&... opts) : content_(opts...) {}
 
+    /// Number of options in current rbr::settings
     static constexpr std::ptrdiff_t size() noexcept { return sizeof...(Opts); }
 
+    //==============================================================================================
+    //! @brief Checks if a given rbr::keyword is stored inside rbr::settings
+    //! @param kw Keyword to check
+    //! @return An instance of `std::true_type` if current setting contains an option based on `kw`.
+    //!         Otherwise, return an instance of `std::false_type`.
+    //! ## Example:
+    //! @include doc/contains.cpp
+    //==============================================================================================
     template<concepts::keyword Key>
-    static constexpr auto contains(Key const &) noexcept
+    static constexpr auto contains([[maybe_unused]] Key const& kw) noexcept
     {
       using found = decltype((std::declval<base>())(Key{}));
       return std::bool_constant<!std::same_as<found, unknown_key> >{};
     }
 
+    //==============================================================================================
+    //! @brief Checks if rbr::settings contains at least one of maybe keyword
+    //! @param ks Keywords to check
+    //! @return An instance of `std::true_type` if current setting contains at least one option
+    //!         based on any of the `ks`. Otherwise, return an instance of `std::false_type`.
+    //! ## Example:
+    //! @include doc/contains_any.cpp
+    //==============================================================================================
     template<concepts::keyword... Keys>
     static constexpr auto contains_any(Keys... ks) noexcept { return (contains(ks) || ...); }
 
+    //==============================================================================================
+    //! @brief Checks if rbr::settings contains options based only on selected keywords
+    //! @param ks Keywords to check
+    //! @return An instance of `std::true_type` if current setting contains only options
+    //!         based on any of the `ks`. Otherwise, return an instance of `std::false_type`.
+    //! ## Example:
+    //! @include doc/contains_only.cpp
+    //==============================================================================================
     template<concepts::keyword... Keys>
-    static constexpr auto contains_only(Keys const&...) noexcept
+    static constexpr auto contains_only([[maybe_unused]] Keys const&... ks) noexcept
     {
       using current_keys    = detail::keys<typename Opts::keyword_type...>;
       using acceptable_keys = detail::keys<Keys...>;
@@ -572,20 +651,42 @@ namespace rbr
       return  detail::is_equivalent<unique_set, acceptable_keys>::value;
     }
 
+    //==============================================================================================
+    //! @brief Checks if rbr::settings contains no options based on any of the selected keywords
+    //! @param ks Keywords to check
+    //! @return An instance of `std::true_type` if current setting contains no options
+    //!         based on any of the `ks`. Otherwise, return an instance of `std::false_type`.
+    //! ## Example:
+    //! @include doc/contains_none.cpp
+    //==============================================================================================
     template<concepts::keyword... Keys>
     static constexpr auto contains_none(Keys... ks) noexcept { return !contains_any(ks...); }
 
+    //==============================================================================================
+    //! @brief Retrieved a value via a keyword
+    //!
+    //! Retrieve the value bound to a given keyword `k` inside current rbr::settings instance.
+    //! If such a keyword is not present, either an instance of rbr::unknown_key is returned or
+    //! a default value or function call will be returned.
+    //!
+    //! @param k Keywords to check
+    //! @return If any, the value bound to `k`.
+    //! ## Example:
+    //! @include doc/subscript.cpp
+    //==============================================================================================
     template<concepts::keyword Key> constexpr auto operator[](Key const& k) const noexcept
     {
       return content_(k);
     }
 
+    //! @overload
     template<typename Keyword>
     constexpr auto operator[](flag_keyword<Keyword> const&) const noexcept
     {
       return contains(flag_keyword<Keyword>{});
     }
 
+    //! @overload
     template<concepts::keyword Key, typename Value>
     constexpr auto operator[](detail::type_or_<Key, Value> const & tgt) const
     {
@@ -594,6 +695,8 @@ namespace rbr
       else                                                      return tgt.value;
     }
 
+    //! @related rbr::settings
+    //! @brief Output stream insertion
     friend std::ostream& operator<<(std::ostream& os, settings const& s)
     {
       auto show = [&]<typename T, typename V>(T t, V const& v) -> std::ostream&
@@ -609,10 +712,25 @@ namespace rbr
     base content_;
   };
 
+  /// rbr::settings deduction guide
   template<concepts::option... Opts>
   settings(Opts&&... opts) -> settings<std::remove_cvref_t<Opts>...>;
 
-  // Merge settings
+  //================================================================================================
+  //! @ingroup stng
+  //! @related rbr::settings
+  //! @brief Merge two instances of rbr::settings
+  //!
+  //! Merge all options of `opts` and `defs`. If an options is present in both arguments, the one
+  //! from `opts` is used.
+  //!
+  //! @param opts rbr::settings to merge
+  //! @param defs rbr::settings acting as default value
+  //! @return An instance of rbr::settings containing all options from `opts` and any options
+  //!         from `defs` not present in `opts`.
+  //! ## Example:
+  //! @include doc/merge.cpp
+  //================================================================================================
   template<concepts::option... K1s, concepts::option... K2s>
   constexpr auto merge(settings<K1s...> const& opts, settings<K2s...> const& defs) noexcept
   {
@@ -633,7 +751,6 @@ namespace rbr
                                           >::type{},opts,defs);
   }
 
-  // Drop keyword from settings
   namespace detail
   {
     template<typename K, concepts::keyword... Kept>
@@ -658,39 +775,87 @@ namespace rbr
     };
   }
 
-  template<concepts::keyword K, concepts::option... Os>
-  constexpr auto drop(K const&, settings<Os...> const& os)
+  //================================================================================================
+  //! @ingroup stng
+  //! @related rbr::settings
+  //! @brief Remove an option from a rbr::settings
+  //!
+  //! Build a rbr::settings containing all options from s except for any option bound to the `k`
+  //! rbr::keyword.
+  //!
+  //! @param k Keyword to remove
+  //! @param s Original rbr::settings
+  //! @return An instance of rbr::settings containing all options of `s` except those bound to `k`.
+  //!
+  //! ## Example:
+  //! @include doc/drop.cpp
+  //================================================================================================
+  template<concepts::keyword K, concepts::option... O>
+  [[nodiscard]] constexpr auto drop([[maybe_unused]] K const& k, settings<O...> const& s)
   {
-    using selected_keys_t = typename detail::select_keys<K,settings<Os...>>::type;
+    using selected_keys_t = typename detail::select_keys<K,settings<O...>>::type;
 
     return [&]<typename ... Ks>( detail::keys<Ks...> )
     {
       // Rebuild a new settings by going over the keys that we keep
-      return rbr::settings{ (Ks{} = os[Ks{}] )...};
+      return rbr::settings{ (Ks{} = s[Ks{}] )...};
     }(selected_keys_t{});
   }
 
-  // Standalone fetch one keyword inside N
+  //================================================================================================
+  //! @ingroup stng
+  //! @brief Retrieved a value via a keyword
+  //!
+  //! Retrieve the value bound to a given keyword `k` inside a variadic list of rbr::options.
+  //! If such a keyword is not present, either an instance of rbr::unknown_key is returned or
+  //! a default value or function call will be returned.
+  //!
+  //! @param k Keywords to check
+  //! @param os Options to inspect
+  //! @return If any, the value bound to `k`.
+  //!
+  //! ## Helper Types
+  //! @code
+  //! namespace rbr::result
+  //! {
+  //!   template<auto Keyword, typename... Sources> struct fetch
+  //!
+  //!   template<auto Keyword, typename... Sources>
+  //!   using fetch_t = typename fetch<Keyword,Sources...>::type;
+  //! }
+  //! @endcode
+  //!
+  //! Return the type of a call to rbr::fetch.
+  //!
+  //! ## Example:
+  //! @include doc/fetch.cpp
+  //================================================================================================
   template<concepts::keyword K, concepts::option... Os>
-  constexpr decltype(auto) fetch(K const& kw, Os const&... os)
+  constexpr decltype(auto) fetch(K const& k, Os const&... os)
   {
     auto const opts = settings(os...);
-    return opts[kw];
+    return opts[k];
   }
 
+  //! @overload
   template<concepts::keyword K, typename V, concepts::option... Os>
-  constexpr decltype(auto) fetch(detail::type_or_<K, V> const& kw, Os const&... os)
+  constexpr decltype(auto) fetch(detail::type_or_<K, V> const& k, Os const&... os)
   {
     auto const opts = settings(os...);
-    return opts[kw];
+    return opts[k];
   }
 
+  //! @overload
   template<typename K, concepts::settings Settings>
-  constexpr decltype(auto) fetch(K const& kw, Settings const& opts)
+  constexpr decltype(auto) fetch(K const& k, Settings const& opts)
   {
-    return opts[kw];
+    return opts[k];
   }
 
+  //================================================================================================
+  //! @namespace rbr::result
+  //! @brief Raberu helper traits namespace
+  //================================================================================================
   namespace result
   {
     template<auto Keyword, typename... Sources> struct fetch;
@@ -711,7 +876,10 @@ namespace rbr
     using fetch_t = typename fetch<Keyword,Sources...>::type;
   }
 
-  // Global keyword/value_type types extractors
+  //================================================================================================
+  //! @ingroup utility
+  //! @brief Lightweight variadic type list
+  //================================================================================================
   template<typename... T> struct types {};
 
   namespace result
@@ -738,12 +906,60 @@ namespace rbr
     using values_t = typename values<Settings,List>::type;
   }
 
+  //================================================================================================
+  //! @ingroup stng
+  //! @brief Retrieved the list of all keywords in a settings
+  //!
+  //! @tparam List  A n-ary template type to hold the result values
+  //! @param s      Settings to inspect
+  //! @return An instance of rbr::type containing all the keyword from a rbr::settings.
+  //!
+  //! ## Helper Types
+  //! @code
+  //! namespace rbr::result
+  //! {
+  //!   template<template<typename...> class List, typename Settings> struct keywords;
+  //!
+  //!   template<template<typename...> class List, typename Settings>
+  //!   using keywords_t = typename keywords<List,Settings>::type;
+  //! }
+  //! @endcode
+  //!
+  //! Return the type of a call to rbr::keywords.
+  //!
+  //! ## Example:
+  //! @include doc/keywords.cpp
+  //================================================================================================
   template<template<typename...> class List, typename... Opts>
-  auto keywords(rbr::settings<Opts...> const&)
+  auto keywords([[maybe_unused]]rbr::settings<Opts...> const& s)
   {
     return result::keywords_t<rbr::settings<Opts...>,List>{typename Opts::keyword_type{}...};
   }
 
+  //================================================================================================
+  //! @ingroup stng
+  //! @brief Retrieved the list of all value stored in a settings
+  //!
+  //! @tparam List  A n-ary template type to hold the result
+  //! @param s      Settings to inspect
+  //! @return an instance of rbr::type containing all the values from a rbr::settings.
+  //!
+  //! ## Helper Types
+  //! @code
+  //! namespace rbr::result
+  //! {
+  //!   template<template<typename...> class List, typename Settings> struct values;
+  //!
+  //!   template<template<typename...> class List, typename Settings>
+  //!   using values_t = typename values<List,Settings>::type;
+  //! }
+  //! @endcode
+  //!
+  //! Return the type of a call to rbr::values.
+  //!
+  //! ## Example:
+  //! @include doc/values.cpp
+  //================================================================================================
   template<template<typename...> class List, typename... Opts>
   auto values(rbr::settings<Opts...> const& o)
   {

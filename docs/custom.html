@@ -166,7 +166,7 @@ Extending RABERU Keywords</h2>
 <div class="fragment"><div class="line"><span class="keyword">struct </span>unrolling : <a class="code hl_struct" href="structrbr_1_1as__keyword.html">rbr::as_keyword</a>&lt;unrolling&gt;</div>
 <div class="line">{</div>
 <div class="line">  <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> N&gt;</div>
-<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="structrbr_1_1as__keyword_a408555e0cfdbfb75c48d690f30ee97c5.html#a408555e0cfdbfb75c48d690f30ee97c5">operator=</a>(std::integral_constant&lt;int,N&gt; <span class="keyword">const</span>&amp;) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="structrbr_1_1as__keyword_a588ad9732a50dc4e0bd54bb4818a3209.html#a588ad9732a50dc4e0bd54bb4818a3209">operator=</a>(std::integral_constant&lt;int,N&gt; <span class="keyword">const</span>&amp;) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
 <div class="line">  {</div>
 <div class="line">    <span class="keywordflow">return</span> <a class="code hl_struct" href="structrbr_1_1option.html">rbr::option&lt;unrolling,std::integral_constant&lt;int,N&gt;</a>&gt;{};</div>
 <div class="line">  }</div>
@@ -175,7 +175,7 @@ Extending RABERU Keywords</h2>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span>&lt;<span class="keywordtype">int</span> N&gt; <span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> unroll = (unrolling{} = std::integral_constant&lt;int,N&gt;{});</div>
-<div class="ttc" id="astructrbr_1_1as__keyword_a408555e0cfdbfb75c48d690f30ee97c5_html_a408555e0cfdbfb75c48d690f30ee97c5"><div class="ttname"><a href="structrbr_1_1as__keyword_a408555e0cfdbfb75c48d690f30ee97c5.html#a408555e0cfdbfb75c48d690f30ee97c5">rbr::as_keyword::operator=</a></div><div class="ttdeci">constexpr auto operator=(Type &amp;&amp;v) const noexcept</div><div class="ttdoc">Assignment of a value to a keyword.</div><div class="ttdef"><b>Definition:</b> raberu.hpp:313</div></div>
+<div class="ttc" id="astructrbr_1_1as__keyword_a588ad9732a50dc4e0bd54bb4818a3209_html_a588ad9732a50dc4e0bd54bb4818a3209"><div class="ttname"><a href="structrbr_1_1as__keyword_a588ad9732a50dc4e0bd54bb4818a3209.html#a588ad9732a50dc4e0bd54bb4818a3209">rbr::as_keyword::operator=</a></div><div class="ttdeci">constexpr auto operator=(Type &amp;&amp;v) const noexcept</div><div class="ttdoc">Assignment of a value to a keyword.</div><div class="ttdef"><b>Definition:</b> raberu.hpp:322</div></div>
 <div class="ttc" id="astructrbr_1_1as__keyword_html"><div class="ttname"><a href="structrbr_1_1as__keyword.html">rbr::as_keyword</a></div><div class="ttdoc">Base class for keyword definition.</div><div class="ttdef"><b>Definition:</b> raberu.hpp:273</div></div>
 <div class="ttc" id="astructrbr_1_1option_html"><div class="ttname"><a href="structrbr_1_1option.html">rbr::option</a></div><div class="ttdoc">Callable object wrapper for functional default value.</div><div class="ttdef"><b>Definition:</b> raberu.hpp:255</div></div>
 </div><!-- fragment --><p >What if we call <code>f( unrolling{} = 3.f );</code> ? Well, we go this error message:</p>
@@ -192,7 +192,7 @@ Custom Keywords Display</h2>
 <div class="fragment"><div class="line"><span class="keyword">struct </span>unrolling : <a class="code hl_struct" href="structrbr_1_1as__keyword.html">rbr::as_keyword</a>&lt;unrolling&gt;</div>
 <div class="line">{</div>
 <div class="line">  <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> N&gt;</div>
-<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="structrbr_1_1as__keyword_a408555e0cfdbfb75c48d690f30ee97c5.html#a408555e0cfdbfb75c48d690f30ee97c5">operator=</a>(std::integral_constant&lt;int,N&gt; <span class="keyword">const</span>&amp;) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="structrbr_1_1as__keyword_a588ad9732a50dc4e0bd54bb4818a3209.html#a588ad9732a50dc4e0bd54bb4818a3209">operator=</a>(std::integral_constant&lt;int,N&gt; <span class="keyword">const</span>&amp;) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
 <div class="line">  {</div>
 <div class="line">    <span class="keywordflow">return</span> <a class="code hl_struct" href="structrbr_1_1option.html">rbr::option&lt;unrolling,std::integral_constant&lt;int,N&gt;</a>&gt;{};</div>
 <div class="line">  }</div>
@@ -212,7 +212,7 @@ Custom Keywords Display</h2>
 <div class="line"><span class="keyword">struct </span>unrolling : <a class="code hl_struct" href="structrbr_1_1as__keyword.html">rbr::as_keyword</a>&lt;unrolling&gt;</div>
 <div class="line">{</div>
 <div class="line">  <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> N&gt;</div>
-<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="structrbr_1_1as__keyword_a408555e0cfdbfb75c48d690f30ee97c5.html#a408555e0cfdbfb75c48d690f30ee97c5">operator=</a>(std::integral_constant&lt;int,N&gt; <span class="keyword">const</span>&amp;) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="structrbr_1_1as__keyword_a588ad9732a50dc4e0bd54bb4818a3209.html#a588ad9732a50dc4e0bd54bb4818a3209">operator=</a>(std::integral_constant&lt;int,N&gt; <span class="keyword">const</span>&amp;) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
 <div class="line">  {</div>
 <div class="line">    <span class="keywordflow">return</span> <a class="code hl_struct" href="structrbr_1_1option.html">rbr::option&lt;unrolling,std::integral_constant&lt;int,N&gt;</a>&gt;{};</div>
 <div class="line">  }</div>

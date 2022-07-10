@@ -158,11 +158,11 @@ Public Member Functions</h2></td></tr>
 constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;=&gt;</b> (<a class="el" href="structrbr_1_1as__keyword.html">as_keyword</a> const &amp;) const noexcept=default</td></tr>
 <tr class="memdesc:ad8afe5ffee5a87a2dea65e75d8f9c501"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keyword comparison. <br /></td></tr>
 <tr class="separator:ad8afe5ffee5a87a2dea65e75d8f9c501"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a408555e0cfdbfb75c48d690f30ee97c5"><td class="memTemplParams" colspan="2">template&lt;typename Type &gt; <br />
-requires ( <a class="el" href="structrbr_1_1as__keyword_ae5420c9dd19d328b53c23f2768b4a7df.html#ae5420c9dd19d328b53c23f2768b4a7df">accept</a>&lt;std::remove_cvref_t&lt;Type&gt;&gt;() )</td></tr>
-<tr class="memitem:a408555e0cfdbfb75c48d690f30ee97c5"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structrbr_1_1as__keyword_a408555e0cfdbfb75c48d690f30ee97c5.html#a408555e0cfdbfb75c48d690f30ee97c5">operator=</a> (Type &amp;&amp;v) const noexcept</td></tr>
-<tr class="memdesc:a408555e0cfdbfb75c48d690f30ee97c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment of a value to a keyword.  <a href="structrbr_1_1as__keyword_a408555e0cfdbfb75c48d690f30ee97c5.html#a408555e0cfdbfb75c48d690f30ee97c5">More...</a><br /></td></tr>
-<tr class="separator:a408555e0cfdbfb75c48d690f30ee97c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a588ad9732a50dc4e0bd54bb4818a3209"><td class="memTemplParams" colspan="2">template&lt;typename Type &gt; <br />
+requires ( <a class="el" href="structrbr_1_1as__keyword_a1dec95720e996f182ce2a3e8974bb09f.html#a1dec95720e996f182ce2a3e8974bb09f">accept</a>&lt;Type&gt;() )</td></tr>
+<tr class="memitem:a588ad9732a50dc4e0bd54bb4818a3209"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structrbr_1_1as__keyword_a588ad9732a50dc4e0bd54bb4818a3209.html#a588ad9732a50dc4e0bd54bb4818a3209">operator=</a> (Type &amp;&amp;v) const noexcept</td></tr>
+<tr class="memdesc:a588ad9732a50dc4e0bd54bb4818a3209"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment of a value to a keyword.  <a href="structrbr_1_1as__keyword_a588ad9732a50dc4e0bd54bb4818a3209.html#a588ad9732a50dc4e0bd54bb4818a3209">More...</a><br /></td></tr>
+<tr class="separator:a588ad9732a50dc4e0bd54bb4818a3209"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5031419f90500aea0ff2176ba8c4ec75"><td class="memTemplParams" colspan="2"><a id="a5031419f90500aea0ff2176ba8c4ec75" name="a5031419f90500aea0ff2176ba8c4ec75"></a>
 template&lt;typename Func &gt; </td></tr>
 <tr class="memitem:a5031419f90500aea0ff2176ba8c4ec75"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator|</b> (<a class="el" href="structrbr_1_1call.html">call</a>&lt; Func &gt; &amp;&amp;v) const noexcept</td></tr>
@@ -170,7 +170,7 @@ template&lt;typename Func &gt; </td></tr>
 <tr class="separator:a5031419f90500aea0ff2176ba8c4ec75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeda963b782a4126c0f6165f08d4c8d32"><td class="memTemplParams" colspan="2"><a id="aeda963b782a4126c0f6165f08d4c8d32" name="aeda963b782a4126c0f6165f08d4c8d32"></a>
 template&lt;typename Type &gt; <br />
-requires ( <a class="el" href="structrbr_1_1as__keyword_ae5420c9dd19d328b53c23f2768b4a7df.html#ae5420c9dd19d328b53c23f2768b4a7df">accept</a>&lt;Type&gt;() )</td></tr>
+requires ( <a class="el" href="structrbr_1_1as__keyword_a1dec95720e996f182ce2a3e8974bb09f.html#a1dec95720e996f182ce2a3e8974bb09f">accept</a>&lt;Type&gt;() )</td></tr>
 <tr class="memitem:aeda963b782a4126c0f6165f08d4c8d32"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator|</b> (Type &amp;&amp;v) const noexcept</td></tr>
 <tr class="memdesc:aeda963b782a4126c0f6165f08d4c8d32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specify a default value for the keyword. <br /></td></tr>
 <tr class="separator:aeda963b782a4126c0f6165f08d4c8d32"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -181,10 +181,11 @@ requires ( <a class="el" href="structrbr_1_1as__keyword_ae5420c9dd19d328b53c23f2
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ae5420c9dd19d328b53c23f2768b4a7df"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ae5420c9dd19d328b53c23f2768b4a7df"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structrbr_1_1as__keyword_ae5420c9dd19d328b53c23f2768b4a7df.html#ae5420c9dd19d328b53c23f2768b4a7df">accept</a> ()</td></tr>
-<tr class="memdesc:ae5420c9dd19d328b53c23f2768b4a7df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile-time validation of value.  <a href="structrbr_1_1as__keyword_ae5420c9dd19d328b53c23f2768b4a7df.html#ae5420c9dd19d328b53c23f2768b4a7df">More...</a><br /></td></tr>
-<tr class="separator:ae5420c9dd19d328b53c23f2768b4a7df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dec95720e996f182ce2a3e8974bb09f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; <br />
+requires (!std::same_as&lt;std::remove_cvref_t&lt;T&gt;,<a class="el" href="structrbr_1_1as__keyword.html">as_keyword</a>&gt;)</td></tr>
+<tr class="memitem:a1dec95720e996f182ce2a3e8974bb09f"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structrbr_1_1as__keyword_a1dec95720e996f182ce2a3e8974bb09f.html#a1dec95720e996f182ce2a3e8974bb09f">accept</a> ()</td></tr>
+<tr class="memdesc:a1dec95720e996f182ce2a3e8974bb09f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile-time validation of value.  <a href="structrbr_1_1as__keyword_a1dec95720e996f182ce2a3e8974bb09f.html#a1dec95720e996f182ce2a3e8974bb09f">More...</a><br /></td></tr>
+<tr class="separator:a1dec95720e996f182ce2a3e8974bb09f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

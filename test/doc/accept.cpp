@@ -12,9 +12,7 @@
 // Defines a keyword type that only accept floating point value
 struct real_keyword : rbr::as_keyword<real_keyword>
 {
-  template<typename T>
-  static constexpr bool check = std::is_floating_point_v<T>;
-
+  template<typename T>  static constexpr bool check() { return std::is_floating_point_v<T>; }
   using rbr::as_keyword<real_keyword>::operator=;
 };
 

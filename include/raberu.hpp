@@ -284,8 +284,8 @@ namespace rbr
     //! [Option](@ref rbr::concepts::option), one can validate this binding by checking arbitrary
     //! properties on the value type. This is done by the accept() member.
     //!
-    //! If `Keyword` defines a `check` static template member variable, it will be used as the
-    //! return value of accept(). Otherwise, true is returned, thus automatically validating any
+    //! If `Keyword` defines a `check` static template member function, it will be called to provide
+    //! the return value of accept(). Otherwise, true is returned, thus automatically validating any
     //! value type.
     //!
     //! @tparam T Type to validate
@@ -294,10 +294,19 @@ namespace rbr
     //! ## Example:
     //! @snippet doc/accept.cpp Custom Accept
     //==============================================================================================
-    template<typename T> static constexpr bool accept()
+    template<typename T>
+    static constexpr bool accept() requires (!std::same_as<std::remove_cvref_t<T>,as_keyword>)
     {
-      if constexpr( requires{ Keyword::template check<T>; } ) return Keyword::template check<T>;
-      else                                                    return true;
+      if constexpr( requires(Keyword) { Keyword::template check<T>(); } )
+        return Keyword::template check<T>();
+      else
+        return true;
+    }
+
+    template<typename T>
+    static constexpr bool accept() requires (std::same_as<std::remove_cvref_t<T>,as_keyword>)
+    {
+      return true;
     }
 
     //==============================================================================================
@@ -310,8 +319,7 @@ namespace rbr
     //! @return An rbr::option binding the keyword to `v`.
     //==============================================================================================
     template<typename Type>
-    constexpr auto operator=(Type&& v) const noexcept
-    requires( accept<std::remove_cvref_t<Type>>() )
+    constexpr auto operator=(Type&& v) const noexcept requires( accept<Type>() )
     {
       return option<Keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
     }
@@ -382,7 +390,7 @@ namespace rbr
   struct checked_keyword : as_keyword<checked_keyword<ID, Checker>>
   {
     using as_keyword<checked_keyword<ID, Checker>>::operator=;
-    template<typename T> static constexpr bool check = Checker<T>::value;
+    template<typename T>  static constexpr bool check() { return Checker<T>::value; }
 
     template<typename V>
     std::ostream& display(std::ostream& os, V const& v) const
@@ -408,7 +416,7 @@ namespace rbr
   struct typed_keyword  : as_keyword<typed_keyword<ID, Type>>
   {
     using as_keyword<typed_keyword<ID, Type>>::operator=;
-    template<typename T> static constexpr bool check = std::is_same_v<T,Type>;
+    template<typename T>  static constexpr bool check() { return std::is_same_v<T,Type>; }
 
     template<typename V>
     std::ostream& display(std::ostream& os, V const& v) const

@@ -1,8 +1,8 @@
 //==================================================================================================
 /**
   RABERU - Fancy Parameters Library
-  Copyright : RABERU Contributors & Maintainers
-  SPDX-License-Identifier: MIT
+  Copyright : RABERU Project Contributors
+  SPDX-License-Identifier: BSL-1.0
 **/
 //==================================================================================================
 #include <raberu.hpp>

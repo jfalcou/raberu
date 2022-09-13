@@ -11,7 +11,7 @@ int main()
   using namespace rbr::literals;
 
   auto s1 = rbr::settings("opt1"_kw = 3, "opt2"_kw = 22, "yes"_fl);
-  auto s2 = rbr::settings("opt1"_kw = 7.8, "yes"_kw = 8.8888, "opt2"_kw = 789.987);
+  auto s2 = rbr::settings("opt1"_kw = 7.8, "yes"_fl, "opt2"_kw = 789.987);
   auto s3 = rbr::settings("opt1"_kw = 7.8, "yes"_fl, "opt3"_kw = 789.987);
 
   std::cout << std::boolalpha << rbr::is_equivalent_v<decltype(s2), decltype(s3)> << "\n";

@@ -160,7 +160,7 @@ Using Pre-bound keyword</h1>
 </div><!-- fragment --><h1><a class="anchor" id="custom_02"></a>
 Custom RABERU Keywords</h1>
 <p >THe keywords provided by <b>RABERU</b> can also be extended to propose a better user experience. This includes using user-defined type instead of <b>RABERU</b> long symbol to improve diagnostic , complex checks or provide custom display when using stream insertion of settings.</p>
-<h2><a class="anchor" id="autotoc_md31"></a>
+<h2><a class="anchor" id="autotoc_md33"></a>
 Extending RABERU Keywords</h2>
 <p >Let's start again with our unrolling option. This time we want to be able to be sure nobody will use it with a non integral constant value and to display the value in a more informative way. To do so, we can inherits from <code><a class="el" href="structrbr_1_1as__keyword.html" title="Base class for keyword definition.">rbr::as_keyword</a></code>, a CRTP enabled base class:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span>unrolling : <a class="code hl_struct" href="structrbr_1_1as__keyword.html">rbr::as_keyword</a>&lt;unrolling&gt;</div>
@@ -184,7 +184,7 @@ Extending RABERU Keywords</h2>
 <div class="line">     ~~~~~~~~~~~ ^ ~~~</div>
 <div class="line">&lt;source&gt;:8:18: note: candidate <span class="keyword">template</span> ignored: could not match <span class="stringliteral">&#39;integral_constant&lt;int, N&gt;&#39;</span> against <span class="stringliteral">&#39;float&#39;</span></div>
 <div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator=(std::integral_constant&lt;int,N&gt; <span class="keyword">const</span>&amp;) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md32"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md34"></a>
 Custom Keywords Display</h2>
 <p >Let's now improve the output of the option. Currently, the output is like:</p>
 <div class="fragment"><div class="line">[unrolling] : 8 (std::integral_constant&lt;int, 8&gt;)</div>

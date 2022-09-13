@@ -13,6 +13,7 @@ var hierarchy =
     [ "rbr::call< Func >", "structrbr_1_1call.html", null ],
     [ "rbr::flag_keyword< ID >", "structrbr_1_1flag__keyword.html", null ],
     [ "rbr::id_< ID >", "structrbr_1_1id__.html", null ],
+    [ "rbr::is_equivalent< S1, S2 >", "structrbr_1_1is__equivalent.html", null ],
     [ "rbr::option< Keyword, Value >", "structrbr_1_1option.html", null ],
     [ "rbr::settings< Opts >", "structrbr_1_1settings.html", null ],
     [ "rbr::literals::str_< N >", "structrbr_1_1literals_1_1str__.html", null ],

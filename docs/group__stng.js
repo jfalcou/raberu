@@ -1,5 +1,6 @@
 var group__stng =
 [
+    [ "rbr::is_equivalent< S1, S2 >", "structrbr_1_1is__equivalent.html", null ],
     [ "rbr::option< Keyword, Value >", "structrbr_1_1option.html", null ],
     [ "rbr::settings< Opts >", "structrbr_1_1settings.html", [
       [ "settings", "structrbr_1_1settings.html#a0f2ff35651fc48a756885b73568d0a57", null ],

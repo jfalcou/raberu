@@ -157,7 +157,7 @@ Tutorial Keyword, Options, Settings</h1>
 <p >That's it. The <code>replicate</code> function can now takes keywords arguments and as long as the proper keywords are used, it will work as intended.</p>
 <h1><a class="anchor" id="tutorial_02"></a>
 Flavor of Keywords</h1>
-<h2><a class="anchor" id="autotoc_md26"></a>
+<h2><a class="anchor" id="autotoc_md28"></a>
 Regular keywords</h2>
 <p >Let's say you want to pass a compile-time unrolling factor to some algorithm. You can use a regular keyword as seen in the tutorial:</p>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> x = my_algorithm( <span class="stringliteral">&quot;unroll&quot;</span>_kw = std::integral_constant&lt;int,4&gt;{});</div>
@@ -170,7 +170,7 @@ Regular keywords</h2>
 <div class="fragment"><div class="line"><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> unroll = rbr::keyword(<span class="stringliteral">&quot;unroll&quot;</span>_id);</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span> x = my_algorithm( unroll = std::integral_constant&lt;int,4&gt;{});</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md27"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md29"></a>
 Flags</h2>
 <p >Sometimes, you just want to check if a given parameter has been passed but you don't really care about an associated value. Such keyword parameters are <b>flags</b>, carrying information about their sole presence without the need ot be bound to a value.</p>
 <p >They work in a similar way than regular keyword parameters but use the <code>_fl</code> user-defined literal ior the rbr::flag factory. Their value can be retrieved via rbr::settings::operator[]. If present, the value returned is <code>std::true_type</code>, otherwise <code>std::false_type</code> is returned.</p>
@@ -200,7 +200,7 @@ Flags</h2>
 <div class="line">  check_options(is_modal,autosave);</div>
 <div class="line">}</div>
 <div class="ttc" id="aconceptrbr_1_1concepts_1_1option_html"><div class="ttname"><a href="conceptrbr_1_1concepts_1_1option.html">rbr::concepts::option</a></div><div class="ttdoc">Option concept.</div><div class="ttdef"><b>Definition:</b> raberu.hpp:70</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md28"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md30"></a>
 Checked keywords</h2>
 <p >Regular keywords accept value of any types. Flag keyword implicitly behaves as boolean parameters. What if you need to have a keyword accepting values of a specific type ? Or, in more complex context, what if you need a keyword accepting values which types satisfy an arbitrary set of constraints ?</p>
 <p >To do so, we'll need to use the rbr::keyword factory function that accepts an optional template parameter. If this template parameter is a type, the keyword is setup to only accept value of this exact type.</p>
@@ -221,7 +221,7 @@ Checked keywords</h2>
 </div><!-- fragment --><h1><a class="anchor" id="tutorial_03"></a>
 Settings</h1>
 <p >Another important <b>RABERU</b> component is <a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a>. It aggregates key/value pairs in a way their exploitation is simplified. <a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a> provides functions for retrieving value from keywords, inspect the stored keywords and more.</p>
-<h2><a class="anchor" id="autotoc_md29"></a>
+<h2><a class="anchor" id="autotoc_md31"></a>
 Defining a Settings</h2>
 <p ><a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a> can be directly constructed from an arbitrary list of options, ie values bound to a keyword. Once constructed, its operator[] can be used to fetch the value of a given keyword.</p>
 <div class="fragment"><div class="line"> </div>
@@ -244,7 +244,7 @@ Defining a Settings</h2>
 <div class="line">}</div>
 <div class="ttc" id="agroup__stng_ga1a96173fdab96c73cf6540d48f779fe7_html_ga1a96173fdab96c73cf6540d48f779fe7"><div class="ttname"><a href="group__stng_ga1a96173fdab96c73cf6540d48f779fe7.html#ga1a96173fdab96c73cf6540d48f779fe7">rbr::values</a></div><div class="ttdeci">auto values(rbr::settings&lt; Opts... &gt; const &amp;o)</div><div class="ttdoc">Retrieved the list of all value stored in a settings.</div><div class="ttdef"><b>Definition:</b> raberu.hpp:972</div></div>
 <div class="ttc" id="astructrbr_1_1call_html"><div class="ttname"><a href="structrbr_1_1call.html">rbr::call</a></div><div class="ttdoc">Callable object wrapper for functional default value.</div><div class="ttdef"><b>Definition:</b> raberu.hpp:243</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md30"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md32"></a>
 Stream insertion</h2>
 <p ><a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a> can be streamed to display the list of keyword/value pairs it contains</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;raberu.hpp&gt;</span></div>

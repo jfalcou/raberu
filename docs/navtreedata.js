@@ -26,40 +26,40 @@ var NAVTREE =
 [
   [ "Raberu", "index.html", [
     [ "The Fancy Named Parameters Library", "index.html", [
-      [ "A Short Example", "index.html#autotoc_md20", null ],
-      [ "Licence", "index.html#autotoc_md21", null ]
+      [ "A Short Example", "index.html#autotoc_md22", null ],
+      [ "Licence", "index.html#autotoc_md23", null ]
     ] ],
     [ "Setup", "md_raberu_doc_page01_setup.html", [
-      [ "Direct file download", "md_raberu_doc_page01_setup.html#autotoc_md23", null ],
-      [ "CMake FetchContent", "md_raberu_doc_page01_setup.html#autotoc_md24", null ],
-      [ "CPM Integration", "md_raberu_doc_page01_setup.html#autotoc_md25", null ]
+      [ "Direct file download", "md_raberu_doc_page01_setup.html#autotoc_md25", null ],
+      [ "CMake FetchContent", "md_raberu_doc_page01_setup.html#autotoc_md26", null ],
+      [ "CPM Integration", "md_raberu_doc_page01_setup.html#autotoc_md27", null ]
     ] ],
     [ "Tutorial: Basic of RABERU", "tutorial.html", [
       [ "Tutorial Keyword, Options, Settings", "tutorial.html#tutorial_01", null ],
       [ "Flavor of Keywords", "tutorial.html#tutorial_02", [
-        [ "Regular keywords", "tutorial.html#autotoc_md26", null ],
-        [ "Flags", "tutorial.html#autotoc_md27", null ],
-        [ "Checked keywords", "tutorial.html#autotoc_md28", null ]
+        [ "Regular keywords", "tutorial.html#autotoc_md28", null ],
+        [ "Flags", "tutorial.html#autotoc_md29", null ],
+        [ "Checked keywords", "tutorial.html#autotoc_md30", null ]
       ] ],
       [ "Settings", "tutorial.html#tutorial_03", [
-        [ "Defining a Settings", "tutorial.html#autotoc_md29", null ],
-        [ "Stream insertion", "tutorial.html#autotoc_md30", null ]
+        [ "Defining a Settings", "tutorial.html#autotoc_md31", null ],
+        [ "Stream insertion", "tutorial.html#autotoc_md32", null ]
       ] ]
     ] ],
     [ "Tutorial: Customizing Keyword", "custom.html", [
       [ "Using Pre-bound keyword", "custom.html#custom_01", null ],
       [ "Custom RABERU Keywords", "custom.html#custom_02", [
-        [ "Extending RABERU Keywords", "custom.html#autotoc_md31", null ],
-        [ "Custom Keywords Display", "custom.html#autotoc_md32", null ]
+        [ "Extending RABERU Keywords", "custom.html#autotoc_md33", null ],
+        [ "Custom Keywords Display", "custom.html#autotoc_md34", null ]
       ] ]
     ] ],
     [ "Change Log", "changelog.html", [
-      [ "Version 2.0 - Past Prologue", "changelog.html#autotoc_md33", [
-        [ "Bug Fixes", "changelog.html#autotoc_md34", null ],
-        [ "New Features", "changelog.html#autotoc_md35", null ]
+      [ "Version 2.0 - Past Prologue", "changelog.html#autotoc_md35", [
+        [ "Bug Fixes", "changelog.html#autotoc_md36", null ],
+        [ "New Features", "changelog.html#autotoc_md37", null ]
       ] ],
-      [ "Version 1.0 - Emissary", "changelog.html#autotoc_md36", [
-        [ "First autonomous public release.", "changelog.html#autotoc_md37", null ]
+      [ "Version 1.0 - Emissary", "changelog.html#autotoc_md38", [
+        [ "First autonomous public release.", "changelog.html#autotoc_md39", null ]
       ] ]
     ] ],
     [ "Licence", "licence.html", null ],

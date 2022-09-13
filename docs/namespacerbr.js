@@ -9,6 +9,7 @@ var namespacerbr =
     [ "checked_keyword", "structrbr_1_1checked__keyword.html", "structrbr_1_1checked__keyword" ],
     [ "flag_keyword", "structrbr_1_1flag__keyword.html", "structrbr_1_1flag__keyword" ],
     [ "id_", "structrbr_1_1id__.html", "structrbr_1_1id__" ],
+    [ "is_equivalent", "structrbr_1_1is__equivalent.html", null ],
     [ "option", "structrbr_1_1option.html", null ],
     [ "settings", "structrbr_1_1settings.html", "structrbr_1_1settings" ],
     [ "typed_keyword", "structrbr_1_1typed__keyword.html", "structrbr_1_1typed__keyword" ],

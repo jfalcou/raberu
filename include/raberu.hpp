@@ -9,6 +9,7 @@
 #define RABERU_HPP_INCLUDED
 
 #include <array>
+#include <compare>
 #include <cstring>
 #include <ostream>
 #include <string_view>
@@ -44,6 +45,16 @@
 //! @}
 //==================================================================================================
 
+// Fix for non-conformant libcpp
+namespace rbr::stdfix
+{
+  template<typename T, typename U >
+  concept is_same_impl = std::is_same_v<T, U>;
+
+  template<typename T, typename U >
+  concept same_as = is_same_impl<T, U> && is_same_impl<U, T>;
+}
+
 //==================================================================================================
 //! @namespace rbr::concepts
 //! @brief Raberu Concepts namespace
@@ -58,7 +69,7 @@ namespace rbr::concepts
   template<typename K> concept keyword = requires( K k )
   {
     typename K::tag_type;
-    { K::template accept<int>() } -> std::same_as<bool>;
+    { K::template accept<int>() } -> stdfix::same_as<bool>;
   };
 
   //================================================================================================
@@ -70,7 +81,7 @@ namespace rbr::concepts
   template<typename O> concept option = requires( O const& o )
   {
     { o(typename std::remove_cvref_t<O>::keyword_type{}) }
-    -> std::same_as<typename std::remove_cvref_t<O>::stored_value_type>;
+    -> stdfix::same_as<typename std::remove_cvref_t<O>::stored_value_type>;
   };
 
   //================================================================================================
@@ -93,7 +104,7 @@ namespace rbr::concepts
   //! @tparam Keyword Keyword to match
   //================================================================================================
   template<typename Option, auto Keyword>
-  concept exactly = std::same_as< typename Option::keyword_type
+  concept exactly = stdfix::same_as< typename Option::keyword_type
                                 , std::remove_cvref_t<decltype(Keyword)>
                                 >;
 }
@@ -137,7 +148,7 @@ namespace rbr::detail
   template<typename K, typename Ks> struct contains;
 
   template<typename... Ks, typename K>
-  struct  contains<K, keys<Ks...>> : std::bool_constant<(std::same_as<K,Ks> || ...)>
+  struct  contains<K, keys<Ks...>> : std::bool_constant<(stdfix::same_as<K,Ks> || ...)>
   {};
 
   template<typename K, typename Ks, bool>  struct append_if_impl;
@@ -295,7 +306,7 @@ namespace rbr
     //! @snippet doc/accept.cpp Custom Accept
     //==============================================================================================
     template<typename T>
-    static constexpr bool accept() requires (!std::same_as<std::remove_cvref_t<T>,as_keyword>)
+    static constexpr bool accept() requires (!stdfix::same_as<std::remove_cvref_t<T>,as_keyword>)
     {
       if constexpr( requires(Keyword) { Keyword::template check<T>(); } )
         return Keyword::template check<T>();
@@ -304,7 +315,7 @@ namespace rbr
     }
 
     template<typename T>
-    static constexpr bool accept() requires (std::same_as<std::remove_cvref_t<T>,as_keyword>)
+    static constexpr bool accept() requires (stdfix::same_as<std::remove_cvref_t<T>,as_keyword>)
     {
       return true;
     }
@@ -503,9 +514,9 @@ namespace rbr
     template<typename O0, typename O1, typename... Os>
     constexpr decltype(auto) operator()(O0&&, O1&&, Os&&... ) const
     {
-      return    std::same_as<keyword_type, typename std::remove_cvref_t<O0>::keyword_type>
-            ||  std::same_as<keyword_type, typename std::remove_cvref_t<O1>::keyword_type>
-            || (std::same_as<keyword_type, typename std::remove_cvref_t<Os>::keyword_type> || ...);
+      return    stdfix::same_as<keyword_type, typename std::remove_cvref_t<O0>::keyword_type>
+            ||  stdfix::same_as<keyword_type, typename std::remove_cvref_t<O1>::keyword_type>
+            || (stdfix::same_as<keyword_type, typename std::remove_cvref_t<Os>::keyword_type> || ...);
     }
   };
 
@@ -628,7 +639,7 @@ namespace rbr
     static constexpr auto contains([[maybe_unused]] Key const& kw) noexcept
     {
       using found = decltype((std::declval<base>())(Key{}));
-      return std::bool_constant<!std::same_as<found, unknown_key> >{};
+      return std::bool_constant<!stdfix::same_as<found, unknown_key> >{};
     }
 
     //==============================================================================================
@@ -769,7 +780,7 @@ namespace rbr
       template<typename T> constexpr auto operator+(keys<T> const&) const
       {
         using kw_t = typename T::keyword_type;
-        if constexpr(!std::same_as<K, typename kw_t::tag_type>)  return filter<K, Kept..., kw_t>{};
+        if constexpr(!stdfix::same_as<K, typename kw_t::tag_type>)  return filter<K, Kept..., kw_t>{};
         else                                            return *this;
       }
     };

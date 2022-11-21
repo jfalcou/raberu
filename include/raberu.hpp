@@ -30,14 +30,21 @@
 //! @{
 //!   @defgroup kwds Keywords definitions and handling
 //!   @brief    Functions and types to handle RABERU keywords
-//!
+//! @}
+//==================================================================================================
+
+//==================================================================================================
 //!   @defgroup stng Settings definitions and handling
 //!   @brief    Functions and types to handle RABERU settings
 //! @}
-//!
+//==================================================================================================
+
+//==================================================================================================
 //! @defgroup utility   Helper types and function
 //! @brief    Tools for interacting with Raberu components
-//!
+//==================================================================================================
+
+//==================================================================================================
 //! @ingroup  utility
 //! @{
 //!   @defgroup udls   User-defined Literal operators
@@ -99,9 +106,6 @@ namespace rbr::concepts
   //!
   //! rbr::concepts::exactly is to be used to constraint functions template parameter to be an
   //! instantiation of a precise [Keyword](@ref rbr::concepts::keyword)
-  //!
-  //! @tparam Option  Type to constraint
-  //! @tparam Keyword Keyword to match
   //================================================================================================
   template<typename Option, auto Keyword>
   concept exactly = stdfix::same_as< typename Option::keyword_type
@@ -260,7 +264,8 @@ namespace rbr
   //================================================================================================
   //! @ingroup stng
   //! @brief Callable object wrapper for functional default value
-  //! @tparam Func Callable object to keep
+  //! @tparam Keyword Keyword for the option
+  //! @tparam Value   Value stored in the option
   //================================================================================================
   template<concepts::keyword Keyword, typename Value> struct option
   {
@@ -980,9 +985,9 @@ namespace rbr
   //! @include doc/values.cpp
   //================================================================================================
   template<template<typename...> class List, typename... Opts>
-  auto values(rbr::settings<Opts...> const& o)
+  auto values(rbr::settings<Opts...> const& s)
   {
-    return result::values_t<rbr::settings<Opts...>,List>{ o[typename Opts::keyword_type{}]... };
+    return result::values_t<rbr::settings<Opts...>,List>{ s[typename Opts::keyword_type{}]... };
   }
 
   //================================================================================================
@@ -992,7 +997,8 @@ namespace rbr
   //! Two rbr::settings are equivalent if they contain the same exact set of keywords irregardless
   //! of their values or value types.
   //!
-  //! @tparam S1, S2 rbr::settings to compare
+  //! @tparam S1 rbr::settings to compare
+  //! @tparam S2 rbr::settings to compare
   //!
   //! ## Helper Value
   //! @code

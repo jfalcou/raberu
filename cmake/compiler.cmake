@@ -15,8 +15,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
     target_compile_options( raberu_test INTERFACE /W3 /EHsc )
   else()
-    target_compile_options( raberu_test INTERFACE -Werror -Wall -Wextra -Wunused-variable
-                                                  -Wdocumentation -Wno-gnu-string-literal-operator-template
+    target_compile_options( raberu_test INTERFACE -Werror -Wall -Wextra -Wunused-variable -Wdocumentation
                           )
   endif()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -28,4 +27,6 @@ endif()
 target_include_directories( raberu_test INTERFACE
                             ${PROJECT_SOURCE_DIR}/test
                             ${PROJECT_SOURCE_DIR}/include
-                          ) 
+                          )
+
+target_link_libraries(raberu_test INTERFACE tts::tts)

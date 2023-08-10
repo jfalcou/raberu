@@ -7,7 +7,7 @@
 //==================================================================================================
 #define TTS_MAIN
 #include "common.hpp"
-#include <raberu.hpp>
+#include <raberu/raberu.hpp>
 #include <tts/tts.hpp>
 
 // MSVC does not support incomplete types in concepts (?)

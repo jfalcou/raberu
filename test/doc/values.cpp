@@ -3,7 +3,7 @@
   Copyright : RABERU Project Contributors
   SPDX-License-Identifier: BSL-1.0
 **/
-#include <raberu.hpp>
+#include <raberu/raberu.hpp>
 #include <iostream>
 #include <tuple>
 

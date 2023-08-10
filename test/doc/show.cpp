@@ -7,7 +7,7 @@
 #include <tts/tts.hpp>
 
 //! [Custom Show]
-#include <raberu.hpp>
+#include <raberu/raberu.hpp>
 
 // Defines a keyword type that only accept floating point value
 struct price_keyword : rbr::as_keyword<price_keyword>

@@ -8,4 +8,4 @@
 ## Reuse install.cmake to preapre package properly
 ##======================================================================================================================
 include("${CMAKE_CURRENT_LIST_DIR}/raberu-targets.cmake")
-set(TTS_LIBRARIES raberu::raberu)
+set(RABERU_LIBRARIES raberu::raberu)

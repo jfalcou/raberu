@@ -9,8 +9,8 @@ include(${PROJECT_SOURCE_DIR}/cmake/dependencies.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/compiler.cmake)
 
 ##======================================================================================================================
-option( RABERU_BUILD_TEST          "Build tests for Raberu"   ON  )
-option( RABERU_BUILD_DOCUMENTATION "Build Doxygen for Raberu" OFF )
+option( RABERU_BUILD_TEST          "Build tests   for Raberu"   ON  )
+option( RABERU_BUILD_DOCUMENTATION "Build Doxygen for Raberu"   OFF )
 
 ##======================================================================================================================
 ## Project setup via copacabana
@@ -50,6 +50,11 @@ if(RABERU_BUILD_DOCUMENTATION)
 endif()
 
 ##======================================================================================================================
+## Standalone generation
+##======================================================================================================================
+copa_setup_standalone(${QUIET_OPTION} FILE raberu.hpp SOURCE include DESTINATION standalone ROOT raberu TARGET raberu-standalone)
+
+##======================================================================================================================
 ## Tests setup
 ##======================================================================================================================
 if(RABERU_BUILD_TEST)
@@ -57,35 +62,3 @@ if(RABERU_BUILD_TEST)
   add_custom_target(raberu-unit)
   add_subdirectory(test)
 endif()
-
-
-# ##==================================================================================================
-# ## Test target
-# ##==================================================================================================
-# if( RABERU_BUILD_TEST )
-#   include(CTest)
-#   add_subdirectory(${PROJECT_SOURCE_DIR}/test/)
-# endif()
-
-# ##==================================================================================================
-# ## Add Doxygen building target
-# ##==================================================================================================
-# if( RABERU_BUILD_DOCS )
-#   find_package(Doxygen QUIET)
-
-#   if (DOXYGEN_FOUND)
-#     message( STATUS "[raberu] Doxygen available")
-#   else (DOXYGEN_FOUND)
-#     message( STATUS "[raberu] Doxygen need to be installed to generate the doxygen documentation")
-#   endif (DOXYGEN_FOUND)
-
-#   if (DOXYGEN_FOUND)
-#     set(DOXYGEN_CONFIG ${PROJECT_SOURCE_DIR}/doc/Doxyfile)
-#     add_custom_target ( rbr-doxygen
-#                         COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_CONFIG}
-#                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/doc
-#                         COMMENT "[raberu] Generating API documentation with Doxygen"
-#                         VERBATIM
-#                       )
-#   endif (DOXYGEN_FOUND)
-# endif()

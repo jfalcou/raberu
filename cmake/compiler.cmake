@@ -26,7 +26,7 @@ endif()
 
 target_include_directories( raberu_test INTERFACE
                             ${PROJECT_SOURCE_DIR}/test
-                            ${PROJECT_SOURCE_DIR}/include
+                            ${PROJECT_SOURCE_DIR}/standalone
                           )
 
 target_link_libraries(raberu_test INTERFACE tts::tts)

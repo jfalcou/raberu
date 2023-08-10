@@ -109,7 +109,7 @@
 //! rbr::settings can be streamed to display the list of keyword/value pairs it contains
 //!
 //! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
-//! #include <raberu.hpp>
+//! #include <raberu/raberu.hpp>
 //! #include <iostream>
 //!
 //! int main()

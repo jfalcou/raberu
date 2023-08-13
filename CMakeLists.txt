@@ -52,7 +52,10 @@ endif()
 ##======================================================================================================================
 ## Standalone generation
 ##======================================================================================================================
-copa_setup_standalone(${QUIET_OPTION} FILE raberu.hpp SOURCE include DESTINATION standalone ROOT raberu TARGET raberu-standalone)
+copa_setup_standalone ( ${QUIET_OPTION}
+                        FILE raberu.hpp SOURCE include  DESTINATION standalone
+                        ROOT raberu     TARGET raberu-standalone
+                      )
 
 ##======================================================================================================================
 ## Tests setup

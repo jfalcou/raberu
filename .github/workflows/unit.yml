@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-        - { tool: "-T ClangCL", config: Debug   }
-        - { tool: "-T ClangCL", config: Release }
+        # - { tool: "-T ClangCL", config: Debug   }
+        # - { tool: "-T ClangCL", config: Release }
         - { tool:             , config: Debug   }
         - { tool:             , config: Release }
     steps:

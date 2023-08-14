@@ -3,11 +3,11 @@
   Copyright : RABERU Project Contributors
   SPDX-License-Identifier: BSL-1.0
 **/
-#include <raberu.hpp>
+#include <raberu/raberu.hpp>
 #include <type_traits>
 #include <iostream>
 
-#include <raberu.hpp>
+#include <raberu/raberu.hpp>
 #include <type_traits>
 #include <iostream>
 

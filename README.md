@@ -16,7 +16,7 @@ It does so by providing:
 [See it live on Compiler Explorer](https://godbolt.org/z/oWjP44n57)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
-#include <raberu.hpp>
+#include <raberu/raberu.hpp>
 #include <iostream>
 #include <string>
 

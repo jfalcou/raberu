@@ -1,75 +1,67 @@
-##==================================================================================================
-##  RABERU - Compact C++20 Tuple Toolbox
+##======================================================================================================================
+##  RABERU - Fancy Named Parameter Library
 ##  Copyright : RABERU Project Contributors
 ##  SPDX-License-Identifier: BSL-1.0
-##==================================================================================================
-cmake_minimum_required(VERSION 3.12)
-
-##==================================================================================================
-## Setup project
-##==================================================================================================
+##======================================================================================================================
+cmake_minimum_required(VERSION 3.22)
 project(raberu LANGUAGES CXX)
-set(PROJECT_VERSION 1.0)
+include(${PROJECT_SOURCE_DIR}/cmake/dependencies.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/compiler.cmake)
 
-##==================================================================================================
-## No in-source build
-##==================================================================================================
-if (${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
-  message(FATAL_ERROR "[raberu]: In-source build is not recommend")
+##======================================================================================================================
+option( RABERU_BUILD_TEST          "Build tests   for Raberu"   ON  )
+option( RABERU_BUILD_DOCUMENTATION "Build Doxygen for Raberu"   OFF )
+
+##======================================================================================================================
+## Project setup via copacabana
+##======================================================================================================================
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake ${COPACABANA_SOURCE_DIR}/copacabana/cmake)
+include(${COPACABANA_SOURCE_DIR}/copacabana/cmake/copacabana.cmake)
+copa_project_version(MAJOR 1 MINOR 0 PATCH 0)
+
+##======================================================================================================================
+## Summary Display
+##======================================================================================================================
+if(NOT RABERU_QUIET)
+  if(CMAKE_BUILD_TYPE)
+    message(STATUS "[${PROJECT_NAME}] - Building in ${CMAKE_BUILD_TYPE} mode")
+  endif()
+  message(STATUS "[${PROJECT_NAME}] - Unit tests : ${RABERU_BUILD_TEST} (via RABERU_BUILD_TEST)")
+  message(STATUS "[${PROJECT_NAME}] - Doxygen    : ${RABERU_BUILD_DOCUMENTATION} (via RABERU_BUILD_DOCUMENTATION)")
+  set(QUIET_OPTION "")
+else()
+  set(QUIET_OPTION "QUIET")
 endif()
 
-## =================================================================================================
-## Install target
-## =================================================================================================
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/raberu TYPE INCLUDE)
+##======================================================================================================================
+## Install Process setup
+##======================================================================================================================
+copa_setup_install( LIBRARY raberu
+                    FEATURES cxx_std_20
+                    DOC     ${PROJECT_SOURCE_DIR}/LICENSE.md
+                    INCLUDE ${PROJECT_SOURCE_DIR}/include/tts
+                  )
 
-## =================================================================================================
-## Exporting target for external use
-## =================================================================================================
-add_library(raberu_lib INTERFACE)
-target_include_directories(raberu_lib INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
-
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-target_compile_options( raberu_lib INTERFACE -Wno-gnu-string-literal-operator-template)
+##======================================================================================================================
+## Setup doxygen
+##======================================================================================================================
+if(RABERU_BUILD_DOCUMENTATION)
+  copa_setup_doxygen(${QUIET_OPTION} TARGET raberu-doxygen DESTINATION "${PROJECT_BINARY_DIR}/doc")
 endif()
 
-target_compile_features(raberu_lib INTERFACE cxx_std_20)
-add_library(raberu::raberu ALIAS raberu_lib)
-
-##==================================================================================================
-## Options
-##==================================================================================================
-option( RABERU_BUILD_TEST  "Build tests for raberu" ON  )
-option( RABERU_BUILD_DOCS  "Build docs for raberu"  OFF )
-
-##==================================================================================================
-## Test target
-##==================================================================================================
-if( RABERU_BUILD_TEST )
-  include(CTest)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/test/)
-endif()
-
-
-##==================================================================================================
-## Add Doxygen building target
-##==================================================================================================
-if( RABERU_BUILD_DOCS )
-  find_package(Doxygen QUIET)
-
-  if (DOXYGEN_FOUND)
-    message( STATUS "[raberu] Doxygen available")
-  else (DOXYGEN_FOUND)
-    message( STATUS "[raberu] Doxygen need to be installed to generate the doxygen documentation")
-  endif (DOXYGEN_FOUND)
-
-  if (DOXYGEN_FOUND)
-    set(DOXYGEN_CONFIG ${PROJECT_SOURCE_DIR}/doc/Doxyfile)
-    add_custom_target ( rbr-doxygen
-                        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_CONFIG}
-                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/doc
-                        COMMENT "[raberu] Generating API documentation with Doxygen"
-                        VERBATIM
+##======================================================================================================================
+## Standalone generation
+##======================================================================================================================
+copa_setup_standalone ( ${QUIET_OPTION}
+                        FILE raberu.hpp SOURCE include  DESTINATION standalone
+                        ROOT raberu     TARGET raberu-standalone
                       )
-  endif (DOXYGEN_FOUND)
+
+##======================================================================================================================
+## Tests setup
+##======================================================================================================================
+if(RABERU_BUILD_TEST)
+  enable_testing()
+  add_custom_target(raberu-unit)
+  add_subdirectory(test)
 endif()

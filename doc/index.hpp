@@ -15,7 +15,7 @@
 //! # A Short Example
 //!
 //! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
-//! #include <raberu.hpp>
+//! #include <raberu/raberu.hpp>
 //! #include <iostream>
 //! #include <string>
 //!

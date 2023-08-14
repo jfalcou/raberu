@@ -8,7 +8,7 @@
 #define TTS_MAIN
 #include <iostream>
 #include "common.hpp"
-#include <raberu.hpp>
+#include <raberu/raberu.hpp>
 #include <tts/tts.hpp>
 
 TTS_CASE("Check settings(...) operator[t] behavior")

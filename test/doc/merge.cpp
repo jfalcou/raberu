@@ -10,13 +10,15 @@ int main()
 {
   using namespace rbr::literals;
 
-  auto defaults = rbr::settings("name"_kw = std::string{"Jane Doe"}, "value"_kw = 42.69f, "modal"_fl);
-  auto opts     = rbr::settings("value"_kw = 956.7f, "similar"_fl);
+  constexpr auto modal = "modal"_fl;
+  constexpr auto similar = "similar"_fl;
+  auto defaults = rbr::settings("name"_kw = std::string{"Jane Doe"}, "value"_kw = 42.69f, modal);
+  auto opts     = rbr::settings("value"_kw = 956.7f, similar);
 
   auto merged = rbr::merge(opts, defaults);
 
-  std::cout << merged["modal"_fl] << "\n";
+  std::cout << merged[modal] << "\n";
   std::cout << merged["name"_kw] << "\n";
-  std::cout << merged["similar"_fl] << "\n";
+  std::cout << merged[similar] << "\n";
   std::cout << merged["value"_kw] << "\n";
 }

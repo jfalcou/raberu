@@ -22,7 +22,7 @@ jobs:
       - name: Prepare RABERU for documentation
         run: |
           mkdir build && cd build
-          cmake .. -G Ninja -DKYOSU_BUILD_TEST=OFF -DKYOSU_BUILD_DOCUMENTATION=ON
+          cmake .. -G Ninja -DRABERU_BUILD_TEST=OFF -DRABERU_BUILD_DOCUMENTATION=ON
 
       - name: Generate Doxygen
         run: |

@@ -1,0 +1,272 @@
+<!-- HTML header for doxygen 1.9.5-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.6"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>raberu: Change Log</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="godbolt.js"></script>
+<script type="text/javascript" src="fragment.js"></script>
+<script type="text/javascript" src="paragraph.js"></script>
+<script type="text/javascript">
+  DoxygenAwesomeParagraphLink.init()
+  DoxygenAwesomeFragmentCopyButton.init()
+  SendToGodbolt.init("raberu","clang1600","-O3 -std=c++20 -DNEDBUG")
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="color.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<a href="https://github.com/jfalcou/tts" class="github-corner" title="View source on GitHub" target="_blank">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!-- BEGIN TITLEAREA-->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr  style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
+  <td id="projectalign">
+   <div id="projectname">raberu<span id="projectnumber">&#160;v1.0.0</span>
+   </div>
+   <div id="projectbrief">Fancy Named Parameter Library</div>
+  </td>
+ </tr>
+   <tr><td colspan="2" style="padding: 20px 0px 0px 0px;">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td></tr>
+ </tbody>
+</table>
+</div>
+<!--END TITLEAREA -->
+<!-- end header part -->
+<!-- Generated by Doxygen 1.9.6 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('changelog.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div><div class="header">
+  <div class="headertitle"><div class="title">Change Log </div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="md____w_raberu_raberu_doc_changelog"></a></p>
+<h1><a class="anchor" id="autotoc_md22"></a>
+Version 2.2 - Aubrey Bradimore</h1>
+<h2><a class="anchor" id="autotoc_md23"></a>
+What's Changed</h2>
+<h3><a class="anchor" id="autotoc_md24"></a>
+Infrastructure</h3>
+<ul>
+<li><b>We are now under the Boost Software Licence 1.0</b></li>
+<li>Enable Android tests and support</li>
+<li>Clarify some output when failures occur</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md25"></a>
+New Features</h3>
+<ul>
+<li>Implement ALL_EQUAL</li>
+<li>Test can now use configurable, automatic data generator (<a href="https://github.com/jfalcou/tts/pull/53">https://github.com/jfalcou/tts/pull/53</a>)</li>
+<li><code>TTS_EXPECT_COMPILES/COMPILE_NOT</code> check if a fragment of code can be compiled or not</li>
+<li>Reimplement <code>TTS_WHEN</code> and <code>TTS_AND_THEN</code> to support sub-tests</li>
+<li>Add typed tests that checks both value and exact type</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md26"></a>
+Bug Fixes</h3>
+<ul>
+<li>Fix Visual Studio interaction with constexpr tests</li>
+<li>Improve random generators and seed management</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md27"></a>
+Detective who?</h2>
+<p><a href="https://en.wikipedia.org/wiki/Aubrey_Bradimore">Aubrey Bradimore</a>, this is a Christmas Release afterall</p>
+<h1><a class="anchor" id="autotoc_md28"></a>
+Version 2.1 - Cordelia Gray</h1>
+<h2><a class="anchor" id="autotoc_md29"></a>
+What's Changed</h2>
+<ul>
+<li>Fix #42 - Proper FetchContent support</li>
+<li>Better compatibility</li>
+<li>Enable EMSCRIPTEN tests and supports</li>
+<li>Add tests over sequences</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md30"></a>
+Detective who?</h2>
+<p><a href="https://en.wikipedia.org/wiki/Cordelia_Gray">Cordelia Gray</a>, a very suitable detective</p>
+<h1><a class="anchor" id="autotoc_md31"></a>
+Version 2.0 - Kay Scarpetta</h1>
+<p><b>TTS</b> version 2.0 is taking a major break from an earlier version. Compile-time was creeping upward and some features were not that useful. So the code base got streamlined and simplified.</p>
+<p>This version is a <b>Major Release With API Changes</b> release:</p>
+<p><b>Breaking API Changes</b>:</p><ul>
+<li>Removal of support for colors</li>
+<li>Removal of support for sub-scenario</li>
+<li>Silent mode for tests is the default. The only information displayed concerns failures</li>
+</ul>
+<p><b>Features:</b></p><ul>
+<li>Improved compile-times</li>
+<li>Output streamlined to fit machine processing in CI context or scripts</li>
+<li>Better handling of template test cases: less generated symbol, better flexibility in inputs (list of types or types list generator)</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md32"></a>
+Detective who?</h2>
+<p><a href="https://en.wikipedia.org/wiki/Kay_Scarpetta">Kay Scarpetta</a>, the private forensic consultant.</p>
+<h1><a class="anchor" id="autotoc_md33"></a>
+Version 1.0 - Phoebe Daring</h1>
+<p>This version is a <b>Major Release With API Changes</b> release:</p>
+<p><b>Breaking API Changes</b>:</p>
+<p>To support some of the new feature and simplify some macros, <b>TTS</b> API is now based on a lambda system. If this doesn't change the way tests are performed, it now requires to end all tests cases by a <code>;</code>.</p>
+<p><b>Bug Fixes:</b></p>
+<ul>
+<li>Fix #3 - <code>TTS_TPL_CASES</code> now use meta-function based system for types generation</li>
+<li>Fix #32 - Provide a way to log arbitrary data when failures occur</li>
+<li>Fix #33 - Provide the <code>REQUIRED</code> option on tests to halt tests at first failure</li>
+<li>Fix #34 - Provide a command-line option to fix precision when displaying floating points</li>
+<li>Fix #37 - Stop displaying <code>char const*</code> as a string.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md34"></a>
+Detective who?</h2>
+<p><a href="https://en.wikipedia.org/wiki/Phoebe_Daring">Phoebe Daring</a>, the first half of the Daring Twins since 1912.</p>
+<h1><a class="anchor" id="autotoc_md35"></a>
+Version 0.2 - Kate Fansler</h1>
+<p>This version is a fix+features release:</p>
+<ul>
+<li>Fix #20 - Make string and pointers display in a more intuitive way</li>
+<li>Fix #23 - Add proper parens in <code>EXPECT</code> macro</li>
+<li>Add support for <code>constexpr</code> expectation and relational tests</li>
+<li><code>TTS_CASE_TPL</code> now generates one scenario per type</li>
+<li>Fix #21 - Add runtime filtering for tests based on description string</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md36"></a>
+Detective who?</h2>
+<p><a href="https://en.wikipedia.org/wiki/Kate_Fansler">Kate Fansler</a>, solving academic crimes since 1964.</p>
+<h1><a class="anchor" id="autotoc_md37"></a>
+Version 0.1 - Cadfael</h1>
+<h2><a class="anchor" id="autotoc_md38"></a>
+First public release.</h2>
+<p><b>TTS</b> first complete release enables numerically oriented TDD including:</p><ul>
+<li>precision testing</li>
+<li>checks over the data set</li>
+<li>easy to customize the use of user-defined types.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md39"></a>
+Detective who?</h2>
+<p><a href="https://en.wikipedia.org/wiki/Cadfael">Cadfael</a> is probably the eldest of all amateur detectives in history.</p>
+<p><a class="anchor" id="md____w_raberu_raberu_doc_page10_changelog"></a></p>
+<h1><a class="anchor" id="autotoc_md53"></a>
+Version 2.0 - Past Prologue</h1>
+<h2><a class="anchor" id="autotoc_md54"></a>
+Bug Fixes</h2>
+<ul>
+<li>Moved from <code>pragma once</code> to <code>#ifndef</code> to allow for multiple raberu files to coexist in multiple projects.</li>
+<li>Fixed a regression in Visual Studio that affected ability to run tests.</li>
+<li>Fix #6 - Compile-time ID are now properly displayed and compared without any issues due to terminal <code>\0</code>.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md55"></a>
+New Features</h2>
+<ul>
+<li>Fix #4 - Simplify and generalize custom keyword generation A new CRTP class <code><a class="el" href="structrbr_1_1as__keyword.html" title="Base class for keyword definition.">rbr::as_keyword</a></code> streamlines the definition of compact keyword by users while supporting the whole range of built-in keywords. Associated documentation has been updated.</li>
+<li><p class="startli">Fix #2 - Implement direct keyword value access Keyword can now fetch themselves from a bundles of options. E.g</p>
+<div class="fragment"><div class="line">inline constexpr auto coord_    = &quot;coord&quot;_kw;</div>
+<div class="line">inline constexpr auto is_modal_ = &quot;is_modal&quot;_fl;</div>
+<div class="line"> </div>
+<div class="line">auto x = coord_(coord_ = &quot;Jane&quot;s, is_modal_);</div>
+</div><!-- fragment --></li>
+<li>Fix #5 - Mass extractors for keyword and values <code><a class="el" href="group__stng_ga896526026e355f76431a11b9b06a0d48.html#ga896526026e355f76431a11b9b06a0d48" title="Retrieved the list of all keywords in a settings.">rbr::keywords</a></code> and<code><a class="el" href="group__stng_ga3f22cab5c8d14abf79568a123cdc4dfd.html#ga3f22cab5c8d14abf79568a123cdc4dfd" title="Retrieved the list of all value stored in a settings.">rbr::values</a></code> can be used to retrieve a tuple-like object containing all the keywords or values from a bundle of options.</li>
+<li><code>rbr::get_type</code> is removed and is replaced by <code><a class="el" href="group__stng_gab9ee73c2f143fc87e4f572624d671f29.html#gab9ee73c2f143fc87e4f572624d671f29" title="Retrieved a value via a keyword.">rbr::fetch</a></code> and <code>rbr::result::fetch_t</code>. This functions provides an infix syntax for options access.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md56"></a>
+Version 1.0 - Emissary</h1>
+<h2><a class="anchor" id="autotoc_md57"></a>
+First autonomous public release.</h2>
+<p><b>RABERU</b> (ラベル組) is now independent of the OFW repository. </p>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.8.20-->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+  </ul>
+</div>
+</div> <!-- DOXYSTRAP RELATED -->
+</div> <!-- DOXYSTRAP RELATED -->
+</div> <!-- DOXYSTRAP RELATED -->
+</div> <!-- DOXYSTRAP RELATED -->
+</div> <!-- DOXYSTRAP RELATED -->
+</body>
+</html>

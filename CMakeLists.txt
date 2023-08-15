@@ -39,7 +39,7 @@ endif()
 copa_setup_install( LIBRARY raberu
                     FEATURES cxx_std_20
                     DOC     ${PROJECT_SOURCE_DIR}/LICENSE.md
-                    INCLUDE ${PROJECT_SOURCE_DIR}/include/tts
+                    INCLUDE ${PROJECT_SOURCE_DIR}/include/raberu
                   )
 
 ##======================================================================================================================

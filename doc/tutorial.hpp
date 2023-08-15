@@ -16,7 +16,7 @@
     + a `constexpr`-compatible implementation for all of those.
 
 
-  \section tutorial_01 Tutorial Keyword, Options, Settings
+  \section tutorial_01 Keyword, Options, Settings
 
   Let's define a small function - `replicate` - that takes a character `c` and an integer `n` as parameters and
   return a string containing `c` repeated `n` times. As we want our users to have maximum flexibility, we will
@@ -36,7 +36,7 @@
 
  \section tutorial_02 Flavor of Keywords
 
- ## Regular keywords
+ \subsection tutorial-keywords Regular keywords
 
  Let's say you want to pass a compile-time unrolling factor to some algorithm.
  You can use a regular keyword as seen in the tutorial:
@@ -65,7 +65,7 @@
  auto x = my_algorithm( unroll = std::integral_constant<int,4>{});
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- ## Flags
+ \subsection  tutorial-flags Flags
  Sometimes, you just want to check if a given parameter has been passed but you don't really care about an associated value. Such keyword parameters are **flags**, carrying information about their sole presence without the need ot be bound to a value.
 
  They work in a similar way than regular keyword parameters but use the `_fl` user-defined literal
@@ -73,7 +73,7 @@
 
  @include doc/tutorial02.cpp
 
- ## Checked keywords
+ \subsection tutorial-checked Checked keywords
  Regular keywords accept value of any types. Flag keyword implicitly behaves as boolean parameters.
  What if you need to have a keyword accepting values of a specific type ? Or, in more complex
  context, what if you need a keyword accepting values which types satisfy an arbitrary set of
@@ -111,13 +111,13 @@
  exploitation is simplified. rbr::settings provides functions for retrieving value from keywords,
  inspect the stored keywords and more.
 
- ## Defining a Settings
+ \subsection tutorial-settings Defining a Settings
  rbr::settings can be directly constructed from an arbitrary list of options, ie values bound to
  a keyword. Once constructed, its operator[] can be used to fetch the value of a given keyword.
 
  @include doc/tutorial03.cpp
 
- ## Stream insertion
+ \subsection tutorial-stream  Stream insertion
  rbr::settings can be streamed to display the list of keyword/value pairs it contains
 
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++

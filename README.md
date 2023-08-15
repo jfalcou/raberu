@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/jfalcou/raberu/main/docs/logo.png" alt="raberu Logo : Red parens in a red square box on white background" data-canonical-src="https://raw.githubusercontent.com/jfalcou/ofw/raberu/docs/logo.png" align="left"  width="12%" height="12%" />
+<img src="https://raw.githubusercontent.com/jfalcou/raberu/main/doc/logo.png" alt="raberu Logo : Red parens in a red square box on white background" data-canonical-src="https://raw.githubusercontent.com/jfalcou/ofw/raberu/doc/logo.png" align="left"  width="12%" height="12%" />
 
 # RABERU - The Fancy Named Parameters Library
 

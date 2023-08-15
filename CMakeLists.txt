@@ -5,12 +5,17 @@
 ##======================================================================================================================
 cmake_minimum_required(VERSION 3.22)
 project(raberu LANGUAGES CXX)
-include(${PROJECT_SOURCE_DIR}/cmake/dependencies.cmake)
-include(${PROJECT_SOURCE_DIR}/cmake/compiler.cmake)
 
 ##======================================================================================================================
 option( RABERU_BUILD_TEST          "Build tests   for Raberu"   ON  )
 option( RABERU_BUILD_DOCUMENTATION "Build Doxygen for Raberu"   OFF )
+
+##======================================================================================================================
+include(${PROJECT_SOURCE_DIR}/cmake/dependencies.cmake)
+
+if(RABERU_BUILD_TEST)
+  include(${PROJECT_SOURCE_DIR}/cmake/compiler.cmake)
+endif()
 
 ##======================================================================================================================
 ## Project setup via copacabana
@@ -39,7 +44,7 @@ endif()
 copa_setup_install( LIBRARY raberu
                     FEATURES cxx_std_20
                     DOC     ${PROJECT_SOURCE_DIR}/LICENSE.md
-                    INCLUDE ${PROJECT_SOURCE_DIR}/include/tts
+                    INCLUDE ${PROJECT_SOURCE_DIR}/include/raberu
                   )
 
 ##======================================================================================================================

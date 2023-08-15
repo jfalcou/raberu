@@ -29,6 +29,8 @@ auto replicate( P0 p0, P1 p1 )
 
 int main()
 {
+  using namespace rbr::literals;
+
   std::cout << replicate("replication"_kw = 9, "letter"_kw = 'z'   ) << "\n";
   std::cout << replicate("letter"_kw = '!'   , "replication"_kw = 3) << "\n";
 }

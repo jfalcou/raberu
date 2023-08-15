@@ -33,6 +33,11 @@ STRIP_FROM_INC_PATH    = $(DOXYGEN_STRIP)/include
 STRIP_FROM_PATH        = $(DOXYGEN_STRIP)/src
 STRIP_FROM_PATH       += $(DOXYGEN_STRIP)/include
 
+
+EXAMPLE_PATH           = ../test/doc \
+                         ../test/integration \
+                         .
+
 SEPARATE_MEMBER_PAGES  = YES
 TAB_SIZE               = 2
 

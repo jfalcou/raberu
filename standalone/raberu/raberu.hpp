@@ -120,6 +120,7 @@ namespace rbr::_
 }
 #include <array>
 #include <cstddef>
+#include <cstdint>
 #include <ostream>
 #include <string_view>
 #include <utility>

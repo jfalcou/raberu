@@ -17,7 +17,7 @@ int main()
   std::cout << rbr::fetch ( "transparent"_fl, values)                                 << "\n";
   std::cout << rbr::fetch ( "size"_kw, "size"_kw = 75ULL, "transparent"_fl)           << "\n";
   std::cout << rbr::fetch ( "value"_kw | 13.37, "size"_kw = 75ULL, "transparent"_fl)  << "\n";
-  std::cout << rbr::fetch ( "modal"_fl | rbr::call([&]() { return i++; })
+  std::cout << rbr::fetch ( "modal"_fl | [&](auto const&) { return i++; }
                           , "size"_kw = 75ULL, "transparent"_fl
                           )   << "\n\n";
 

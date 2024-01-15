@@ -10,11 +10,10 @@
 #include <raberu/raberu.hpp>
 
 // Defines a keyword type that only accept floating point value
-struct price_keyword : rbr::as_keyword<price_keyword>
+struct price_keyword : rbr::keyword<price_keyword>
 {
-  using rbr::as_keyword<price_keyword>::operator=;
-
-  std::ostream& display(std::ostream& os, auto const& v)
+  using rbr::keyword<price_keyword>::operator=;
+  friend std::ostream& display(std::ostream& os, rbr::keyword<price_keyword> const&, int v)
   {
     return os << "Price: " << v << '$';
   }
@@ -32,5 +31,5 @@ TTS_CASE("Check show() customization point")
   auto s = rbr::settings(price = 4);
   os << s;
 
-  TTS_EQUAL(os.str(), std::string{"Price: 4$\n"});
+  TTS_EQUAL(os.str(), std::string{"{\n  Price: 4$\n}"});
 };

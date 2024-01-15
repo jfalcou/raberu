@@ -10,10 +10,10 @@
 #include <raberu/raberu.hpp>
 
 // Defines a keyword type that only accept floating point value
-struct real_keyword : rbr::as_keyword<real_keyword>
+struct real_keyword : rbr::keyword<real_keyword, rbr::traits_check<std::is_floating_point>>
 {
-  template<typename T>  static constexpr bool check() { return std::is_floating_point_v<T>; }
-  using rbr::as_keyword<real_keyword>::operator=;
+  using parent = rbr::keyword<real_keyword, rbr::traits_check<std::is_floating_point>>;
+  using parent::operator=;
 };
 
 inline constexpr real_keyword real = {};

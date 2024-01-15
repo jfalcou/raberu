@@ -17,8 +17,8 @@ int main()
 
   auto merged = rbr::merge(opts, defaults);
 
-  std::cout << merged[modal] << "\n";
+  std::cout << std::boolalpha << merged[modal] << "\n";
   std::cout << merged["name"_kw] << "\n";
-  std::cout << merged[similar] << "\n";
+  std::cout << std::boolalpha << merged[similar] << "\n";
   std::cout << merged["value"_kw] << "\n";
 }

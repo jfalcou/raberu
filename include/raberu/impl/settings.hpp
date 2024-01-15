@@ -7,161 +7,87 @@
 //======================================================================================================================
 #pragma once
 
-#include <cstddef>
-#include <ostream>
-#include <type_traits>
+#include <raberu/impl/helpers.hpp>
+#include <raberu/impl/concepts.hpp>
 
-//==================================================================================================
-//! @ingroup  main
-//! @{
-//!   @defgroup stng Settings definitions and handling
-//!   @brief    Functions and types to handle RABERU settings
-//! @}
-//==================================================================================================
+#pragma once
 
 namespace rbr
 {
-  /// Type indicating that a [Keyword](@ref rbr::concepts::keyword) is not available
-  struct unknown_key { using type = unknown_key; };
-
-  // Option calls aggregator
-  template<concepts::option... Ts> struct aggregator : Ts...
-  {
-    constexpr aggregator(Ts const&...t) noexcept : Ts(t)... {}
-    using Ts::operator()...;
-
-    template<concepts::keyword K> constexpr auto operator()(K const &) const noexcept
-    {
-      return unknown_key {};
-    }
-  };
-
-  //================================================================================================
-  //! @ingroup stng
-  //! @brief Defines a group of options for processing
-  //!
-  //! rbr::settings acts as an aggregation of [Options](@ref rbr::concepts::option) (ie pair of
-  //! [Keyword](@ref rbr::concepts::keyword)/value) that provides an user-interface for accessing
-  //! or managing said [Options](@ref rbr::concepts::option) and to gather informations.
-  //!
-  //! @tparam Opts  List of [options](@ref rbr::concepts::option) aggregated
-  //================================================================================================
-  template<concepts::option... Opts> struct settings
+  template<concepts::option... Options>
+  struct settings : private Options...
   {
     using rbr_settings = void;
-    using base = aggregator<Opts...>;
 
-    /// Constructor from a variadic pack of rbr::concepts::option
-    constexpr settings(Opts const&... opts) : content_(opts...) {}
+    static constexpr std::ptrdiff_t 	size () noexcept { return sizeof...(Options); }
 
-    /// Number of options in current rbr::settings
-    static constexpr std::ptrdiff_t size() noexcept { return sizeof...(Opts); }
+    constexpr explicit(sizeof...(Options) == 1)
+    settings(Options... opts) : Options(std::move(opts))... {}
 
-    //==============================================================================================
-    //! @brief Checks if a given rbr::keyword is stored inside rbr::settings
-    //! @param kw Keyword to check
-    //! @return An instance of `std::true_type` if current setting contains an option based on `kw`.
-    //!         Otherwise, return an instance of `std::false_type`.
-    //! ## Example:
-    //! @include doc/contains.cpp
-    //==============================================================================================
+    template<concepts::keyword K>
+    constexpr decltype(auto) operator[](K const&) const { return unwrap(typename K::keyword_identifier{}); }
+
+    template<concepts::keyword_with_default<settings> K>
+    constexpr decltype(auto) operator[](K const& key) const
+    {
+      // Fetch the option or unknwon_key
+      decltype(auto) that = unwrap(typename K::keyword_identifier{});
+
+      // If we can have a default value and it is needed due to unknwon_key being returned
+      if constexpr(stdfix::same_as<std::remove_cvref_t<decltype(that)>, unknown_key>)
+        return key.default_value(*this);
+      else
+        return that;
+    }
+
     template<concepts::keyword Key>
     static constexpr auto contains([[maybe_unused]] Key const& kw) noexcept
     {
-      using found = decltype((std::declval<base>())(Key{}));
-      return !stdfix::same_as<found, unknown_key>;
+      if constexpr( requires{ std::declval<settings>().fetch(typename Key::keyword_identifier{}); } )
+      {
+        using found = decltype(std::declval<settings>().fetch(typename Key::keyword_identifier{}));
+        return !stdfix::same_as<found, unknown_key>;
+      }
+      else
+      {
+        return false;
+      }
     }
 
-    //==============================================================================================
-    //! @brief Checks if rbr::settings contains at least one of maybe keyword
-    //! @param ks Keywords to check
-    //! @return An instance of `std::true_type` if current setting contains at least one option
-    //!         based on any of the `ks`. Otherwise, return an instance of `std::false_type`.
-    //! ## Example:
-    //! @include doc/contains_any.cpp
-    //==============================================================================================
     template<concepts::keyword... Keys>
     static constexpr auto contains_any(Keys... ks) noexcept { return (contains(ks) || ...); }
 
-    //==============================================================================================
-    //! @brief Checks if rbr::settings contains options based only on selected keywords
-    //! @param ks Keywords to check
-    //! @return An instance of `std::true_type` if current setting contains only options
-    //!         based on any of the `ks`. Otherwise, return an instance of `std::false_type`.
-    //! ## Example:
-    //! @include doc/contains_only.cpp
-    //==============================================================================================
     template<concepts::keyword... Keys>
     static constexpr auto contains_only([[maybe_unused]] Keys const&... ks) noexcept
     {
-      using current_keys    = _::keys<typename Opts::keyword_type...>;
-      using acceptable_keys = _::keys<Keys...>;
+      using current_keys    = _::keys<typename Options::keyword_type::keyword_identifier...>;
+      using acceptable_keys = _::keys<typename Keys::keyword_identifier...>;
       using unique_set      = typename _::uniques<current_keys,acceptable_keys>::type;
       return  _::is_equivalent<unique_set, acceptable_keys>::value;
     }
 
-    //==============================================================================================
-    //! @brief Checks if rbr::settings contains no options based on any of the selected keywords
-    //! @param ks Keywords to check
-    //! @return An instance of `std::true_type` if current setting contains no options
-    //!         based on any of the `ks`. Otherwise, return an instance of `std::false_type`.
-    //! ## Example:
-    //! @include doc/contains_none.cpp
-    //==============================================================================================
     template<concepts::keyword... Keys>
     static constexpr auto contains_none(Keys... ks) noexcept { return !contains_any(ks...); }
 
-    //==============================================================================================
-    //! @brief Retrieved a value via a keyword
-    //!
-    //! Retrieve the value bound to a given keyword `k` inside current rbr::settings instance.
-    //! If such a keyword is not present, either an instance of rbr::unknown_key is returned or
-    //! a default value or function call will be returned.
-    //!
-    //! @param k Keywords to check
-    //! @return If any, the value bound to `k`.
-    //! ## Example:
-    //! @include doc/subscript.cpp
-    //==============================================================================================
-    template<concepts::keyword Key> constexpr auto operator[](Key const& k) const noexcept
+    using Options::fetch...;
+
+    template<concepts::stream Stream>
+    friend auto& operator<<(Stream& os, settings const& s)
     {
-      return content_(k);
+      os << "{\n";
+      ((os << "  " << static_cast<Options const&>(s) << "\n"),...);
+      return os << "}";
     }
 
-    //! @overload
-    template<typename Keyword>
-    constexpr auto operator[](flag_keyword<Keyword> const&) const noexcept
+    private:
+    // Automatically unpack reference_wrapper to actual reference
+    template<typename K>
+    constexpr decltype(auto) unwrap(K const& key) const
     {
-      return contains(flag_keyword<Keyword>{});
-    }
-
-    //! @overload
-    template<concepts::keyword Key, typename Value>
-    constexpr auto operator[](_::type_or_<Key, Value> const & tgt) const
-    {
-      if constexpr( contains(Key{}) )                           return (*this)[Key{}];
-      else  if constexpr( requires(Value t) { t.perform(); } )  return tgt.value.perform();
-      else                                                      return tgt.value;
-    }
-
-    //! @related rbr::settings
-    //! @brief Output stream insertion
-    friend std::ostream& operator<<(std::ostream& os, settings const& s)
-    {
-      auto show = [&]<typename T, typename V>(T t, V const& v) -> std::ostream&
-      {
-        return t.show(os,v) << "\n";
-      };
-
-      (show(typename Opts::keyword_type{}, s[typename Opts::keyword_type{}]), ...);
-
-      return os;
-    }
-
-    base content_;
+      auto v = [&]()  { if constexpr(requires{ fetch(key); }) return fetch(key);
+                        else                                  return unknown_key{};
+                      }();
+      return std::unwrap_reference_t<decltype(v)>(v);
+    };
   };
-
-  /// rbr::settings deduction guide
-  template<concepts::option... Opts>
-  settings(Opts const&... opts) -> settings<Opts...>;
 }

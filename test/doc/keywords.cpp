@@ -16,7 +16,7 @@ int main()
 
   std::apply( []<typename... T>(T const&...)
               {
-                ((std::cout << typename T::id_type{} << "\n"),...);
+                ((std::cout << typename T::keyword_identifier{} << "\n"),...);
               }
             , kws
             );

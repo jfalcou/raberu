@@ -12,5 +12,5 @@ inline constexpr auto modal = rbr::flag("modal window"_id);
 
 int main()
 {
-  std::cout << rbr::settings( modal );
+  std::cout << rbr::settings( modal ) << "\n";
 }

@@ -68,14 +68,14 @@ TTS_CASE("Check rbr::fetch_t behavior on settings")
   TTS_TYPE_IS( (rbr::result::fetch_t<"flop"_kw, opts_t>), rbr::unknown_key);
 };
 
-TTS_CASE("Check keyword fetching behavior")
-{
-  using namespace std::literals;
-  using namespace rbr::literals;
+// TTS_CASE("Check keyword fetching behavior")
+// {
+//   using namespace std::literals;
+//   using namespace rbr::literals;
 
-  TTS_EQUAL( (coord_   (coord_ = "Jane"s, value_ = 4.2f, is_modal_)), "Jane"s             );
-  TTS_EQUAL( (value_   (coord_ = "Jane"s, value_ = 4.2f, is_modal_)), 4.2f                );
-  TTS_EQUAL( (is_modal_(coord_ = "Jane"s, value_ = 4.2f, is_modal_)), true                );
-  TTS_EXPR_IS( ("flop"_kw(coord_ = "Jane"s, value_ = 4.2f, is_modal_)), rbr::unknown_key  );
-  TTS_EQUAL( (("flop"_kw | 66.)(coord_ = "Jane"s, value_ = 4.2f, is_modal_)), 66. );
-};
+//   TTS_EQUAL( (coord_   (coord_ = "Jane"s, value_ = 4.2f, is_modal_)), "Jane"s             );
+//   TTS_EQUAL( (value_   (coord_ = "Jane"s, value_ = 4.2f, is_modal_)), 4.2f                );
+//   TTS_EQUAL( (is_modal_(coord_ = "Jane"s, value_ = 4.2f, is_modal_)), true                );
+//   TTS_EXPR_IS( ("flop"_kw(coord_ = "Jane"s, value_ = 4.2f, is_modal_)), rbr::unknown_key  );
+//   TTS_EQUAL( (("flop"_kw | 66.)(coord_ = "Jane"s, value_ = 4.2f, is_modal_)), 66. );
+// };

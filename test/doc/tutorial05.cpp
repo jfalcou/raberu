@@ -7,14 +7,15 @@
 #include <type_traits>
 #include <iostream>
 
-struct unrolling : rbr::as_keyword<unrolling>
+struct unrolling : rbr::keyword<unrolling>
 {
   template<int N>
   constexpr auto operator=(std::integral_constant<int,N> const&) const noexcept
   {
     return rbr::option<unrolling,std::integral_constant<int,N>>{};
   }
-   std::ostream& display(std::ostream& os, auto v) const { return os << "Unroll Factor: " << v; }
+
+  friend std::ostream& display(std::ostream& os, unrolling const&, auto v) { return os << "Unroll Factor: " << v; }
 };
 
 template<int N>

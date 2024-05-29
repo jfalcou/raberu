@@ -354,6 +354,8 @@ namespace rbr
       return std::unwrap_reference_t<decltype(v)>(v);
     };
   };
+  template<concepts::option... Opts>
+  settings(Opts const&... opts) -> settings<Opts...>;
 }
 namespace rbr::_
 {

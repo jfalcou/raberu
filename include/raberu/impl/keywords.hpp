@@ -50,13 +50,18 @@ namespace rbr
   template<typename Keyword, typename Value>
   struct option
   {
+    /// Keyword identifier type
     using keyword_type      = typename Keyword::keyword_identifier;
+
+    /// Type of the internal value carried over by the option
     using stored_value_type = Value;
 
     constexpr decltype(auto)  fetch(keyword_type const&) &      noexcept { return payload;            }
     constexpr decltype(auto)  fetch(keyword_type const&) &&     noexcept { return std::move(payload); }
     constexpr decltype(auto)  fetch(keyword_type const&) const& noexcept { return payload;            }
 
+    //! @related rbr::option
+    //! @brief Output stream insertion
     template<concepts::stream Stream>
     friend auto& operator<<(Stream& os, option const& o)
     {
@@ -69,15 +74,6 @@ namespace rbr
     Value payload;
   };
 
-  //====================================================================================================================
-  //! @ingroup kwds
-  //! @brief Base class for keyword definition
-  //!
-  //! rbr::keyword
-  //!
-  //! @tparam ID    Keyword type being defined
-  //! @tparam Check Potential type checker meta-function
-  //====================================================================================================================
   template<typename ID, typename Check = void> struct keyword;
 
   template<typename ID, typename Default>
@@ -110,15 +106,6 @@ namespace rbr
     constexpr keyword() noexcept {}
     constexpr keyword(ID const&) noexcept {}
 
-    //==================================================================================================================
-    //! @brief Assignment of a value to a keyword
-    //!
-    //! Bind a value to current [Keyword](@ref rbr::concepts::keyword) and returns an instance of
-    //! an [Option](@ref rbr::concepts::option).
-    //!
-    //! @param v Bound value
-    //! @return An rbr::option binding the keyword to `v`.
-    //==================================================================================================================
     template<typename Value>
     constexpr option<keyword_identifier,Value> operator=(Value&& v) const { return {RBR_FWD(v)}; }
 
@@ -135,6 +122,15 @@ namespace rbr
     }
   };
 
+  //====================================================================================================================
+  //! @ingroup kwds
+  //! @brief Base class for keyword definition
+  //!
+  //! rbr::keyword
+  //!
+  //! @tparam ID    Keyword type being defined
+  //! @tparam Check Potential type checker meta-function. By default, this is `void` to notify no checks.
+  //====================================================================================================================  template<typename ID>
   template<typename ID, typename Checker>
   struct keyword
   {
@@ -146,6 +142,15 @@ namespace rbr
 
     constexpr bool operator==(keyword const&) const = default;
 
+    //==================================================================================================================
+    //! @brief Assignment of a value to a keyword
+    //!
+    //! Bind a value to current [Keyword](@ref rbr::concepts::keyword) and returns an instance of
+    //! an [Option](@ref rbr::concepts::option).
+    //!
+    //! @param v Bound value
+    //! @return An rbr::option binding the keyword to `v`.
+    //==================================================================================================================
     template<typename Value>
     requires( Checker::template value<Value> )
     constexpr option<keyword_identifier,Value> operator=(Value&& v) const { return {RBR_FWD(v)}; }
@@ -157,6 +162,8 @@ namespace rbr
     template<typename Default>
     constexpr auto operator|(Default v) const  { return keyword_or<keyword_identifier,Default>{std::move(v)}; }
 
+    //! @related rbr::keyword
+    //! @brief Output stream insertion
     template<concepts::stream Stream>
     friend auto& operator<<(Stream& os, keyword const&)
     {
@@ -171,6 +178,17 @@ namespace rbr
   template<typename ID, typename Checker>
   keyword(ID const&, Checker const&) -> keyword<ID,Checker>;
 
+//====================================================================================================================
+  //! @ingroup kwds
+  //! @brief Flag keyword
+  //!
+  //! A Flag keyword is a keyword which value is given by its mere presence. It accepts no binding
+  //! and return a value convertible to `bool` when set in a rbr::settings.
+  //!
+  //! By design, a flag is also its own rbr::option.
+  //!
+  //! @tparam ID    Unique identifier for the keyword
+  //====================================================================================================================
   template<typename ID>
   struct flag
   {
@@ -192,6 +210,8 @@ namespace rbr
     template<typename Default>
     constexpr auto operator|(Default v) const  { return keyword_or<keyword_identifier,Default>{std::move(v)}; }
 
+    //! @related rbr::flag
+    //! @brief Output stream insertion
     template<concepts::stream Stream>
     friend auto& operator<<(Stream& os, flag const&)
     {
@@ -202,9 +222,13 @@ namespace rbr
 
   inline namespace literals
   {
+    //! @related rbr::keyword
+    //! @brief User-defined literal for keyword specification
     template<str ID>
     constexpr auto operator""_kw() noexcept { return keyword<id_<ID>>{}; }
 
+    //! @related rbr::flag
+    //! @brief User-defined literal for flag specification
     template<str ID>
     constexpr auto operator""_fl() noexcept { return flag<id_<ID>>{}; }
   }

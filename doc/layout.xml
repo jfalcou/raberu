@@ -14,6 +14,7 @@
       <tab type="usergroup" visible="yes" title="Main API">
         <tab type="user" url="@ref kwds"     title="Keywords"/>
         <tab type="user" url="@ref stng"     title="Settings"/>
+        <tab type="user" url="@ref utility"  title="Helpers"/>
       </tab>
       <tab type="concepts" visible="yes" title="Concepts"/>
       <tab type="user" url="@ref rbr"     title="Raberu Namespace"/>

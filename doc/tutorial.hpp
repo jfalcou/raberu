@@ -41,7 +41,7 @@
  Let's say you want to pass a compile-time unrolling factor to some algorithm.
  You can use a regular keyword as seen in the tutorial:
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  auto x = my_algorithm( "unroll"_kw = std::integral_constant<int,4>{});
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -50,7 +50,7 @@
 
  A nicer way to simplify the user experience is to preemptively defines a keyword variable.
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  inline constexpr auto unroll = "unroll"_kw;
 
  auto x = my_algorithm( unroll = std::integral_constant<int,4>{});
@@ -59,7 +59,7 @@
  Slightly terser and far easier to document.
  You can also use the rbr::keyword factory that takes an ID and returns a keyword instance
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  inline constexpr auto unroll = rbr::keyword("unroll"_id);
 
  auto x = my_algorithm( unroll = std::integral_constant<int,4>{});
@@ -83,7 +83,7 @@
  accepts an optional template parameter. If this template parameter is a type,
  the keyword is setup to only accept value of this exact type.
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  using namespace rbr::literals;
 
  // color can only accept unsigned 32 bits integer
@@ -93,7 +93,7 @@
  If this template parameter is a unary template meta-function `F`, the keyword is setup to only
  accept value which type satisfy `F<T>::value == true`.
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  using namespace rbr::literals;
 
  template<typename T> struct large_type
@@ -120,7 +120,7 @@
  \subsection tutorial-stream  Stream insertion
  rbr::settings can be streamed to display the list of keyword/value pairs it contains
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  #include <raberu/raberu.hpp>
  #include <iostream>
 
@@ -134,11 +134,5 @@
  }
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- The expected output should be:
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 'size' : 75 (long long unsigned int)
- 'transparent' : 1 (std::integral_constant<bool, true>)
- 'value' : 7.7 (float)
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **/
 //==================================================================================================

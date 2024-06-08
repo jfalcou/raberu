@@ -333,7 +333,7 @@ namespace rbr
     }
     using tag_type          = ID;
     using keyword_type      = flag_keyword;
-    using stored_value_type = std::true_type;
+    using stored_value_type = bool;
     template<typename Type>
     constexpr auto operator=(Type&&) const noexcept { return *this; }
     template<typename Type>
@@ -345,7 +345,7 @@ namespace rbr
     {
       return _::type_or_<flag_keyword,call<Func>>{RBR_FWD(v)};
     }
-    constexpr std::true_type operator()(keyword_type const&) const noexcept { return {}; }
+    constexpr auto operator()(keyword_type const&) const noexcept { return true; }
     template<typename O0, typename O1, typename... Os>
     constexpr decltype(auto) operator()(O0&&, O1&&, Os&&... ) const
     {
@@ -395,7 +395,7 @@ namespace rbr
     static constexpr auto contains([[maybe_unused]] Key const& kw) noexcept
     {
       using found = decltype((std::declval<base>())(Key{}));
-      return std::bool_constant<!stdfix::same_as<found, unknown_key> >{};
+      return !stdfix::same_as<found, unknown_key>;
     }
     template<concepts::keyword... Keys>
     static constexpr auto contains_any(Keys... ks) noexcept { return (contains(ks) || ...); }

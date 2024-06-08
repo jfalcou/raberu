@@ -51,7 +51,7 @@ TTS_CASE("Check rbr::fetch_t behavior on options")
 
   TTS_TYPE_IS( (rbr::result::fetch_t<coord_   , opt1_t, opt2_t, opt3_t>), std::string     );
   TTS_TYPE_IS( (rbr::result::fetch_t<value_   , opt1_t, opt2_t, opt3_t>), float           );
-  TTS_TYPE_IS( (rbr::result::fetch_t<is_modal_, opt1_t, opt2_t, opt3_t>), std::true_type  );
+  TTS_TYPE_IS( (rbr::result::fetch_t<is_modal_, opt1_t, opt2_t, opt3_t>), bool            );
   TTS_TYPE_IS( (rbr::result::fetch_t<"flop"_kw, opt1_t, opt2_t, opt3_t>), rbr::unknown_key);
 };
 
@@ -64,7 +64,7 @@ TTS_CASE("Check rbr::fetch_t behavior on settings")
 
   TTS_TYPE_IS( (rbr::result::fetch_t<coord_   , opts_t>), std::string     );
   TTS_TYPE_IS( (rbr::result::fetch_t<value_   , opts_t>), float           );
-  TTS_TYPE_IS( (rbr::result::fetch_t<is_modal_, opts_t>), std::true_type  );
+  TTS_TYPE_IS( (rbr::result::fetch_t<is_modal_, opts_t>), bool            );
   TTS_TYPE_IS( (rbr::result::fetch_t<"flop"_kw, opts_t>), rbr::unknown_key);
 };
 

@@ -194,18 +194,18 @@ namespace rbr
   {
     using keyword_identifier      = flag<ID>;
     using keyword_type            = flag<ID>;
-    using stored_value_type       = std::true_type;
+    using stored_value_type       = bool;
     static constexpr bool is_flag = true;
 
     constexpr flag() noexcept {}
     constexpr flag(ID const&) noexcept {}
 
-    constexpr std::true_type  fetch(keyword_identifier const&)  const noexcept { return {}; }
+    constexpr bool  fetch(keyword_identifier const&)  const noexcept { return true; }
 
     template<typename S>
-    constexpr std::false_type default_value(S const&) const noexcept { return {}; }
+    constexpr bool default_value(S const&) const noexcept { return false; }
 
-    constexpr flag operator=(std::true_type const&) const { return {}; }
+    constexpr flag operator=(auto const&) const { return {}; }
 
     template<typename Default>
     constexpr auto operator|(Default v) const  { return keyword_or<keyword_identifier,Default>{std::move(v)}; }

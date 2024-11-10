@@ -36,28 +36,16 @@ namespace rbr
 {
   //====================================================================================================================
   //! @ingroup stng
-  //! @brief Retrieved a value via a keyword
+  //! @brief Retrieves a value via a keyword from a list of rbr::option.
   //!
-  //! Retrieve the value bound to a given keyword `k` inside a variadic list of rbr::options.
-  //! If such a keyword is not present, either an instance of rbr::unknown_key is returned or
-  //! a default value or function call will be returned.
+  //! Retrieve the value bound to a given keyword inside a variadic list of rbr::option.
+  //! If such a keyword is not present, either an instance of rbr::unknown_key or the default value of `k` is returned.
   //!
-  //! @param k Keywords to check
-  //! @param os Options to inspect
+  //! @param k Keywords to lookup.
+  //! @param os Options to inspect.
   //! @return If any, the value bound to `k`.
   //!
-  //! ## Helper Types
-  //! @code
-  //! namespace rbr::result
-  //! {
-  //!   template<auto Keyword, typename... Sources> struct fetch
-  //!
-  //!   template<auto Keyword, typename... Sources>
-  //!   using fetch_t = typename fetch<Keyword,Sources...>::type;
-  //! }
-  //! @endcode
-  //!
-  //! Return the type of a call to rbr::fetch.
+  //! @see rbr::result::fetch_t
   //!
   //! ## Example:
   //! @include doc/fetch.cpp
@@ -68,37 +56,43 @@ namespace rbr
     return opts[k];
   }
 
-  //! @overload
-  template<concepts::keyword K, typename V, concepts::option... Os>
-  constexpr decltype(auto) fetch(keyword_or<K, V> const& k, Os const&... os)
+  //====================================================================================================================
+  //! @ingroup stng
+  //! @brief Retrieves a value via a keyword from a rbr::settings
+  //!
+  //! Retrieve the value bound to a given keyword `k` inside a rbr::settings. If such a keyword is not present,
+  //! either an instance of rbr::unknown_key or the default value of `k` is returned.
+  //!
+  //! @param k Keywords to check.
+  //! @param s rbr::settings to inspect.
+  //! @return If any, the value bound to `k`.
+  //!
+  //! @see rbr::result::fetch_t
+  //!
+  //! ## Example:
+  //! @include doc/fetch.cpp
+  //====================================================================================================================
+  constexpr decltype(auto) fetch(concepts::keyword auto const& k, concepts::settings auto const& s)
   {
-    auto const opts = settings(os...);
-    return opts[k];
-  }
-
-  //! @overload
-  constexpr decltype(auto) fetch(concepts::keyword auto const& k, concepts::settings auto const& opts)
-  {
-    return opts[k];
+    return s[k];
   }
 
   //====================================================================================================================
   //! @ingroup stng
-  //! @related rbr::settings
   //! @brief Merge two instances of rbr::settings
   //!
   //! Merge all options of `opts` and `defs`. If an options is present in both arguments, the one
   //! from `opts` is used.
   //!
-  //! @param opts rbr::settings to merge
-  //! @param defs rbr::settings acting as default value
+  //! @param opts rbr::settings to merge.
+  //! @param defs rbr::settings acting as default value.
   //! @return An instance of rbr::settings containing all options from `opts` and any options
   //!         from `defs` not present in `opts`.
   //! ## Example:
   //! @include doc/merge.cpp
   //====================================================================================================================
   template<typename... K1s, typename... K2s>
-  constexpr auto merge(settings<K1s...> const& opts, settings<K2s...> const& defs) noexcept
+  [[nodiscard]] constexpr auto merge(settings<K1s...> const& opts, settings<K2s...> const& defs) noexcept
   {
     auto selector = []<typename K, typename Opts>(K const&, Opts const& o, auto const& d)
                     {
@@ -119,14 +113,13 @@ namespace rbr
 
   //====================================================================================================================
   //! @ingroup stng
-  //! @related rbr::settings
   //! @brief Remove an option from a rbr::settings
   //!
   //! Build a rbr::settings containing all options from s except for any option bound to the `k`
   //! rbr::keyword.
   //!
-  //! @param k Keyword to remove
-  //! @param s Original rbr::settings
+  //! @param k Keyword to remove.
+  //! @param s Original rbr::settings.
   //! @return An instance of rbr::settings containing all options of `s` except those bound to `k`.
   //!
   //! ## Example:
@@ -160,33 +153,36 @@ namespace rbr
       using type = List<std::unwrap_reference_t<typename Opts::stored_value_type>...>;
     };
 
+    //==================================================================================================================
+    //! @ingroup stng
+    //! @brief Compute the return type of a call to rbr::keywords
+    //!
+    //! @tparam List     Variadic template to store the keyword types. By default, uses rbr::types.
+    //! @tparam Settings Settings to inspect.
+    //==================================================================================================================
     template<typename Settings, template<typename...> class List = types>
     using keywords_t = typename keywords<Settings,List>::type;
 
+    //==================================================================================================================
+    //! @ingroup stng
+    //! @brief Compute the return type of a call to rbr::values
+    //!
+    //! @tparam List     Variadic template to store the value types. By default, uses rbr::types.
+    //! @tparam Settings Settings to inspect.
+    //==================================================================================================================
     template<typename Settings, template<typename...> class List = types>
     using values_t = typename values<Settings,List>::type;
   }
 
   //====================================================================================================================
   //! @ingroup stng
-  //! @brief Retrieved the list of all keywords in a settings
+  //! @brief Retrieved the list of all keywords in a rbr::settings
   //!
-  //! @tparam List  A n-ary template type to hold the result values
-  //! @param s      Settings to inspect
-  //! @return An instance of rbr::type containing all the keyword from a rbr::settings.
+  //! @tparam List  A variadic template type to hold the result values.
+  //! @param  s     Settings to inspect.
+  //! @return An instance of `List` containing all the keyword from a rbr::settings.
   //!
-  //! ## Helper Types
-  //! @code
-  //! namespace rbr::result
-  //! {
-  //!   template<template<typename...> class List, typename Settings> struct keywords;
-  //!
-  //!   template<template<typename...> class List, typename Settings>
-  //!   using keywords_t = typename keywords<List,Settings>::type;
-  //! }
-  //! @endcode
-  //!
-  //! Return the type of a call to rbr::keywords.
+  //! @see rbr::result::keywords_t
   //!
   //! ## Example:
   //! @include doc/keywords.cpp
@@ -205,18 +201,7 @@ namespace rbr
   //! @param s      Settings to inspect
   //! @return an instance of rbr::type containing all the values from a rbr::settings.
   //!
-  //! ## Helper Types
-  //! @code
-  //! namespace rbr::result
-  //! {
-  //!   template<template<typename...> class List, typename Settings> struct values;
-  //!
-  //!   template<template<typename...> class List, typename Settings>
-  //!   using values_t = typename values<List,Settings>::type;
-  //! }
-  //! @endcode
-  //!
-  //! Return the type of a call to rbr::values.
+  //! @see rbr::result::values_t
   //!
   //! ## Example:
   //! @include doc/values.cpp
@@ -265,14 +250,7 @@ namespace rbr
 
   namespace result
   {
-    //  FETCH
     template<auto Keyword, typename... Sources> struct fetch;
-
-    template<auto Keyword, concepts::option... Os>
-    struct fetch<Keyword, Os...>
-    {
-      using type = decltype( rbr::fetch(Keyword, std::declval<Os>()...) );
-    };
 
     template<auto Keyword, concepts::settings Settings>
     struct fetch<Keyword, Settings>
@@ -280,18 +258,36 @@ namespace rbr
       using type = decltype( rbr::fetch(Keyword, std::declval<Settings>()) );
     };
 
+    template<auto Keyword, concepts::option... Os>
+    struct fetch<Keyword, Os...>
+    {
+      using type = decltype( rbr::fetch(Keyword, std::declval<Os>()...) );
+    };
+
+    //==================================================================================================================
+    //! @ingroup stng
+    //! @brief Compute the return type of a call to rbr::fetch
+    //!
+    //! @tparam Keyword Keyword to fetch.
+    //! @tparam Sources Settings to lookup.
+    //==================================================================================================================
     template<auto Keyword, typename... Sources>
     using fetch_t = typename fetch<Keyword,Sources...>::type;
 
-    // DROP
-    template<concepts::keyword K, concepts::option... O>
-    struct drop
+    template<concepts::keyword K, concepts::settings S> struct drop
     {
-      using type = decltype( rbr::drop(std::declval<K>(),std::declval<O>()...) );
+      using type = decltype( rbr::drop(std::declval<K>(),std::declval<S>()) );
     };
 
-    template<concepts::keyword K, concepts::option... O>
-    using drop_t = typename drop<K,O...>::type;
+    //==================================================================================================================
+    //! @ingroup stng
+    //! @brief Compute the return type of a call to rbr::drop
+    //!
+    //! @tparam Keyword Keyword to drop.
+    //! @tparam Sources Settings to modify.
+    //==================================================================================================================
+    template<concepts::keyword K, concepts::settings S>
+    using drop_t = typename drop<K,S>::type;
 
     // MERGE
     template<concepts::settings S1, concepts::settings S2>
@@ -300,6 +296,13 @@ namespace rbr
       using type = decltype( rbr::merge(std::declval<S1>(),std::declval<S2>()) );
     };
 
+    //==================================================================================================================
+    //! @ingroup stng
+    //! @brief Compute the return type of a call to rbr::merge
+    //!
+    //! @tparam S1 Settings to merge.
+    //! @tparam S2 Settings to merge.
+    //==================================================================================================================
     template<concepts::settings S1, concepts::settings S2>
     using merge_t = typename merge<S1,S2>::type;
   }

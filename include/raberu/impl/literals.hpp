@@ -65,7 +65,7 @@ namespace rbr::_
 //! @ingroup  utility
 //! @{
 //!   @defgroup udls   User-defined Literal operators
-//!   @brief    UDL operators
+//!   @brief     User-defined Literal operators definition
 //! @}
 //======================================================================================================================
 
@@ -114,11 +114,15 @@ namespace rbr
   };
 
   //====================================================================================================================
+  //! @ingroup udls
   //! @namespace rbr::literals
   //! @brief Raberu literals namespace
   //====================================================================================================================
   inline namespace literals
   {
+    //==================================================================================================================
+    //! @brief UDL to define a static ID from a string literal
+    //==================================================================================================================
     template<str ID> constexpr auto operator""_id() noexcept { return id_<ID>{}; }
   }
 }

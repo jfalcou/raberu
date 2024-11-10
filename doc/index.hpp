@@ -14,7 +14,7 @@
 //!
 //! # A Short Example
 //!
-//! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+//! ```cpp
 //! #include <raberu/raberu.hpp>
 //! #include <iostream>
 //! #include <string>
@@ -33,13 +33,13 @@
 //!   std::cout << replicate("replication"_kw = 9, "letter"_kw = 'z'   ) << "\n";
 //!   std::cout << replicate("letter"_kw = '!'   , "replication"_kw = 3) << "\n";
 //! }
-//! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//! ```
 //!
 //! # Licence
 //!
 //! This library is licensed under the [Boost Software License](https://opensource.org/licenses/BSL-1.0):
 //!
-//! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ none
+//! ```
 //! Copyright : RABERU Project Contributors
 //!
 //! Permission is hereby granted, free of charge, to any person or organization obtaining a copy of the
@@ -58,6 +58,6 @@
 //! NON-INFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE
 //! BE LIABLE FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE, ARISING
 //! FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//! ```
 //!
 //==================================================================================================

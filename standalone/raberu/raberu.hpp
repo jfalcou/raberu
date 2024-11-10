@@ -301,7 +301,11 @@ namespace rbr
     constexpr explicit(sizeof...(Options) == 1)
     settings(Options... opts) : Options(std::move(opts))... {}
     template<concepts::keyword K>
-    constexpr decltype(auto) operator[](K const&) const { return unwrap(typename K::keyword_identifier{}); }
+#ifdef RABERU_DOXYGEN_INVOKED
+    constexpr decltype(auto) operator[](K const& k) const { return unwrap(typename K::keyword_identifier{}); }
+#else
+    constexpr decltype(auto) operator[](K const& ) const { return unwrap(typename K::keyword_identifier{}); }
+#endif
     template<concepts::keyword_with_default<settings> K>
     constexpr decltype(auto) operator[](K const& key) const
     {
@@ -380,12 +384,6 @@ namespace rbr::_
 namespace rbr
 {
   constexpr decltype(auto) fetch(concepts::keyword auto const& k, concepts::option auto const&... os)
-  {
-    auto const opts = settings(os...);
-    return opts[k];
-  }
-  template<concepts::keyword K, typename V, concepts::option... Os>
-  constexpr decltype(auto) fetch(keyword_or<K, V> const& k, Os const&... os)
   {
     auto const opts = settings(os...);
     return opts[k];
@@ -474,13 +472,13 @@ namespace rbr
     };
     template<auto Keyword, typename... Sources>
     using fetch_t = typename fetch<Keyword,Sources...>::type;
-    template<concepts::keyword K, concepts::option... O>
+    template<concepts::keyword K, concepts::settings S>
     struct drop
     {
-      using type = decltype( rbr::drop(std::declval<K>(),std::declval<O>()...) );
+      using type = decltype( rbr::drop(std::declval<K>(),std::declval<S>()) );
     };
-    template<concepts::keyword K, concepts::option... O>
-    using drop_t = typename drop<K,O...>::type;
+    template<concepts::keyword K, concepts::settings S>
+    using drop_t = typename drop<K,S>::type;
     template<concepts::settings S1, concepts::settings S2>
     struct merge
     {

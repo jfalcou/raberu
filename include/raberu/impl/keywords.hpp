@@ -92,7 +92,10 @@ namespace rbr
       else                                      return default_;
     }
 
-    constexpr bool operator==(keyword_or const&) const = default;
+    constexpr bool operator==(keyword_or const& s) const
+    {
+      return default_ = s.default_;
+    }
 
     Default default_;
   };

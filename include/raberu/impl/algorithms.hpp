@@ -50,7 +50,7 @@ namespace rbr
   //! ## Example:
   //! @include doc/fetch.cpp
   //====================================================================================================================
-  constexpr decltype(auto) fetch(concepts::keyword auto const& k, concepts::option auto const&... os)
+  constexpr auto fetch(concepts::keyword auto const& k, concepts::option auto const&... os) -> decltype(settings(os...)[k])
   {
     auto const opts = settings(os...);
     return opts[k];
@@ -72,7 +72,7 @@ namespace rbr
   //! ## Example:
   //! @include doc/fetch.cpp
   //====================================================================================================================
-  constexpr decltype(auto) fetch(concepts::keyword auto const& k, concepts::settings auto const& s)
+  constexpr auto fetch(concepts::keyword auto const& k, concepts::settings auto const& s) -> decltype(s[k])
   {
     return s[k];
   }

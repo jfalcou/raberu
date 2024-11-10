@@ -212,7 +212,10 @@ namespace rbr
       if constexpr(std::invocable<Default, S>)  return default_(s);
       else                                      return default_;
     }
-    constexpr bool operator==(keyword_or const&) const = default;
+    constexpr bool operator==(keyword_or const& s) const
+    {
+      return default_ = s.default_;
+    }
     Default default_;
   };
   template<typename ID>
@@ -383,17 +386,17 @@ namespace rbr::_
 }
 namespace rbr
 {
-  constexpr decltype(auto) fetch(concepts::keyword auto const& k, concepts::option auto const&... os)
+  constexpr auto fetch(concepts::keyword auto const& k, concepts::option auto const&... os) -> decltype(settings(os...)[k])
   {
     auto const opts = settings(os...);
     return opts[k];
   }
-  constexpr decltype(auto) fetch(concepts::keyword auto const& k, concepts::settings auto const& opts)
+  constexpr auto fetch(concepts::keyword auto const& k, concepts::settings auto const& s) -> decltype(s[k])
   {
-    return opts[k];
+    return s[k];
   }
   template<typename... K1s, typename... K2s>
-  constexpr auto merge(settings<K1s...> const& opts, settings<K2s...> const& defs) noexcept
+  [[nodiscard]] constexpr auto merge(settings<K1s...> const& opts, settings<K2s...> const& defs) noexcept
   {
     auto selector = []<typename K, typename Opts>(K const&, Opts const& o, auto const& d)
                     {
@@ -460,20 +463,19 @@ namespace rbr
   namespace result
   {
     template<auto Keyword, typename... Sources> struct fetch;
-    template<auto Keyword, concepts::option... Os>
-    struct fetch<Keyword, Os...>
-    {
-      using type = decltype( rbr::fetch(Keyword, std::declval<Os>()...) );
-    };
     template<auto Keyword, concepts::settings Settings>
     struct fetch<Keyword, Settings>
     {
       using type = decltype( rbr::fetch(Keyword, std::declval<Settings>()) );
     };
+    template<auto Keyword, concepts::option... Os>
+    struct fetch<Keyword, Os...>
+    {
+      using type = decltype( rbr::fetch(Keyword, std::declval<Os>()...) );
+    };
     template<auto Keyword, typename... Sources>
     using fetch_t = typename fetch<Keyword,Sources...>::type;
-    template<concepts::keyword K, concepts::settings S>
-    struct drop
+    template<concepts::keyword K, concepts::settings S> struct drop
     {
       using type = decltype( rbr::drop(std::declval<K>(),std::declval<S>()) );
     };

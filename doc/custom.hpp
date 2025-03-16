@@ -43,21 +43,20 @@
   \subsection custom-extension  Extending RABERU Keywords
   Let's start again with our unrolling option. This time we want to be able to be sure nobody
   will use it with a non integral constant value and to display the value in a more informative way.
-  To do so, we can inherits from `rbr::as_keyword`, a CRTP enabled base class:
+  To do so, we can inherits from `rbr::keyword`, a CRTP enabled base class:
 
   @code
-  struct unrolling : rbr::as_keyword<unrolling>
+  struct unrolling : rbr::keyword<unrolling>
   {
     template<int N>
     constexpr auto operator=(std::integral_constant<int,N> const&) const noexcept
     {
       return rbr::option<unrolling,std::integral_constant<int,N>>{};
     }
-
-    std::ostream& display(std::ostream& os, auto v) const { return os << "Unroll Factor: " << v; }
   };
 
-  template<int N> inline constexpr auto unroll = (unrolling{} = std::integral_constant<int,N>{});
+  template<int N>
+  inline constexpr auto unroll = (unrolling{} = std::integral_constant<int, N>{});
   @endcode
 
   What if we call `f( unrolling{} = 3.f );` ? Well, we go this error message:
@@ -81,7 +80,7 @@
   Keyword-like entity can specialize a `display` member function to replace this output by a custom one.
 
   @code
-  struct unrolling : rbr::as_keyword<unrolling>
+  struct unrolling : rbr::keyword<unrolling>
   {
     template<int N>
     constexpr auto operator=(std::integral_constant<int,N> const&) const noexcept
@@ -89,8 +88,11 @@
       return rbr::option<unrolling,std::integral_constant<int,N>>{};
     }
 
-    std::ostream& display(std::ostream& os, auto v) const { return os << "Unroll Factor: " << v; }
+    friend std::ostream& display(std::ostream& os, unrolling const&, auto v) { return os << "Unroll Factor: " << v; }
   };
+
+  template<int N>
+  inline constexpr auto unroll = (unrolling{} = std::integral_constant<int, N>{});
   @endcode
 
   The `display` member takes the output stream and the actual value of the option to be displayed.

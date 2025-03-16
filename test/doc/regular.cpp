@@ -13,5 +13,5 @@ inline constexpr auto name = rbr::keyword("name"_id);
 
 int main()
 {
-  std::cout << rbr::settings( name = std::string{"Jane Doe"} );
+  std::cout << rbr::settings( name = std::string{"Jane Doe"} ) << "\n";
 }

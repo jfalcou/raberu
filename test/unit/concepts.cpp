@@ -18,10 +18,10 @@ TTS_CASE("Check rbr::concepts::keyword concept")
   using namespace rbr::literals;
 
   // Direct type
-  TTS_EXPECT(   rbr::concepts::keyword< rbr::flag_keyword   <key>            > );
-  TTS_EXPECT(   rbr::concepts::keyword< rbr::any_keyword    <key>            > );
-  TTS_EXPECT( ( rbr::concepts::keyword< rbr::typed_keyword  <key, double>    >));
-  TTS_EXPECT( ( rbr::concepts::keyword< rbr::checked_keyword<key, small_type>>));
+  TTS_EXPECT(   rbr::concepts::keyword< rbr::flag<key>            > );
+  TTS_EXPECT(   rbr::concepts::keyword< rbr::keyword<key>            > );
+  TTS_EXPECT( ( rbr::concepts::keyword< rbr::keyword <key, rbr::only_t<double>>    >));
+  TTS_EXPECT( ( rbr::concepts::keyword< rbr::keyword<key,rbr::traits_check<small_type>>>));
 
   // Predefined keyword object
   TTS_EXPECT(   rbr::concepts::keyword< decltype(custom_) > );
@@ -29,8 +29,8 @@ TTS_CASE("Check rbr::concepts::keyword concept")
 
   // Type from polymorphic constructor
   TTS_EXPECT(   rbr::concepts::keyword< decltype(rbr::keyword("any"_id)) > );
-  TTS_EXPECT(   rbr::concepts::keyword< decltype(rbr::keyword<small_type>("small"_id)) > );
-  TTS_EXPECT(   rbr::concepts::keyword< decltype(rbr::keyword<float>("real_value"_id)) > );
+  TTS_EXPECT(   rbr::concepts::keyword< decltype(rbr::keyword("small"_id,::rbr::if_<small_type>)) > );
+  TTS_EXPECT(   rbr::concepts::keyword< decltype(rbr::keyword("real_value"_id,::rbr::only<float>)) > );
   TTS_EXPECT(   rbr::concepts::keyword< decltype(rbr::flag("modal"_id)) > );
 
   // Type from literals
@@ -41,17 +41,17 @@ TTS_CASE("Check rbr::concepts::keyword concept")
   TTS_EXPECT_NOT( rbr::concepts::keyword<float**> );
 };
 
-struct my_little_keyword : rbr::checked_keyword<struct key, small_type>
+struct my_little_keyword : rbr::keyword<struct key, rbr::traits_check<small_type>>
 {
-  using parent = rbr::checked_keyword<struct key, small_type>;
+  using parent = rbr::keyword<struct key, rbr::traits_check<small_type>>;
   using parent::operator=;
 };
 
 TTS_CASE("Check rbr::concepts::option concept")
 {
-  TTS_EXPECT( (rbr::concepts::option<rbr::option<rbr::any_keyword<struct key> , int>>) );
-  TTS_EXPECT( (rbr::concepts::option<rbr::option<my_little_keyword            , int>>) );
-  TTS_EXPECT( (rbr::concepts::option<rbr::flag_keyword<struct key>                  >) );
+  TTS_EXPECT( (rbr::concepts::option<rbr::option<rbr::keyword<struct key> , int>>) );
+  TTS_EXPECT( (rbr::concepts::option<rbr::option<my_little_keyword        , int>>) );
+  TTS_EXPECT( (rbr::concepts::option<rbr::flag<struct key>>) );
   TTS_EXPECT_NOT(rbr::concepts::option<float**> );
 };
 

@@ -10,35 +10,15 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
-#include <ostream>
 #include <string_view>
 #include <utility>
 
-//======================================================================================================================
-//! @defgroup utility   Helper types and function
-//! @brief    Tools for interacting with Raberu components
-//======================================================================================================================
-
-//======================================================================================================================
-//! @ingroup  utility
-//! @{
-//!   @defgroup udls   User-defined Literal operators
-//!   @brief    UDL operators
-//! @}
-//======================================================================================================================
 namespace rbr::_
 {
-  // Lightweight container of value in alternatives
-  template<concepts::keyword T, typename V> struct type_or_
-  {
-    V value;
-
-    template<concepts::option... Os>
-    constexpr decltype(auto) operator()(Os&&... os) const { return fetch(*this, RBR_FWD(os)...); }
-  };
-
-  // Type -> String converter
-  template <typename T> constexpr auto typer() noexcept
+  //====================================================================================================================
+  // Type to string converter
+  //====================================================================================================================
+ template <typename T> constexpr auto typer() noexcept
   {
 #if defined(__clang__)
     constexpr auto pfx = std::string_view("auto rbr::_::typer() [T = ").size();
@@ -58,90 +38,90 @@ namespace rbr::_
     value.remove_suffix(sfx);
 
     constexpr auto size = raw.size() - (pfx + sfx);
-    auto fn = [&]<std::size_t... Is>(std::index_sequence<Is...>)
+    return [&]<std::size_t... Is>(std::index_sequence<Is...>)
     {
-      return std::array<char const, sizeof...(Is) + 1>{value[Is]...};
-    };
-
-    return fn(std::make_index_sequence<size>{});
+      return std::array<char const, sizeof...(Is) + 1>{value[Is]..., 0};
+    }(std::make_index_sequence<size>{});
   }
 
-  template<typename T>  inline constexpr auto type_array  = typer<T>();
-
-  template<typename T, auto ID = type_array<T>>
+  template<typename T, auto ID = typer<T>()>
   struct type_t
   {
-    static constexpr auto name() { return std::string_view(ID.data(), ID.size());}
+    static constexpr auto name() noexcept { return std::string_view(ID.data(), ID.size());}
+    template<concepts::stream Stream>
+    friend auto& operator<<(Stream& os, type_t const&) { return os << name(); }
   };
 
-  template<typename T>
-  inline constexpr auto type  = type_t<T>{};
-}
+  template<typename T> inline constexpr type_t<T> type  = {};
 
+  template<std::size_t N, std::size_t M> concept fits = (N <= M);
+}
 
 #if !defined(RBR_MAX_LITERAL_SIZE)
 #define RBR_MAX_LITERAL_SIZE 32
 #endif
 
+//======================================================================================================================
+//! @ingroup  utility
+//! @{
+//!   @defgroup udls   User-defined Literal operators
+//!   @brief     User-defined Literal operators definition
+//! @}
+//======================================================================================================================
+
 namespace rbr
 {
-  //====================================================================================================================
-  //! @namespace rbr::literals
-  //! @brief Raberu literals namespace
-  //====================================================================================================================
-  namespace literals
+  //==================================================================================================================
+  //! @ingroup utility
+  //! @brief Compile-time static string
+  //==================================================================================================================
+  struct str
   {
-    //==================================================================================================================
-    //! @ingroup utility
-    //! @brief Compile-time static string
-    //==================================================================================================================
-    struct str
+    static constexpr std::size_t max_size = RBR_MAX_LITERAL_SIZE;
+
+    char         data_[max_size+1];
+    std::uint8_t size_;
+
+    template<std::size_t N, std::size_t... Is>
+    constexpr str(const char (&s)[N], std::index_sequence<Is...>) : data_{s[Is]...}, size_(N)
+    {}
+
+    template <std::size_t N>
+    requires(N <= max_size)
+    constexpr str(const char (&s)[N]) : str{s, std::make_index_sequence<N>{}}
+    {}
+
+    constexpr std::size_t       size()  const { return size_; }
+    constexpr std::string_view  value() const { return std::string_view(&data_[0],size_); }
+
+    template<concepts::stream Stream>
+    friend auto& operator<<(Stream& os, str const& s)
     {
-      static constexpr std::size_t max_size = RBR_MAX_LITERAL_SIZE;
-
-      char         data_[max_size+1];
-      std::uint8_t size_;
-
-      template<std::size_t N, std::size_t... Is>
-      requires _::fits<N,max_size>
-      constexpr str(const char (&s)[N], std::index_sequence<Is...>) : data_{s[Is]...}, size_(N)
-      {}
-
-      template <std::size_t N>
-      requires _::fits<N,max_size>
-      constexpr str(const char (&s)[N]) : str{s, std::make_index_sequence<N>{}}
-      {}
-
-      constexpr std::size_t       size()  const { return size_; }
-      constexpr std::string_view  value() const { return std::string_view(&data_[0],size_); }
-
-      friend std::ostream& operator<<(std::ostream& os, str const& s)
-      {
-        return os << '\'' << s.value() << '\'';
-      }
-    };
-  }
+      return os << '\'' << s.value() << '\'';
+    }
+  };
 
   //====================================================================================================================
   //! @ingroup utility
   //! @brief Compile-time text based ID
   //! @tparam ID Compile-time string for the ID
   //====================================================================================================================
-  template<literals::str ID> struct id_
+  template<str ID> struct id_
   {
     /// Inserts an rbr::id_ in an output stream
-    friend std::ostream& operator<<(std::ostream& os, id_ const&)
-    {
-      return os << ID;
-    }
+    template<concepts::stream Stream>
+    friend auto& operator<<(Stream& os, id_ const&) { return os << ID; }
   };
 
-  namespace literals
+  //====================================================================================================================
+  //! @ingroup udls
+  //! @namespace rbr::literals
+  //! @brief Raberu literals namespace
+  //====================================================================================================================
+  inline namespace literals
   {
     //==================================================================================================================
-    //! @ingroup udls
-    //! @brief Forms an ID constant literal
-    //! @return An instance of rbr::id_ for the specified string
+    //! @brief UDL to define a static ID from a string literal
     //==================================================================================================================
     template<str ID> constexpr auto operator""_id() noexcept { return id_<ID>{}; }
   }

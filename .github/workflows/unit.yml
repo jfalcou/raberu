@@ -45,15 +45,15 @@ jobs:
   linux:
     runs-on: [ubuntu-latest]
     container:
-      image: ghcr.io/jfalcou/compilers:v7
+      image: ghcr.io/jfalcou/compilers:v9
     strategy:
       fail-fast: false
       matrix:
         cfg:
-        - { compiler: g++-12  , opts: -O0                                 , linker:                 }
+        - { compiler: g++-14  , opts: -O0                                 , linker:                 }
         - { compiler: clang++ , opts: -O0                                 , linker:                 }
         - { compiler: clang++ , opts: "-O3 -flto -DNDEBUG"                , linker:                 }
-        - { compiler: g++-12  , opts: "-O3 -flto -DNDEBUG"                , linker:                 }
+        - { compiler: g++-14  , opts: "-O3 -flto -DNDEBUG"                , linker:                 }
         - { compiler: clang++ , opts: "-O3 -flto -DNDEBUG -stdlib=libc++" , linker: -stdlib=libc++  }
         - { compiler: clang++ , opts: "-O0 -stdlib=libc++"                , linker: -stdlib=libc++  }
     steps:
@@ -67,13 +67,13 @@ jobs:
         run:  cd build && ninja raberu-test -j 2 && ctest --output-on-failure -j 2
 
   macosx:
-    runs-on: [macos-12]
+    runs-on: [macos-14]
     strategy:
       fail-fast: false
       matrix:
         cfg:
-        - { compiler: g++-12  , opts: -O0                                 , linker:                 }
-        - { compiler: g++-12  , opts: "-O3 -DNDEBUG"                      , linker:                 }
+        - { compiler: g++-14  , opts: -O0                                 , linker:                 }
+        - { compiler: g++-14  , opts: "-O3 -DNDEBUG"                      , linker:                 }
         - { compiler: clang++ , opts: -O0                                 , linker:                 }
         - { compiler: clang++ , opts: "-O3 -flto -DNDEBUG"                , linker:                 }
         - { compiler: clang++ , opts: "-O3 -flto -DNDEBUG -stdlib=libc++" , linker: -stdlib=libc++  }
@@ -89,7 +89,7 @@ jobs:
         run:  cd build && make raberu-test -j 2 && ctest --output-on-failure -j 2
 
   android:
-    runs-on: [macos-12]
+    runs-on: [macos-14]
     strategy:
       fail-fast: false
       matrix:
@@ -109,7 +109,7 @@ jobs:
   wasm:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/jfalcou/compilers:v7
+      image: ghcr.io/jfalcou/compilers:v9
     strategy:
       fail-fast: false
       matrix:

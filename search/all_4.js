@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['helper_20types_20and_20function_0',['Helper types and function',['../group__utility.html',1,'']]]
+  ['bound_20keyword_0',['Using Pre-bound keyword',['../custom.html#custom_01',1,'']]],
+  ['bug_20fixes_1',['Bug Fixes',['../changelog.html#autotoc_md23',1,'']]]
 ];

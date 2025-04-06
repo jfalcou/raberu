@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['keyword_0',['keyword',['../group__kwds_ga111cd0aae8b0ddc48b0682cb57be4601.html#ga111cd0aae8b0ddc48b0682cb57be4601',1,'rbr::any_keyword::keyword()'],['../group__kwds_ga1defddc866f08ffe48f8cede54d6c662.html#ga1defddc866f08ffe48f8cede54d6c662',1,'rbr::checked_keyword::keyword()'],['../group__kwds_ga22ca1174daaba7df70425196133e015d.html#ga22ca1174daaba7df70425196133e015d',1,'rbr::typed_keyword::keyword()']]],
-  ['keywords_1',['keywords',['../group__stng_ga896526026e355f76431a11b9b06a0d48.html#ga896526026e355f76431a11b9b06a0d48',1,'rbr']]],
-  ['keywords_20definitions_20and_20handling_2',['Keywords definitions and handling',['../group__kwds.html',1,'']]]
+  ['defined_20literal_20operators_0',['User-defined Literal operators',['../group__udls.html',1,'']]],
+  ['defining_20a_20settings_1',['Defining a Settings',['../tutorial.html#tutorial-settings',1,'']]],
+  ['definitions_20and_20handling_2',['definitions and handling',['../group__kwds.html',1,'Keywords definitions and handling'],['../group__stng.html',1,'Settings definitions and handling']]],
+  ['display_3',['Custom Keywords Display',['../custom.html#custom-display',1,'']]],
+  ['drop_4',['drop',['../group__stng_gad36681b05136221ae61651ccbc4b3ddb.html#gad36681b05136221ae61651ccbc4b3ddb',1,'rbr::settings']]]
 ];

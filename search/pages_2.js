@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['raberu_20101_0',['RABERU 101',['../tutorial.html',1,'']]]
+  ['fancy_20named_20parameters_20library_0',['The Fancy Named Parameters Library',['../index.html',1,'']]]
 ];

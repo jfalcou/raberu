@@ -1,12 +1,8 @@
 var searchData=
 [
-  ['concepts_0',['concepts',['../namespacerbr_1_1concepts.html',1,'rbr']]],
-  ['exactly_1',['exactly',['../conceptrbr_1_1concepts_1_1exactly.html',1,'rbr::concepts']]],
-  ['keyword_2',['keyword',['../conceptrbr_1_1concepts_1_1keyword.html',1,'rbr::concepts']]],
-  ['literals_3',['literals',['../namespacerbr_1_1literals.html',1,'rbr']]],
-  ['option_4',['option',['../conceptrbr_1_1concepts_1_1option.html',1,'rbr::concepts']]],
-  ['raberu_20101_5',['RABERU 101',['../tutorial.html',1,'']]],
-  ['rbr_6',['rbr',['../namespacerbr.html',1,'']]],
-  ['result_7',['result',['../namespacerbr_1_1result.html',1,'rbr']]],
-  ['settings_8',['settings',['../conceptrbr_1_1concepts_1_1settings.html',1,'rbr::concepts']]]
+  ['id_5f_0',['id_',['../structrbr_1_1id__.html',1,'rbr']]],
+  ['id_5ftype_1',['id_type',['../structrbr_1_1any__keyword.html#a461dbb4071e3311a7e99d1ee498eaed2',1,'rbr::any_keyword::id_type'],['../structrbr_1_1flag__keyword.html#a131e22636296d01c1051cdbf0481cd15',1,'rbr::flag_keyword::id_type']]],
+  ['insertion_2',['Stream insertion',['../tutorial.html#tutorial-stream',1,'']]],
+  ['install_20from_20the_20source_3',['Install from the source',['../setup.html#setup-source',1,'']]],
+  ['is_5fequivalent_4',['is_equivalent',['../structrbr_1_1is__equivalent.html',1,'rbr']]]
 ];

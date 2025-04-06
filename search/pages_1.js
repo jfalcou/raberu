@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['licence_0',['Licence',['../licence.html',1,'']]]
+  ['change_20log_0',['Change Log',['../changelog.html',1,'']]],
+  ['customizing_20keyword_1',['Tutorial: Customizing Keyword',['../custom.html',1,'']]]
 ];

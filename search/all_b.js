@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['settings_0',['settings',['../structrbr_1_1settings.html',1,'rbr::settings&lt; Opts &gt;'],['../structrbr_1_1settings.html#a0f2ff35651fc48a756885b73568d0a57',1,'rbr::settings::settings()'],['../namespacerbr.html#ae9bbf50288a429ab1d6048bdb85493e0',1,'rbr::settings()']]],
-  ['settings_20definitions_20and_20handling_1',['Settings definitions and handling',['../group__stng.html',1,'']]],
-  ['setup_2',['Setup',['../setup.html',1,'']]],
-  ['show_3',['show',['../structrbr_1_1as__keyword_aa5f2825b11a01b5cf8680759d8bf6177.html#aa5f2825b11a01b5cf8680759d8bf6177',1,'rbr::as_keyword']]],
-  ['size_4',['size',['../structrbr_1_1settings.html#ab63f0b741fbc37f174f679cf70239bf6',1,'rbr::settings']]],
-  ['str_5',['str',['../structrbr_1_1literals_1_1str.html',1,'rbr::literals']]]
+  ['keyword_0',['keyword',['../group__kwds_ga111cd0aae8b0ddc48b0682cb57be4601.html#ga111cd0aae8b0ddc48b0682cb57be4601',1,'rbr::any_keyword::keyword()'],['../group__kwds_ga1defddc866f08ffe48f8cede54d6c662.html#ga1defddc866f08ffe48f8cede54d6c662',1,'rbr::checked_keyword::keyword()'],['../group__kwds_ga22ca1174daaba7df70425196133e015d.html#ga22ca1174daaba7df70425196133e015d',1,'rbr::typed_keyword::keyword()'],['../custom.html',1,'Tutorial: Customizing Keyword'],['../custom.html#custom_01',1,'Using Pre-bound keyword']]],
+  ['keyword_20options_20settings_1',['Keyword, Options, Settings',['../tutorial.html#tutorial_01',1,'']]],
+  ['keywords_2',['keywords',['../tutorial.html#tutorial-checked',1,'Checked keywords'],['../custom.html#custom_02',1,'Custom RABERU Keywords'],['../custom.html#custom-extension',1,'Extending RABERU Keywords'],['../tutorial.html#tutorial_02',1,'Flavor of Keywords'],['../group__stng_ga896526026e355f76431a11b9b06a0d48.html#ga896526026e355f76431a11b9b06a0d48',1,'rbr::keywords()'],['../tutorial.html#tutorial-keywords',1,'Regular keywords']]],
+  ['keywords_20definitions_20and_20handling_3',['Keywords definitions and handling',['../group__kwds.html',1,'']]],
+  ['keywords_20display_4',['Custom Keywords Display',['../custom.html#custom-display',1,'']]]
 ];

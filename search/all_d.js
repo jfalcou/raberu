@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['unknown_5fkey_0',['unknown_key',['../structrbr_1_1unknown__key.html',1,'rbr']]],
-  ['user_2ddefined_20literal_20operators_1',['User-defined Literal operators',['../group__udls.html',1,'']]]
+  ['main_20raberu_20components_0',['Main RABERU components',['../group__main.html',1,'']]],
+  ['merge_1',['merge',['../group__stng_ga39cbfeb49cdec50141e18847dde121da.html#ga39cbfeb49cdec50141e18847dde121da',1,'rbr::settings']]]
 ];

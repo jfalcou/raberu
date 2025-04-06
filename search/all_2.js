@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['drop_0',['drop',['../group__stng_gad36681b05136221ae61651ccbc4b3ddb.html#gad36681b05136221ae61651ccbc4b3ddb',1,'rbr::settings']]]
+  ['2_200_20past_20prologue_0',['Version 2.0 - Past Prologue',['../changelog.html#autotoc_md22',1,'']]]
 ];

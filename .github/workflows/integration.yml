@@ -18,7 +18,7 @@ jobs:
   install:
     runs-on: [ubuntu-latest]
     container:
-      image: ghcr.io/jfalcou/compilers:v6
+      image: ghcr.io/jfalcou/compilers:v9
     strategy:
       fail-fast: false
 
@@ -41,7 +41,7 @@ jobs:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
     runs-on: [ubuntu-latest]
     container:
-      image: ghcr.io/jfalcou/compilers:v6
+      image: ghcr.io/jfalcou/compilers:v9
     strategy:
       fail-fast: false
 
@@ -60,7 +60,7 @@ jobs:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
     runs-on: [ubuntu-latest]
     container:
-      image: ghcr.io/jfalcou/compilers:v6
+      image: ghcr.io/jfalcou/compilers:v9
     strategy:
       fail-fast: false
 
@@ -71,5 +71,5 @@ jobs:
         run: |
           git config --global --add safe.directory /__w/raberu/raberu
           mkdir install && cd install
-          cmake ../test/integration/cpm-test -G Ninja -DGIT_BRANCH=${BRANCH_NAME}  -DCMAKE_CXX_COMPILER=clang++ -DRABERU_BUILD_TEST=OFF 
+          cmake ../test/integration/cpm-test -G Ninja -DGIT_BRANCH=${BRANCH_NAME}  -DCMAKE_CXX_COMPILER=clang++ -DRABERU_BUILD_TEST=OFF
           ninja && ctest --verbose

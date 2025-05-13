@@ -34,10 +34,7 @@ namespace rbr
   {
     //! Stream insertion operator
     template<concepts::stream Stream>
-    friend auto& operator<<(Stream& os, unknown_key const&)
-    {
-      return os << "rbr::unknown_key";
-    }
+    friend auto& operator<<(Stream& os, unknown_key const&) { return os << "rbr::unknown_key"; }
   };
 
   //====================================================================================================================
@@ -47,7 +44,6 @@ namespace rbr
   //!
   //! @groupheader{Example}
   //! @include doc/only.cpp
-  //!
   //====================================================================================================================
   template<typename Type>
   inline constexpr only_t<Type> only = {};
@@ -59,7 +55,6 @@ namespace rbr
   //!
   //! @groupheader{Example}
   //! @include doc/checked.cpp
-  //!
   //====================================================================================================================
   template<template<class> typename Traits>
   inline constexpr traits_check<Traits> if_ = {};
@@ -221,6 +216,14 @@ namespace rbr
     constexpr option<keyword_identifier,Value> operator=(Value&& v) const =delete;
 
     //==================================================================================================================
+    //! @brief Add a default value to current keyword
+    //!
+    //! Create a keyword instance with the same identifier as the current one but carrying `v` as a default value.
+    //! `v` is stored so it can be fetched later via rbr::settings if no keyword of the given identifier is found.
+    //!
+    //! @param v  Default value.
+    //! @see rbr::settings
+    //! @see rbr::fetch
     //==================================================================================================================
     template<typename Default>
     constexpr auto operator|(Default v) const  { return keyword_or<keyword_identifier,Default>{std::move(v)}; }

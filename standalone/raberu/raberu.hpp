@@ -171,10 +171,7 @@ namespace rbr
   struct unknown_key
   {
     template<concepts::stream Stream>
-    friend auto& operator<<(Stream& os, unknown_key const&)
-    {
-      return os << "rbr::unknown_key";
-    }
+    friend auto& operator<<(Stream& os, unknown_key const&) { return os << "rbr::unknown_key"; }
   };
   template<typename Type>
   inline constexpr only_t<Type> only = {};

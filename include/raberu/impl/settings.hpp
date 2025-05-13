@@ -155,7 +155,6 @@ namespace rbr
     };
   };
 
-  /// rbr::settings deduction guide
   template<concepts::option... Opts>
   settings(Opts const&... opts) -> settings<Opts...>;
 }

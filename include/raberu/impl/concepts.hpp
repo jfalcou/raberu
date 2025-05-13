@@ -26,7 +26,6 @@ namespace rbr::concepts
   //! @brief Keyword concept
   //!
   //! A Keyword type is able to be bound to a value as an [Option](@ref rbr::concepts::option).
-  //! It is defined as exporting a `keyword_identifier`internal type.
   //====================================================================================================================
   template<typename K>
   concept keyword = requires(K const& k) { typename K::keyword_identifier; };
@@ -35,7 +34,6 @@ namespace rbr::concepts
   //! @brief Keyword with Default concept
   //!
   //! A Keyword with Default type is usable when retrieving a settings value and by providing a default value if needed.
-  //! It is defined as a rbr::concepts::keyword exposing a `default_value` member function.
   //====================================================================================================================
   template<typename K, typename T>
   concept keyword_with_default = keyword<K> && requires(K const& k, T const d) { { k.default_value(d) }; };
@@ -43,8 +41,7 @@ namespace rbr::concepts
   //====================================================================================================================
   //! @brief Option concept
   //!
-  //! An Option type can be aggregated in a [Settings](@ref rbr::concepts::settings) and be
-  //! fetched later
+  //! An Option type can be aggregated in a [Settings](@ref rbr::concepts::settings) and be fetched later.
   //====================================================================================================================
   template<typename O>
   concept option = requires(O const& o)

@@ -26,8 +26,13 @@ namespace rbr
     static constexpr bool value = Traits<U>::value;
   };
 
+  //====================================================================================================================
+  //! @ingroup stng
+  //! @brief Type indicating a keyword was not found in a given rbr::settings
+  //====================================================================================================================
   struct unknown_key
   {
+    //! Stream insertion operator
     template<concepts::stream Stream>
     friend auto& operator<<(Stream& os, unknown_key const&)
     {
@@ -35,9 +40,27 @@ namespace rbr
     }
   };
 
+  //====================================================================================================================
+  //! @ingroup stng
+  //! @brief  Option specifying the single type a keyword will accept.
+  //! @tparam Type Type that the parametrized keyword will accept.
+  //!
+  //! @groupheader{Example}
+  //! @include doc/only.cpp
+  //!
+  //====================================================================================================================
   template<typename Type>
   inline constexpr only_t<Type> only = {};
 
+  //====================================================================================================================
+  //! @ingroup stng
+  //! @brief  Option specifying a traits that type should verify for being used as a keyword value.
+  //! @tparam Traits Traits that the parametrized keyword will use to validate its value.
+  //!
+  //! @groupheader{Example}
+  //! @include doc/checked.cpp
+  //!
+  //====================================================================================================================
   template<template<class> typename Traits>
   inline constexpr traits_check<Traits> if_ = {};
 
@@ -127,22 +150,45 @@ namespace rbr
 
   //====================================================================================================================
   //! @ingroup kwds
-  //! @brief Base class for keyword definition
+  //! @brief Keyword definition class
   //!
-  //! rbr::keyword
+  //! rbr::keyword defines a keyword, i.e an entity that can receive values and can be stored as part of a settings.
+  //! It is defined by a unique type ID which can be an actual type or generated from rbr::id_ and an optional
+  //! checking operations that will validate the value passed to the keyword is acceptable.
+  //!
+  //! rbr::keyword can also be used to define custom keyword type with specific behavior.
   //!
   //! @tparam ID    Keyword type being defined
-  //! @tparam Check Potential type checker meta-function. By default, this is `void` to notify no checks.
-  //====================================================================================================================  template<typename ID>
+  //! @tparam Check Potential type checker meta-function. By default, this is `void` to notify no check is performed.
+  //!
+  //! @groupheader{Example}
+  //! @include doc/regular.cpp
+  //!
+  //====================================================================================================================
   template<typename ID, typename Checker>
   struct keyword
   {
+    //! Keyword identifier type. This type can be used to identify a keyword in generic contexts.
     using keyword_identifier = keyword<ID>;
+
+    //! Indicates that if the current keyword behaves as a flag.
     static constexpr bool is_flag = false;
 
+    //! Default constructor
     constexpr keyword() noexcept {}
-    constexpr keyword(ID const&, Checker const&) noexcept {}
 
+    //==================================================================================================================
+    //! @brief Constructs a keyword from an ID and a checker type.
+    //!
+    //! @param id   Identifier of the keyword.
+    //! @param chk  Object performing the compile-time verification of the keyword's value.
+    //!
+    //! @groupheader{Example}
+    //! @include doc/only.cpp
+    //==================================================================================================================
+    constexpr keyword([[maybe_unused]] ID const& id, [[maybe_unused]] Checker const& chk) noexcept {}
+
+    //! Equality comparison
     constexpr bool operator==(keyword const&) const = default;
 
     //==================================================================================================================
@@ -153,6 +199,18 @@ namespace rbr
     //!
     //! @param v Bound value
     //! @return An rbr::option binding the keyword to `v`.
+    //!
+    //! @groupheader{Example}
+    //! @code
+    //! #include <raberu/raberu.hpp>
+    //! #include <iostream>
+    //!
+    //! int main()
+    //! {
+    //!   using namespace rbr::literals;
+    //!   std::cout << ("value"_kw = 42.1337) << "\n";
+    //! }
+    //! @endcode
     //==================================================================================================================
     template<typename Value>
     requires( Checker::template value<Value> )
@@ -162,6 +220,8 @@ namespace rbr
     requires( !Checker::template value<Value> )
     constexpr option<keyword_identifier,Value> operator=(Value&& v) const =delete;
 
+    //==================================================================================================================
+    //==================================================================================================================
     template<typename Default>
     constexpr auto operator|(Default v) const  { return keyword_or<keyword_identifier,Default>{std::move(v)}; }
 
@@ -195,12 +255,22 @@ namespace rbr
   template<typename ID>
   struct flag
   {
+    //! Keyword identifier type. This type can be used to identify a keyword in generic contexts.
     using keyword_identifier      = flag<ID>;
+
+    //! Keyword type used to generate this option.
     using keyword_type            = flag<ID>;
+
+    //! Type of the internal value carried over by the flag.
     using stored_value_type       = bool;
+
+    //! Indicates that if the current keyword behaves as a flag.
     static constexpr bool is_flag = true;
 
+    //! Default constructor
     constexpr flag() noexcept {}
+
+    //! Constructs a flag from an ID
     constexpr flag(ID const&) noexcept {}
 
     constexpr bool  fetch(keyword_identifier const&)  const noexcept { return true; }

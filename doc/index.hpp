@@ -39,7 +39,7 @@
 //!
 //! This library is licensed under the [Boost Software License](https://opensource.org/licenses/BSL-1.0):
 //!
-//! ```
+//! ```text
 //! Copyright : RABERU Project Contributors
 //!
 //! Permission is hereby granted, free of charge, to any person or organization obtaining a copy of the

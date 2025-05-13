@@ -14,7 +14,7 @@
     + a type to process such aggregate of parameters.
     + a `constexpr`-compatible implementation for all of those.
 
-  \section tutorial_01 Keyword, Options, Settings
+  \section tutorial_01 Main Components
 
   Let's define a small function - `replicate` - that takes a character `c` and an integer `n` as parameters and
   return a string containing `c` repeated `n` times. As we want our users to have maximum flexibility, we will
@@ -83,10 +83,11 @@
  To do so, we'll need to use the rbr::keyword factory function that
  accepts an optional parameter which can be :
 
-  - An instance of @ref rbr::only, parametrized by the only type accepted as a value.
-  - An instance of @ref rbr::if_<F>, the keyword is setup to only  accept value which type satisfy `F<T>::value == true`.
+  - An instance of rbr::only<T>, parametrized by the only type `T` accepted as a value.
+    @include doc/only.cpp
 
- @include doc/checked.cpp
+  - An instance of rbr::if_<F>, the keyword is setup to only  accept value which type satisfy `F<T>::value == true`.
+    @include doc/checked.cpp
 
  \section tutorial_03 Settings
 

@@ -243,7 +243,7 @@ namespace rbr
     using keyword_identifier = keyword<ID>;
     static constexpr bool is_flag = false;
     constexpr keyword() noexcept {}
-    constexpr keyword(ID const&, Checker const&) noexcept {}
+    constexpr keyword([[maybe_unused]] ID const& id, [[maybe_unused]] Checker const& chk) noexcept {}
     constexpr bool operator==(keyword const&) const = default;
     template<typename Value>
     requires( Checker::template value<Value> )

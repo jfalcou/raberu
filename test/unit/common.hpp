@@ -10,6 +10,7 @@
 #include <array>
 #include <string>
 #include <type_traits>
+#include <iostream>
 
 using namespace rbr::literals;
 
@@ -35,15 +36,15 @@ struct small_type : std::bool_constant<(sizeof(T) < 4)> {};
 inline constexpr auto custom_ = ::rbr::keyword("custom"_id);
 inline constexpr auto coord_  = "coord"_kw;
 
-inline constexpr auto value_  = ::rbr::keyword<float>("value"_id);
-inline constexpr auto name_   = ::rbr::keyword<std::string>("name"_id);
+inline constexpr auto value_  = ::rbr::keyword("value"_id, ::rbr::only<float>);
+inline constexpr auto name_   = ::rbr::keyword("name"_id , ::rbr::only<std::string>);
 
-inline constexpr auto factor_ = ::rbr::keyword<small_type>("factor"_id);
+inline constexpr auto factor_ = ::rbr::keyword("factor"_id, ::rbr::if_<small_type>);
 
 inline constexpr auto is_transparent_ = ::rbr::flag("is_transparent"_id);
 inline constexpr auto is_modal_       = "is_modal"_fl;
 
-struct unrolling : rbr::as_keyword<unrolling>
+struct unrolling : rbr::keyword<unrolling>
 {
   template<int N>
   constexpr auto operator=(std::integral_constant<int,N> const&) const noexcept
@@ -51,7 +52,7 @@ struct unrolling : rbr::as_keyword<unrolling>
     return rbr::option<unrolling,std::integral_constant<int,N>>{};
   }
 
-  std::ostream& display(std::ostream& os, auto v) const { return os << "Unroll Factor: " << v; }
+  friend std::ostream& display(std::ostream& os, unrolling const&, auto v) { return os << "Unroll Factor: " << v; }
 };
 
 template<int N> inline constexpr auto unroll = (unrolling{} = std::integral_constant<int,N>{});

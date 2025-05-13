@@ -5,13 +5,12 @@
 **/
 #include <raberu/raberu.hpp>
 #include <iostream>
-#include <string>
 
 using namespace rbr::literals;
 
-inline constexpr auto name = rbr::keyword("name"_id);
+inline constexpr auto char_value  = rbr::keyword("character"_id, rbr::only<char>);
 
 int main()
 {
-  std::cout << rbr::settings( name = std::string{"Jane Doe"} ) << "\n";
+  std::cout << rbr::settings( char_value  = 'Z' ) << "\n";
 }

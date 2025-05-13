@@ -10,13 +10,11 @@
   arbitrary keyword-like identifiers, to functions.
 
   It does so by providing:
-
     + a protocol to define such keywords.
     + a type to process such aggregate of parameters.
     + a `constexpr`-compatible implementation for all of those.
 
-
-  \section tutorial_01 Keyword, Options, Settings
+  \section tutorial_01 Main Components
 
   Let's define a small function - `replicate` - that takes a character `c` and an integer `n` as parameters and
   return a string containing `c` repeated `n` times. As we want our users to have maximum flexibility, we will
@@ -41,29 +39,32 @@
  Let's say you want to pass a compile-time unrolling factor to some algorithm.
  You can use a regular keyword as seen in the tutorial:
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+
+ @code
  auto x = my_algorithm( "unroll"_kw = std::integral_constant<int,4>{});
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ @endcode
 
  This is working but a bit verbose. Another issue can be that documenting the fact
  that your functions awaits a `"unroll"_kw` maybe cumbersome.
 
  A nicer way to simplify the user experience is to preemptively defines a keyword variable.
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+
+ @code
  inline constexpr auto unroll = "unroll"_kw;
 
  auto x = my_algorithm( unroll = std::integral_constant<int,4>{});
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ @endcode
 
  Slightly terser and far easier to document.
  You can also use the rbr::keyword factory that takes an ID and returns a keyword instance
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+
+ @code
  inline constexpr auto unroll = rbr::keyword("unroll"_id);
 
  auto x = my_algorithm( unroll = std::integral_constant<int,4>{});
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ @endcode
 
  \subsection  tutorial-flags Flags
  Sometimes, you just want to check if a given parameter has been passed but you don't really care about an associated value. Such keyword parameters are **flags**, carrying information about their sole presence without the need ot be bound to a value.
@@ -80,30 +81,13 @@
  constraints ?
 
  To do so, we'll need to use the rbr::keyword factory function that
- accepts an optional template parameter. If this template parameter is a type,
- the keyword is setup to only accept value of this exact type.
+ accepts an optional parameter which can be :
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
- using namespace rbr::literals;
+  - An instance of rbr::only<T>, parametrized by the only type `T` accepted as a value.
+    @include doc/only.cpp
 
- // color can only accept unsigned 32 bits integer
- auto color = rbr::keyword<std::uint32_t>("color"_id);
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
- If this template parameter is a unary template meta-function `F`, the keyword is setup to only
- accept value which type satisfy `F<T>::value == true`.
-
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
- using namespace rbr::literals;
-
- template<typename T> struct large_type
- {
-   static constexpr auto value = sizeof(T) >= 4;
- };
-
- // entropy can only accept types of at least 32 bits
- inline constexpr auto entropy = rbr::keyword<large_type>( "entropy"_id);
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  - An instance of rbr::if_<F>, the keyword is setup to only  accept value which type satisfy `F<T>::value == true`.
+    @include doc/checked.cpp
 
  \section tutorial_03 Settings
 
@@ -120,7 +104,8 @@
  \subsection tutorial-stream  Stream insertion
  rbr::settings can be streamed to display the list of keyword/value pairs it contains
 
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+
+ @code
  #include <raberu/raberu.hpp>
  #include <iostream>
 
@@ -132,13 +117,7 @@
 
    std::cout << values << "\n";
  }
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ @endcode
 
- The expected output should be:
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 'size' : 75 (long long unsigned int)
- 'transparent' : 1 (std::integral_constant<bool, true>)
- 'value' : 7.7 (float)
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **/
 //==================================================================================================

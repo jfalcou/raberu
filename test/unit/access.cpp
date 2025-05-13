@@ -6,7 +6,7 @@
 **/
 //==================================================================================================
 #define TTS_MAIN
-#include <iostream>
+
 #include "common.hpp"
 #include <raberu/raberu.hpp>
 #include <tts/tts.hpp>
@@ -38,10 +38,9 @@ TTS_CASE("Check settings(...) operator[t | v] behavior")
   using namespace rbr::literals;
 
   auto values = rbr::settings(name_ = "Jane Doe"s, "default_init"_fl, "value"_kw = 65);
-
-  TTS_EQUAL(values[name_              | "Bob Ross"s ], "Jane Doe"s);
-  TTS_EQUAL(values["default_init"_fl  | -99         ], true       );
-  TTS_EQUAL(values["value"_kw         | -9.9        ], 65         );
+  TTS_EQUAL(values[name_ | "Bob Ross"s ], "Jane Doe"s);
+  TTS_EQUAL(values["default_init"_fl  | -99  ], true);
+  TTS_EQUAL(values["value"_kw         | -9.9 ], 65  );
 
   TTS_EQUAL(values["perform_copy"_fl  | -99 ], -99);
   TTS_EQUAL(values["other_kw"_kw      | -9.9], -9.9);
@@ -60,30 +59,30 @@ TTS_CASE("Check settings(...) operator[t | v] constexpr behavior")
   TTS_CONSTEXPR_EQUAL(values["other_kw"_kw     | -9.9], -9.9);
 };
 
-TTS_CASE("Check settings(...) operator[t | func()] behavior")
+TTS_CASE("Check settings(...) operator[t | func(settings)] behavior")
 {
   using namespace std::literals;
   using namespace rbr::literals;
 
   auto values = rbr::settings(name_ = "Jane Doe"s, "default_init"_fl, "value"_kw = 65);
-  auto or_else = [&]() { return values.size() * values["value"_kw]; };
+  auto or_else = [](auto const& s) { return s.size() * s["value"_kw]; };
 
-  TTS_EQUAL(values[name_              | rbr::call(or_else) ], "Jane Doe"s);
-  TTS_EQUAL(values["default_init"_fl  | rbr::call(or_else) ], true       );
-  TTS_EQUAL(values["value"_kw         | rbr::call(or_else) ], 65         );
+  TTS_EQUAL(values[name_              | or_else ], "Jane Doe"s);
+  TTS_EQUAL(values["default_init"_fl  | or_else ], true       );
+  TTS_EQUAL(values["value"_kw         | or_else ], 65         );
 
-  TTS_EQUAL(values["perform_copy"_fl  | rbr::call(or_else) ], 3*65);
-  TTS_EQUAL(values["other_kw"_kw      | rbr::call(or_else) ], 3*65);
+  TTS_EQUAL(values["perform_copy"_fl  | or_else ], 3*65);
+  TTS_EQUAL(values["other_kw"_kw      | or_else ], 3*65);
 };
 
 TTS_CASE("Check settings(...) operator[t | func()] constexpr behavior")
 {
   constexpr auto values  = rbr::settings(is_modal_,value_ = 1337.42f);
-  auto           or_else = []() { return 42.69; };
+  auto           or_else = [](auto const&) { return 42.69; };
 
-  TTS_CONSTEXPR_EQUAL(values[is_modal_  | rbr::call(or_else) ], true     );
-  TTS_CONSTEXPR_EQUAL(values[value_     | rbr::call(or_else) ], 1337.42f );
+  TTS_CONSTEXPR_EQUAL(values[is_modal_  | or_else ], true     );
+  TTS_CONSTEXPR_EQUAL(values[value_     | or_else ], 1337.42f );
 
-  TTS_CONSTEXPR_EQUAL(values["perform_copy"_fl  | rbr::call(or_else) ], 42.69);
-  TTS_CONSTEXPR_EQUAL(values["other_kw"_kw      | rbr::call(or_else) ], 42.69);
+  TTS_CONSTEXPR_EQUAL(values["perform_copy"_fl  | or_else ], 42.69);
+  TTS_CONSTEXPR_EQUAL(values["other_kw"_kw      | or_else ], 42.69);
 };

@@ -8,18 +8,35 @@
 #pragma once
 
 #include <type_traits>
+#include <concepts>
+
+//======================================================================================================================
+//! @namespace rbr
+//! @brief Main Raberu namespace
+//======================================================================================================================
+namespace rbr
+{
+  //======================================================================================================================
+  //! @defgroup main Main RABERU components
+  //! @{
+  //!   @defgroup kwds Keywords definitions and handling
+  //!   @brief    Functions and types to handle RABERU keywords
+  //! @}
+  //======================================================================================================================
+
+  //====================================================================================================================
+  //! @namespace rbr::result
+  //! @brief Raberu helper traits namespace
+  //====================================================================================================================
+  namespace result {}
+}
+
+//======================================================================================================================
+//! @defgroup utility   Helper types and function
+//! @brief    Tools for interacting with RABERU components
+//======================================================================================================================
 
 #define RBR_FWD(...) static_cast<decltype(__VA_ARGS__) &&>(__VA_ARGS__)
-
-// Fix for non-conformant libcpp
-namespace rbr::stdfix
-{
-  template<typename T, typename U >
-  concept is_same_impl = std::is_same_v<T, U>;
-
-  template<typename T, typename U >
-  concept same_as = is_same_impl<T, U> && is_same_impl<U, T>;
-}
 
 // Helpers for working on list of keys as unique lists - needed by merge and some contains_*
 namespace rbr::_
@@ -29,7 +46,7 @@ namespace rbr::_
   template<typename K, typename Ks> struct contains;
 
   template<typename... Ks, typename K>
-  struct  contains<K, keys<Ks...>> : std::bool_constant<(stdfix::same_as<K,Ks> || ...)>
+  struct  contains<K, keys<Ks...>> : std::bool_constant<(std::same_as<K,Ks> || ...)>
   {};
 
   template<typename K, typename Ks, bool>  struct append_if_impl;

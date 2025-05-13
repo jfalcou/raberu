@@ -19,7 +19,7 @@ namespace rbr::_
     template<typename T> constexpr auto operator%(keys<T> const&) const
     {
       using kw_t = typename T::keyword_type;
-      if constexpr(!stdfix::same_as<K, typename kw_t::keyword_identifier>)  return filter<K, Kept..., kw_t>{};
+      if constexpr(!std::same_as<K, typename kw_t::keyword_identifier>)  return filter<K, Kept..., kw_t>{};
       else                                                                  return *this;
     }
   };

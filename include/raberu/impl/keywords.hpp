@@ -17,7 +17,7 @@ namespace rbr
   template<typename Type> struct only_t
   {
     template<typename U>
-    static constexpr bool value = stdfix::same_as<Type,U>;
+    static constexpr bool value = std::same_as<Type,U>;
   };
 
   template<template<class> typename Traits> struct traits_check

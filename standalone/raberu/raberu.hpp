@@ -8,24 +8,18 @@
 #ifndef RABERU_HPP_INCLUDED
 #define RABERU_HPP_INCLUDED
 #include <type_traits>
+#include <concepts>
 namespace rbr
 {
   namespace result {}
 }
 #define RBR_FWD(...) static_cast<decltype(__VA_ARGS__) &&>(__VA_ARGS__)
-namespace rbr::stdfix
-{
-  template<typename T, typename U >
-  concept is_same_impl = std::is_same_v<T, U>;
-  template<typename T, typename U >
-  concept same_as = is_same_impl<T, U> && is_same_impl<U, T>;
-}
 namespace rbr::_
 {
   template<typename... Ks> struct keys {};
   template<typename K, typename Ks> struct contains;
   template<typename... Ks, typename K>
-  struct  contains<K, keys<Ks...>> : std::bool_constant<(stdfix::same_as<K,Ks> || ...)>
+  struct  contains<K, keys<Ks...>> : std::bool_constant<(std::same_as<K,Ks> || ...)>
   {};
   template<typename K, typename Ks, bool>  struct append_if_impl;
   template<typename... Ks, typename K> struct append_if_impl<K,keys<Ks...>,true>
@@ -78,7 +72,7 @@ namespace rbr::concepts
   };
   template<typename S> concept settings = requires( S const& s ) { typename S::rbr_settings; };
   template<typename Option, auto Keyword>
-  concept exactly = stdfix::same_as<typename Option::keyword_type, std::remove_cvref_t<decltype(Keyword)>>;
+  concept exactly = std::same_as<typename Option::keyword_type, std::remove_cvref_t<decltype(Keyword)>>;
 }
 #include <array>
 #include <cstddef>
@@ -161,7 +155,7 @@ namespace rbr
   template<typename Type> struct only_t
   {
     template<typename U>
-    static constexpr bool value = stdfix::same_as<Type,U>;
+    static constexpr bool value = std::same_as<Type,U>;
   };
   template<template<class> typename Traits> struct traits_check
   {
@@ -310,7 +304,7 @@ namespace rbr
     constexpr decltype(auto) operator[](K const& key) const
     {
       decltype(auto) that = unwrap(typename K::keyword_identifier{});
-      if constexpr(stdfix::same_as<std::remove_cvref_t<decltype(that)>, unknown_key>)
+      if constexpr(std::same_as<std::remove_cvref_t<decltype(that)>, unknown_key>)
         return key.default_value(*this);
       else
         return that;
@@ -321,7 +315,7 @@ namespace rbr
       if constexpr( requires{ std::declval<settings>().fetch(typename Key::keyword_identifier{}); } )
       {
         using found = decltype(std::declval<settings>().fetch(typename Key::keyword_identifier{}));
-        return !stdfix::same_as<found, unknown_key>;
+        return !std::same_as<found, unknown_key>;
       }
       else
       {
@@ -370,7 +364,7 @@ namespace rbr::_
     template<typename T> constexpr auto operator%(keys<T> const&) const
     {
       using kw_t = typename T::keyword_type;
-      if constexpr(!stdfix::same_as<K, typename kw_t::keyword_identifier>)  return filter<K, Kept..., kw_t>{};
+      if constexpr(!std::same_as<K, typename kw_t::keyword_identifier>)  return filter<K, Kept..., kw_t>{};
       else                                                                  return *this;
     }
   };

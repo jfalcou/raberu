@@ -65,5 +65,5 @@ namespace rbr::concepts
   //! instantiation of a precise [Keyword](@ref rbr::concepts::keyword)
   //====================================================================================================================
   template<typename Option, auto Keyword>
-  concept exactly = stdfix::same_as<typename Option::keyword_type, std::remove_cvref_t<decltype(Keyword)>>;
+  concept exactly = std::same_as<typename Option::keyword_type, std::remove_cvref_t<decltype(Keyword)>>;
 }

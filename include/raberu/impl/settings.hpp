@@ -68,7 +68,7 @@ namespace rbr
       decltype(auto) that = unwrap(typename K::keyword_identifier{});
 
       // If we can have a default value and it is needed due to unknwon_key being returned
-      if constexpr(stdfix::same_as<std::remove_cvref_t<decltype(that)>, unknown_key>)
+      if constexpr(std::same_as<std::remove_cvref_t<decltype(that)>, unknown_key>)
         return key.default_value(*this);
       else
         return that;
@@ -87,7 +87,7 @@ namespace rbr
       if constexpr( requires{ std::declval<settings>().fetch(typename Key::keyword_identifier{}); } )
       {
         using found = decltype(std::declval<settings>().fetch(typename Key::keyword_identifier{}));
-        return !stdfix::same_as<found, unknown_key>;
+        return !std::same_as<found, unknown_key>;
       }
       else
       {

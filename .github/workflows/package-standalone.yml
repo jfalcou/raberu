@@ -1,0 +1,50 @@
+##======================================================================================================================
+## RABERU - Fancy Parameters Library
+## Copyright : RABERU Contributors & Maintainers
+## SPDX-License-Identifier: BSL-1.0
+##======================================================================================================================
+name: RABERU Standalone Generation
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  package-standalone:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    container:
+      image: ghcr.io/jfalcou/compilers:v9
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Fetch current branch
+        uses: actions/checkout@v4.1.1
+
+      - name: Configure RABERU
+        run: |
+          git config --global --add safe.directory /__w/raberu/raberu
+          mkdir build && cd build
+          cmake .. -G Ninja -DRABERU_BUILD_TEST=OFF -DRABERU_BUILD_DOCUMENTATION=OFF
+
+      - name: Generate standalone RABERU header
+        run: |
+          cd build && ninja raberu-standalone
+
+      - name: Update standalone branch
+        run: |
+          git fetch origin
+          git config --global user.email "raberu@nowhere.com"
+          git config --global user.name "RABERU Standalone Generator"
+          git checkout standalone
+          cp build/raberu.hpp raberu.hpp
+          git add raberu.hpp
+          git commit --allow-empty -m "Latest RABERU standalone"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: "standalone"

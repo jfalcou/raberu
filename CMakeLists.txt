@@ -58,8 +58,8 @@ endif()
 ## Standalone generation
 ##======================================================================================================================
 copa_setup_standalone ( ${QUIET_OPTION}
-                        FILE raberu.hpp SOURCE include  DESTINATION standalone
-                        ROOT raberu     TARGET raberu-standalone
+                        FILE raberu.hpp SOURCE include ROOT raberu TARGET raberu-standalone
+                        OUTPUT "${PROJECT_BINARY_DIR}"
                       )
 
 ##======================================================================================================================

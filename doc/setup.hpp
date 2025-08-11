@@ -52,7 +52,7 @@
   Simply use `wget` to fetch the latest version and place it where you want:
 
   @code
-  wget https://raw.githubusercontent.com/jfalcou/raberu/main/standalone/raberu/raberu.hpp
+  wget https://raw.githubusercontent.com/jfalcou/raberu/refs/heads/standalone/raberu.hpp
   @endcode
 
   Use **RABERU** by just compiling your code with the include path pointing to the location of this single file.

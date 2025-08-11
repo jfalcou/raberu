@@ -7,9 +7,9 @@ copa_setup_test_targets()
 set(root "${CMAKE_SOURCE_DIR}/test")
 
 copa_glob_unit( PATTERN "unit/*.cpp"
-                QUIET RELATIVE ${root} INTERFACE raberu_test DEPENDENCIES raberu-standalone
+                QUIET RELATIVE ${root} INTERFACE raberu_test
               )
 
 copa_glob_unit( PATTERN "doc/*.cpp"
-                QUIET RELATIVE ${root} INTERFACE raberu_test DEPENDENCIES raberu-standalone
+                QUIET RELATIVE ${root} INTERFACE raberu_test
               )

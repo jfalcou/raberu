@@ -9,12 +9,12 @@
 //! It does so by providing:
 //!
 //!   * a protocol to define such keywords.
-//!   * a type to process such aggregate of parameters.
+//!   * a type to process such an aggregate of parameters.
 //!   * a `constexpr`-compatible implementation for all of those.
 //!
 //! # A Short Example
 //!
-//! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ c++
+//! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //! #include <raberu/raberu.hpp>
 //! #include <iostream>
 //! #include <string>

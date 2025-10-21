@@ -142,12 +142,12 @@ $(document).ready(function(){initNavTree('tutorial.html',''); initResizable(); }
 <p>It does so by providing:</p>
 <ul>
 <li>a protocol to define such keywords.</li>
-<li>a type to process such aggregate of parameters.</li>
+<li>a type to process such an aggregate of parameters.</li>
 <li>a <code>constexpr</code>-compatible implementation for all of those.</li>
 </ul>
 <h1><a class="anchor" id="tutorial_01"></a>
 Keyword, Options, Settings</h1>
-<p>Let's define a small function - <code>replicate</code> - that takes a character <code>c</code> and an integer <code>n</code> as parameters and return a string containing <code>c</code> repeated <code>n</code> times. As we want our users to have maximum flexibility, we will pass those parameters as keyword/value pairs.</p>
+<p>Let's define a small function - <code>replicate</code> - that takes a character <code>c</code> and an integer <code>n</code> as parameters and returns a string containing <code>c</code> repeated <code>n</code> times. As we want our users to have maximum flexibility, we will pass those parameters as keyword/value pairs.</p>
 <div class="fragment"><div class="line"> </div>
 <div class="line"><span class="preprocessor">#include &lt;raberu/raberu.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div>
@@ -173,34 +173,31 @@ Keyword, Options, Settings</h1>
 <div class="ttc" id="astructrbr_1_1settings_html"><div class="ttname"><a href="structrbr_1_1settings.html">rbr::settings</a></div><div class="ttdoc">Defines a group of options for processing.</div><div class="ttdef"><b>Definition</b> settings.hpp:50</div></div>
 </div><!-- fragment --><p>Let's decompose this code:</p>
 <ul>
-<li>First, we define the <code>replicate</code> function. It takes two parameters which model <a class="el" href="conceptrbr_1_1concepts_1_1option.html" title="Option concept.">rbr::concepts::option</a>, ensuring the parameters are valid <b>RABERU</b> key/value pairs.</li>
-<li>Those parameters are then turned into an instance of <a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a> which will provide the interface to query values from the bundle of parameters.</li>
-<li>We retrieve the value associated to the <code>"replication"_kw</code> and <code>"letter"_kw</code> keywords.</li>
-<li>In the <code>main</code> function, we call <code>replicate</code> by passing key/value pairs. Note that the keys are the exact same identifiers than those used inside the function. Their order is irrelevant.</li>
+<li>First, we define the <code>replicate</code> function. It takes two parameters, which model <a class="el" href="conceptrbr_1_1concepts_1_1option.html" title="Option concept.">rbr::concepts::option</a>, ensuring the parameters are valid <b>RABERU</b> key/value pairs.</li>
+<li>Those parameters are then turned into an instance of <a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a>, which will provide the interface to query values from the bundle of parameters.</li>
+<li>We retrieve the value associated with the <code>"replication"_kw</code> and <code>"letter"_kw</code> keywords.</li>
+<li>In the <code>main</code> function, we call <code>replicate</code> by passing key/value pairs. Note that the keys are the same identifiers as those used inside the function. Their order is irrelevant.</li>
 </ul>
-<p>That's it. The <code>replicate</code> function can now takes keywords arguments and as long as the proper keywords are used, it will work as intended.</p>
+<p>That's it. The <code>replicate</code> function can now take keyword arguments, and as long as the proper keywords are used, it will work as intended.</p>
 <h1><a class="anchor" id="tutorial_02"></a>
 Flavor of Keywords</h1>
 <h2><a class="anchor" id="tutorial-keywords"></a>
 Regular keywords</h2>
 <p>Let's say you want to pass a compile-time unrolling factor to some algorithm. You can use a regular keyword as seen in the tutorial:</p>
-<div class="fragment"><div class="line"> c++</div>
-<div class="line"><span class="keyword">auto</span> x = my_algorithm( <span class="stringliteral">&quot;unroll&quot;</span>_kw = std::integral_constant&lt;int,4&gt;{});</div>
-</div><!-- fragment --><p>This is working but a bit verbose. Another issue can be that documenting the fact that your functions awaits a <code>"unroll"_kw</code> maybe cumbersome.</p>
-<p>A nicer way to simplify the user experience is to preemptively defines a keyword variable.</p>
-<div class="fragment"><div class="line"> c++</div>
-<div class="line"><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> unroll = <span class="stringliteral">&quot;unroll&quot;</span>_kw;</div>
+<div class="fragment"><div class="line"><span class="keyword">auto</span> x = my_algorithm( <span class="stringliteral">&quot;unroll&quot;</span>_kw = std::integral_constant&lt;int,4&gt;{});</div>
+</div><!-- fragment --><p>This is working, but a bit verbose. Another issue can be that documenting the fact that your functions awaits a <code>"unroll"_kw</code> maybe cumbersome.</p>
+<p>A nicer way to simplify the user experience is to define a keyword variable preemptively.</p>
+<div class="fragment"><div class="line"><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> unroll = <span class="stringliteral">&quot;unroll&quot;</span>_kw;</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span> x = my_algorithm( unroll = std::integral_constant&lt;int,4&gt;{});</div>
-</div><!-- fragment --><p>Slightly terser and far easier to document. You can also use the rbr::keyword factory that takes an ID and returns a keyword instance</p>
-<div class="fragment"><div class="line"> c++</div>
-<div class="line"><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> unroll = rbr::keyword(<span class="stringliteral">&quot;unroll&quot;</span>_id);</div>
+</div><!-- fragment --><p>Slightly terser and far easier to document. You can also use the rbr::keyword factory that takes an ID and returns a keyword instance.</p>
+<div class="fragment"><div class="line"><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> unroll = rbr::keyword(<span class="stringliteral">&quot;unroll&quot;</span>_id);</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span> x = my_algorithm( unroll = std::integral_constant&lt;int,4&gt;{});</div>
 </div><!-- fragment --><h2><a class="anchor" id="tutorial-flags"></a>
 Flags</h2>
-<p>Sometimes, you just want to check if a given parameter has been passed but you don't really care about an associated value. Such keyword parameters are <b>flags</b>, carrying information about their sole presence without the need ot be bound to a value.</p>
-<p>They work in a similar way than regular keyword parameters but use the <code>_fl</code> user-defined literal ior the rbr::flag factory. Their value can be retrieved via rbr::settings::operator[]. If present, the value returned is <code>std::true_type</code>, otherwise <code>std::false_type</code> is returned.</p>
+<p>Sometimes, you want to check if a given parameter has been passed, but you don't really care about an associated value. Such keyword parameters are <b>flags</b>, carrying information about their sole presence without the need ot be bound to a value.</p>
+<p>They work similarly to regular keyword parameters but use the <code>_fl</code> user-defined literal or the rbr::flag factory. Their value can be retrieved via rbr::settings::operator[]. If present, the value returned is <code>std::true_type</code>, otherwise <code>std::false_type</code> is returned.</p>
 <div class="fragment"><div class="line"> </div>
 <div class="line"><span class="preprocessor">#include &lt;raberu/raberu.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
@@ -229,16 +226,14 @@ Flags</h2>
 <div class="ttc" id="aconceptrbr_1_1concepts_1_1option_html"><div class="ttname"><a href="conceptrbr_1_1concepts_1_1option.html">rbr::concepts::option</a></div><div class="ttdoc">Option concept.</div><div class="ttdef"><b>Definition</b> concepts.hpp:37</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="tutorial-checked"></a>
 Checked keywords</h2>
-<p>Regular keywords accept value of any types. Flag keyword implicitly behaves as boolean parameters. What if you need to have a keyword accepting values of a specific type ? Or, in more complex context, what if you need a keyword accepting values which types satisfy an arbitrary set of constraints ?</p>
-<p>To do so, we'll need to use the rbr::keyword factory function that accepts an optional template parameter. If this template parameter is a type, the keyword is setup to only accept value of this exact type.</p>
-<div class="fragment"><div class="line"> c++</div>
-<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacerbr_1_1literals.html">rbr::literals</a>;</div>
+<p>Regular keywords accept values of any type. The flag keyword implicitly behaves as a boolean parameter. What if you need to have a keyword accepting values of a specific type? Or, in more complex contexts, what if you need a keyword accepting values whose types satisfy an arbitrary set of constraints ?</p>
+<p>To do so, we'll need to use the rbr::keyword factory function that accepts an optional template parameter. If this template parameter is a type, the keyword is set up to only accept values of this exact type.</p>
+<div class="fragment"><div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacerbr_1_1literals.html">rbr::literals</a>;</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// color can only accept unsigned 32 bits integer</span></div>
+<div class="line"><span class="comment">// color can only accept an unsigned 32-bit integer</span></div>
 <div class="line"><span class="keyword">auto</span> color = rbr::keyword&lt;std::uint32_t&gt;(<span class="stringliteral">&quot;color&quot;</span>_id);</div>
-</div><!-- fragment --><p>If this template parameter is a unary template meta-function <code>F</code>, the keyword is setup to only accept value which type satisfy <code>F&lt;T&gt;::value == true</code>.</p>
-<div class="fragment"><div class="line"> c++</div>
-<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacerbr_1_1literals.html">rbr::literals</a>;</div>
+</div><!-- fragment --><p>If this template parameter is a unary template meta-function <code>F</code>, the keyword is set up to only accept value which type satisfy <code>F&lt;T&gt;::value == true</code>.</p>
+<div class="fragment"><div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacerbr_1_1literals.html">rbr::literals</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="keyword">struct </span>large_type</div>
 <div class="line">{</div>
@@ -249,7 +244,7 @@ Checked keywords</h2>
 <div class="line"><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> entropy = rbr::keyword&lt;large_type&gt;( <span class="stringliteral">&quot;entropy&quot;</span>_id);</div>
 </div><!-- fragment --><h1><a class="anchor" id="tutorial_03"></a>
 Settings</h1>
-<p>Another important <b>RABERU</b> component is <a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a>. It aggregates key/value pairs in a way their exploitation is simplified. <a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a> provides functions for retrieving value from keywords, inspect the stored keywords and more.</p>
+<p>Another important <b>RABERU</b> component is <a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a>. It aggregates key/value pairs in a way that simplifies their exploitation. <a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a> provides functions for retrieving values from keywords, inspecting the stored keywords, and more.</p>
 <h2><a class="anchor" id="tutorial-settings"></a>
 Defining a Settings</h2>
 <p><a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a> can be directly constructed from an arbitrary list of options, ie values bound to a keyword. Once constructed, its operator[] can be used to fetch the value of a given keyword.</p>
@@ -275,8 +270,7 @@ Defining a Settings</h2>
 </div><!-- fragment --><h2><a class="anchor" id="tutorial-stream"></a>
 Stream insertion</h2>
 <p><a class="el" href="structrbr_1_1settings.html" title="Defines a group of options for processing.">rbr::settings</a> can be streamed to display the list of keyword/value pairs it contains</p>
-<div class="fragment"><div class="line"> c++</div>
-<div class="line"><span class="preprocessor">#include &lt;raberu/raberu.hpp&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;raberu/raberu.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>

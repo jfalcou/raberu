@@ -9,6 +9,7 @@
 #include "common.hpp"
 #include <raberu/raberu.hpp>
 #include <tts/tts.hpp>
+#include <iostream>
 
 TTS_CASE("Check settings(...) size")
 {

@@ -112,13 +112,17 @@ HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = ./base.html
 HTML_FOOTER            = $(DOXYGEN_ASSETS)/footer.html
 HTML_STYLESHEET        =
-HTML_EXTRA_STYLESHEET  = $(DOXYGEN_ASSETS)/custom.css
+
+HTML_EXTRA_STYLESHEET  = $(AWESOME_ASSETS)/doxygen-awesome.css
+HTML_EXTRA_STYLESHEET += $(AWESOME_ASSETS)/doxygen-awesome-sidebar-only.css
+HTML_EXTRA_STYLESHEET += $(DOXYGEN_ASSETS)/custom.css
 HTML_EXTRA_STYLESHEET += color.css
-HTML_EXTRA_STYLESHEET += $(DOXYGEN_ASSETS)/doxygen-awesome.css
-HTML_EXTRA_STYLESHEET += $(DOXYGEN_ASSETS)/doxygen-awesome-sidebar-only.css
+
 HTML_EXTRA_FILES       = $(DOXYGEN_ASSETS)/godbolt.js
-HTML_EXTRA_FILES      += $(DOXYGEN_ASSETS)/fragment.js
-HTML_EXTRA_FILES      += $(DOXYGEN_ASSETS)/paragraph.js
+HTML_EXTRA_FILES      += $(AWESOME_ASSETS)/doxygen-awesome-fragment-copy-button.js
+HTML_EXTRA_FILES      += $(AWESOME_ASSETS)/doxygen-awesome-paragraph-link.js
+HTML_EXTRA_FILES      += $(AWESOME_ASSETS)/doxygen-awesome-tabs.js
+
 HTML_COLORSTYLE_HUE    = 189
 HTML_COLORSTYLE_SAT    = 28
 HTML_COLORSTYLE_GAMMA  = 68
@@ -129,6 +133,7 @@ HTML_INDEX_NUM_ENTRIES = 100
 GENERATE_DOCSET        = NO
 
 DISABLE_INDEX          = YES
+PAGE_OUTLINE_PANEL      = NO
 GENERATE_TREEVIEW      = YES
 ENUM_VALUES_PER_LINE   = 4
 TREEVIEW_WIDTH         = 250

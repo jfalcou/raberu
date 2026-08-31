@@ -1,4 +1,8 @@
+#ifdef RABERU_STANDALONE
+#include "raberu.hpp"
+#else
 #include <raberu/raberu.hpp>
+#endif
 #include <iostream>
 #include <string>
 

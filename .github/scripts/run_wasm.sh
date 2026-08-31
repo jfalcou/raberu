@@ -3,18 +3,6 @@
 ##  Copyright : RABERU Project Contributors
 ##  SPDX-License-Identifier: BSL-1.0
 ##======================================================================================================================
-name: RABERU Integration Tests
-on:
-  push:
-    branches:
-      - main
+#!/bin/sh
 
-concurrency:
-  group: raberu-integration-${{ github.ref }}
-  cancel-in-progress: true
-
-jobs:
-  integration:
-    uses: jfalcou/copacabana/.github/workflows/integration.yml@3337f916bb581d0829909976773f7a2ee827a25c # v4
-    with:
-      project: raberu
+node  $@

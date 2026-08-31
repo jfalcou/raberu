@@ -1,0 +1,36 @@
+##======================================================================================================================
+##  RABERU - Fancy Named Parameter Library
+##  Copyright : RABERU Project Contributors
+##  SPDX-License-Identifier: BSL-1.0
+##======================================================================================================================
+name: RABERU Windows Tests
+on:
+  workflow_call:
+
+jobs:
+  windows:
+    name: ${{ matrix.compiler.name }} (${{ matrix.options }})
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - { name: "MSVC"    , preset: "msvc"    }
+          - { name: "Clang-CL", preset: "clangcl" }
+
+        options: [Debug,Release]
+    steps:
+      - name: Fetch current branch
+        uses: actions/checkout@v7
+
+      - name: Configure CMake and Build
+        uses: jfalcou/copacabana/.github/actions/config@3337f916bb581d0829909976773f7a2ee827a25c # v4
+        with:
+          preset: ${{ matrix.compiler.preset }}
+          config: ${{ matrix.options }}
+
+      - name: Run Unit Tests
+        uses: jfalcou/copacabana/.github/actions/test@3337f916bb581d0829909976773f7a2ee827a25c # v4
+        with:
+          preset: ${{ matrix.compiler.preset }}
+          config: ${{ matrix.options }}

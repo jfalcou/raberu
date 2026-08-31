@@ -1,0 +1,48 @@
+##======================================================================================================================
+##  RABERU - Fancy Named Parameter Library
+##  Copyright : RABERU Project Contributors
+##  SPDX-License-Identifier: BSL-1.0
+##======================================================================================================================
+name: RABERU Linux Tests
+on:
+  workflow_call:
+
+jobs:
+  linux:
+    name: ${{ matrix.compiler.name }} (${{ matrix.options }})
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/jfalcou/compilers:${{ matrix.compiler.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - { name: "gcc"           , preset: "gcc"           , image: "v10" }
+          - { name: "clang"         , preset: "clang"         , image: "v10" }
+          - { name: "clang libc++"  , preset: "clang-libc++"  , image: "v10" }
+          - { name: "gcc14"         , preset: "gcc"           , image: "v10"    , setup: "./.github/scripts/g++-14.sh"  }
+          - { name: "clang20"       , preset: "clang"         , image: "v10"    , setup: "./.github/scripts/clang20.sh" }
+          - { name: "clang20 libc++", preset: "clang-libc++"  , image: "v10"    , setup: "./.github/scripts/clang20.sh" }
+          - { name: "icpx"          , preset: "icpx"          , image: "sycl-v1", setup: "/opt/intel/oneapi/setvars.sh" }
+          - { name: "wasm"          , preset: "wasm"          , image: "v10"    , wrapper: "emcmake" }
+
+        options: [Debug, Release]
+
+    steps:
+      - name: Fetch current branch
+        uses: actions/checkout@v7
+
+      - name: Configure CMake and Build
+        uses: jfalcou/copacabana/.github/actions/config@3337f916bb581d0829909976773f7a2ee827a25c # v4
+        with:
+          config: ${{ matrix.options }}
+          preset: ${{ matrix.compiler.preset }}
+          wrapper: ${{ matrix.compiler.wrapper }}
+          setup-script: ${{ matrix.compiler.setup }}
+
+      - name: Run Unit Tests and MemCheck
+        uses: jfalcou/copacabana/.github/actions/test@3337f916bb581d0829909976773f7a2ee827a25c # v4
+        with:
+          config: ${{ matrix.options }}
+          preset: ${{ matrix.compiler.preset }}
+          memcheck: ${{ matrix.compiler.preset != 'icpx' }}

@@ -11,7 +11,7 @@ using namespace rbr::literals;
 
 inline constexpr auto unrolling = rbr::keyword("unrolling"_id);
 
-template<int N> inline constexpr auto unroll = (unrolling = std::integral_constant<int,N>{});
+template<int N> inline constexpr auto unroll = (unrolling = std::integral_constant<int, N>{});
 
 void f(rbr::concepts::option auto const& s)
 {
@@ -20,5 +20,5 @@ void f(rbr::concepts::option auto const& s)
 
 int main()
 {
-  f( unroll<8> );
+  f(unroll<8>);
 }

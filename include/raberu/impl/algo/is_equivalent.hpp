@@ -36,16 +36,12 @@ namespace rbr
   //! @include doc/is_equivalent.cpp
   //====================================================================================================================
   template<concepts::settings S1, concepts::settings S2>
-  struct  is_equivalent
-        : std::bool_constant<   _::is_equivalent< result::keywords_t<S1,_::keys>
-                                                , result::keywords_t<S2,_::keys>
-                                                >::value
-                            &&  _::is_equivalent< result::keywords_t<S2,_::keys>
-                                                , result::keywords_t<S1,_::keys>
-                                                >::value
-                            >
-  {};
+  struct is_equivalent
+    : std::bool_constant<_::is_equivalent<result::keywords_t<S1, _::keys>, result::keywords_t<S2, _::keys>>::value &&
+                         _::is_equivalent<result::keywords_t<S2, _::keys>, result::keywords_t<S1, _::keys>>::value>
+  {
+  };
 
   template<concepts::settings S1, concepts::settings S2>
-  inline constexpr bool is_equivalent_v = is_equivalent<S1,S2>::value;
+  inline constexpr bool is_equivalent_v = is_equivalent<S1, S2>::value;
 }

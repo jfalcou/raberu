@@ -37,8 +37,7 @@ namespace rbr
   //! ## Example:
   //! @include doc/fetch.cpp
   //====================================================================================================================
-  template<concepts::keyword K, concepts::option... Os>
-  constexpr decltype(auto) fetch(K const& k, Os const&... os)
+  template<concepts::keyword K, concepts::option... Os> constexpr decltype(auto) fetch(K const& k, Os const&... os)
   {
     auto const opts = settings(os...);
     return opts[k];
@@ -53,8 +52,7 @@ namespace rbr
   }
 
   //! @overload
-  template<typename K, concepts::settings Settings>
-  constexpr decltype(auto) fetch(K const& k, Settings const& opts)
+  template<typename K, concepts::settings Settings> constexpr decltype(auto) fetch(K const& k, Settings const& opts)
   {
     return opts[k];
   }
@@ -63,19 +61,16 @@ namespace rbr
   {
     template<auto Keyword, typename... Sources> struct fetch;
 
-    template<auto Keyword, concepts::option... Os>
-    struct fetch<Keyword, Os...>
+    template<auto Keyword, concepts::option... Os> struct fetch<Keyword, Os...>
     {
-      using type = decltype( rbr::fetch(Keyword, std::declval<Os>()...) );
+      using type = decltype(rbr::fetch(Keyword, std::declval<Os>()...));
     };
 
-    template<auto Keyword, concepts::settings Settings>
-    struct fetch<Keyword, Settings>
+    template<auto Keyword, concepts::settings Settings> struct fetch<Keyword, Settings>
     {
-      using type = decltype( rbr::fetch(Keyword, std::declval<Settings>()) );
+      using type = decltype(rbr::fetch(Keyword, std::declval<Settings>()));
     };
 
-    template<auto Keyword, typename... Sources>
-    using fetch_t = typename fetch<Keyword,Sources...>::type;
+    template<auto Keyword, typename... Sources> using fetch_t = typename fetch<Keyword, Sources...>::type;
   }
 }

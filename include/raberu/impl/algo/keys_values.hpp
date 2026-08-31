@@ -14,23 +14,21 @@ namespace rbr
     template<typename Settings, template<typename...> class List = types> struct keywords;
     template<typename Settings, template<typename...> class List = types> struct values;
 
-    template<typename... Opts, template<typename...> class List>
-    struct keywords<settings<Opts...>, List>
+    template<typename... Opts, template<typename...> class List> struct keywords<settings<Opts...>, List>
     {
       using type = List<typename Opts::keyword_type...>;
     };
 
-    template<typename... Opts, template<typename...> class List>
-    struct values<settings<Opts...>, List>
+    template<typename... Opts, template<typename...> class List> struct values<settings<Opts...>, List>
     {
       using type = List<typename Opts::stored_value_type...>;
     };
 
     template<typename Settings, template<typename...> class List = types>
-    using keywords_t = typename keywords<Settings,List>::type;
+    using keywords_t = typename keywords<Settings, List>::type;
 
     template<typename Settings, template<typename...> class List = types>
-    using values_t = typename values<Settings,List>::type;
+    using values_t = typename values<Settings, List>::type;
   }
 
   //====================================================================================================================
@@ -58,9 +56,9 @@ namespace rbr
   //! @include doc/keywords.cpp
   //====================================================================================================================
   template<template<typename...> class List, typename... Opts>
-  constexpr auto keywords([[maybe_unused]]rbr::settings<Opts...> const& s)
+  constexpr auto keywords([[maybe_unused]] rbr::settings<Opts...> const& s)
   {
-    return result::keywords_t<rbr::settings<Opts...>,List>{typename Opts::keyword_type{}...};
+    return result::keywords_t<rbr::settings<Opts...>, List>{typename Opts::keyword_type{}...};
   }
 
   //====================================================================================================================
@@ -87,9 +85,8 @@ namespace rbr
   //! ## Example:
   //! @include doc/values.cpp
   //====================================================================================================================
-  template<template<typename...> class List, typename... Opts>
-  constexpr auto values(rbr::settings<Opts...> const& s)
+  template<template<typename...> class List, typename... Opts> constexpr auto values(rbr::settings<Opts...> const& s)
   {
-    return result::values_t<rbr::settings<Opts...>,List>{ s[typename Opts::keyword_type{}]... };
+    return result::values_t<rbr::settings<Opts...>, List>{s[typename Opts::keyword_type{}]...};
   }
 }

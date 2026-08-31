@@ -27,32 +27,28 @@ namespace rbr
   template<concepts::option... K1s, concepts::option... K2s>
   constexpr auto merge(settings<K1s...> const& opts, settings<K2s...> const& defs) noexcept
   {
-    auto selector = []<typename K, typename Opts>(K const&, Opts const& o, auto const& d)
-                    {
-                      constexpr K key;
-                      if constexpr( Opts::contains(key) ) return (key = o[key]);
-                      else                                return (key = d[key]);
-                    };
-
-    auto select = [&]<typename... Ks>(_::keys<Ks...> const&, auto const& os, auto const& ds)
-    {
-      return settings(selector(Ks{},os,ds)...);
+    auto selector = []<typename K, typename Opts>(K const&, Opts const& o, auto const& d) {
+      constexpr K key;
+      if constexpr (Opts::contains(key)) return (key = o[key]);
+      else return (key = d[key]);
     };
 
-    return select(typename _::uniques<_::keys<typename K1s::keyword_type...>
-                                          ,_::keys<typename K2s::keyword_type...>
-                                          >::type{},opts,defs);
+    auto select = [&]<typename... Ks>(_::keys<Ks...> const&, auto const& os, auto const& ds) {
+      return settings(selector(Ks{}, os, ds)...);
+    };
+
+    return select(
+      typename _::uniques<_::keys<typename K1s::keyword_type...>, _::keys<typename K2s::keyword_type...>>::type{}, opts,
+      defs);
   }
 
   namespace result
   {
-    template<concepts::settings S1, concepts::settings S2>
-    struct merge
+    template<concepts::settings S1, concepts::settings S2> struct merge
     {
-      using type = decltype( rbr::merge(std::declval<S1>(),std::declval<S2>()) );
+      using type = decltype(rbr::merge(std::declval<S1>(), std::declval<S2>()));
     };
 
-    template<concepts::settings S1, concepts::settings S2>
-    using merge_t = typename merge<S1,S2>::type;
+    template<concepts::settings S1, concepts::settings S2> using merge_t = typename merge<S1, S2>::type;
   }
 }

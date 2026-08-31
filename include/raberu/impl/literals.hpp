@@ -33,19 +33,23 @@ namespace rbr::_
   {
     V value;
 
-    template<concepts::option... Os>
-    constexpr decltype(auto) operator()(Os&&... os) const { return fetch(*this, RBR_FWD(os)...); }
+    template<concepts::option... Os> constexpr decltype(auto) operator()(Os&&... os) const
+    {
+      return fetch(*this, RBR_FWD(os)...);
+    }
   };
 
   // Type -> String converter
-  template <typename T> constexpr auto typer() noexcept
+  template<typename T> constexpr auto typer() noexcept
   {
 #if defined(__clang__)
     constexpr auto pfx = std::string_view("auto rbr::_::typer() [T = ").size();
     constexpr auto sfx = std::string_view("]").size();
     constexpr auto raw = std::string_view(__PRETTY_FUNCTION__);
 #elif defined(__GNUC__)
-    constexpr auto pfx = std::string_view("constexpr auto rbr::_::typer() [with " "T = ").size();
+    constexpr auto pfx = std::string_view("constexpr auto rbr::_::typer() [with "
+                                          "T = ")
+                           .size();
     constexpr auto sfx = std::string_view("]").size();
     constexpr auto raw = std::string_view(__PRETTY_FUNCTION__);
 #elif defined(_MSC_VER)
@@ -58,26 +62,22 @@ namespace rbr::_
     value.remove_suffix(sfx);
 
     constexpr auto size = raw.size() - (pfx + sfx);
-    auto fn = [&]<std::size_t... Is>(std::index_sequence<Is...>)
-    {
+    auto fn = [&]<std::size_t... Is>(std::index_sequence<Is...>) {
       return std::array<char const, sizeof...(Is) + 1>{value[Is]...};
     };
 
     return fn(std::make_index_sequence<size>{});
   }
 
-  template<typename T>  inline constexpr auto type_array  = typer<T>();
+  template<typename T> inline constexpr auto type_array = typer<T>();
 
-  template<typename T, auto ID = type_array<T>>
-  struct type_t
+  template<typename T, auto ID = type_array<T>> struct type_t
   {
-    static constexpr auto name() { return std::string_view(ID.data(), ID.size());}
+    static constexpr auto name() { return std::string_view(ID.data(), ID.size()); }
   };
 
-  template<typename T>
-  inline constexpr auto type  = type_t<T>{};
+  template<typename T> inline constexpr auto type = type_t<T>{};
 }
-
 
 #if !defined(RBR_MAX_LITERAL_SIZE)
 #define RBR_MAX_LITERAL_SIZE 32
@@ -99,26 +99,25 @@ namespace rbr
     {
       static constexpr std::size_t max_size = RBR_MAX_LITERAL_SIZE;
 
-      char         data_[max_size+1];
+      char data_[max_size + 1];
       std::uint8_t size_;
 
       template<std::size_t N, std::size_t... Is>
-      requires _::fits<N,max_size>
-      constexpr str(const char (&s)[N], std::index_sequence<Is...>) : data_{s[Is]...}, size_(N)
-      {}
-
-      template <std::size_t N>
-      requires _::fits<N,max_size>
-      constexpr str(const char (&s)[N]) : str{s, std::make_index_sequence<N>{}}
-      {}
-
-      constexpr std::size_t       size()  const { return size_; }
-      constexpr std::string_view  value() const { return std::string_view(&data_[0],size_); }
-
-      friend std::ostream& operator<<(std::ostream& os, str const& s)
+      requires _::fits<N, max_size>
+      constexpr str(char const (&s)[N], std::index_sequence<Is...>) : data_{s[Is]...}, size_(N)
       {
-        return os << '\'' << s.value() << '\'';
       }
+
+      template<std::size_t N>
+      requires _::fits<N, max_size>
+      constexpr str(char const (&s)[N]) : str{s, std::make_index_sequence<N>{}}
+      {
+      }
+
+      constexpr std::size_t size() const { return size_; }
+      constexpr std::string_view value() const { return std::string_view(&data_[0], size_); }
+
+      friend std::ostream& operator<<(std::ostream& os, str const& s) { return os << '\'' << s.value() << '\''; }
     };
   }
 
@@ -130,10 +129,7 @@ namespace rbr
   template<literals::str ID> struct id_
   {
     /// Inserts an rbr::id_ in an output stream
-    friend std::ostream& operator<<(std::ostream& os, id_ const&)
-    {
-      return os << ID;
-    }
+    friend std::ostream& operator<<(std::ostream& os, id_ const&) { return os << ID; }
   };
 
   namespace literals
@@ -143,6 +139,9 @@ namespace rbr
     //! @brief Forms an ID constant literal
     //! @return An instance of rbr::id_ for the specified string
     //==================================================================================================================
-    template<str ID> constexpr auto operator""_id() noexcept { return id_<ID>{}; }
+    template<str ID> constexpr auto operator""_id() noexcept
+    {
+      return id_<ID>{};
+    }
   }
 }

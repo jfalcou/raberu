@@ -14,7 +14,7 @@ inline constexpr auto file = "file"_kw;
 
 int main()
 {
-  std::cout << file (value = 45.5, line = 158, file = 'x') << '\n';
-  std::cout << line (value = 45.5, line = 158, file = 'x') << '\n';
+  std::cout << file(value = 45.5, line = 158, file = 'x') << '\n';
+  std::cout << line(value = 45.5, line = 158, file = 'x') << '\n';
   std::cout << value(value = 45.5, line = 158, file = 'x') << '\n';
 }

@@ -14,10 +14,7 @@ struct price_keyword : rbr::as_keyword<price_keyword>
 {
   using rbr::as_keyword<price_keyword>::operator=;
 
-  std::ostream& display(std::ostream& os, auto const& v)
-  {
-    return os << "Price: " << v << '$';
-  }
+  std::ostream& display(std::ostream& os, auto const& v) { return os << "Price: " << v << '$'; }
 };
 
 inline constexpr price_keyword price = {};

@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['library_0',['The Fancy Named Parameters Library',['../index.html',1,'']]],
-  ['licence_1',['Licence',['../licence.html',1,'']]],
-  ['log_2',['Change Log',['../changelog.html',1,'']]]
+  ['bound_20keyword_0',['Using Pre-bound keyword',['../custom.html#custom_01',1,'']]],
+  ['bug_20fixes_1',['Bug Fixes',['../changelog.html#autotoc_md23',1,'']]]
 ];

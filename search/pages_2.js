@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fancy_20named_20parameters_20library_0',['The Fancy Named Parameters Library',['../index.html',1,'']]]
+  ['2_200_20past_20prologue_0',['Version 2.0 - Past Prologue',['../changelog.html#autotoc_md22',1,'']]]
 ];

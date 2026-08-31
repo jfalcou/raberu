@@ -6,7 +6,7 @@ var searchData=
   ['fetchcontent_3',['CMake FetchContent',['../setup.html#setup-fetchcontent',1,'']]],
   ['first_20autonomous_20public_20release_4',['First autonomous public release.',['../changelog.html#autotoc_md26',1,'']]],
   ['fixes_5',['Bug Fixes',['../changelog.html#autotoc_md23',1,'']]],
-  ['flag_6',['flag',['../group__kwds_ga582ef0aad9a0b99f141d2ba30828ec18.html#ga582ef0aad9a0b99f141d2ba30828ec18',1,'rbr::flag_keyword']]],
+  ['flag_6',['flag',['../group__kwds_ga582ef0aad9a0b99f141d2ba30828ec18.html#ga582ef0aad9a0b99f141d2ba30828ec18',1,'rbr::flag_keyword::flag()'],['../group__kwds_ga582ef0aad9a0b99f141d2ba30828ec18.html#ga582ef0aad9a0b99f141d2ba30828ec18',1,'rbr::flag(Tag id) noexcept']]],
   ['flag_5fkeyword_7',['flag_keyword',['../structrbr_1_1flag__keyword.html',1,'rbr']]],
   ['flags_8',['Flags',['../tutorial.html#tutorial-flags',1,'']]],
   ['flavor_20of_20keywords_9',['Flavor of Keywords',['../tutorial.html#tutorial_02',1,'']]],

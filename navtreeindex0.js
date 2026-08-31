@@ -1,10 +1,10 @@
 var NAVTREEINDEX0 =
 {
 "changelog.html":[3,0],
-"conceptrbr_1_1concepts_1_1exactly.html":[2,1,0,0,3],
-"conceptrbr_1_1concepts_1_1keyword.html":[2,1,0,0,0],
-"conceptrbr_1_1concepts_1_1option.html":[2,1,0,0,1],
-"conceptrbr_1_1concepts_1_1settings.html":[2,1,0,0,2],
+"conceptrbr_1_1concepts_1_1exactly.html":[2,1,0,0,0],
+"conceptrbr_1_1concepts_1_1keyword.html":[2,1,0,0,1],
+"conceptrbr_1_1concepts_1_1option.html":[2,1,0,0,2],
+"conceptrbr_1_1concepts_1_1settings.html":[2,1,0,0,3],
 "concepts.html":[2,1],
 "custom.html":[1,2],
 "group__kwds.html":[2,0,0],

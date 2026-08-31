@@ -1,0 +1,99 @@
+{
+    "branch_covered": 17,
+    "branch_percent": 85.0,
+    "branch_total": 20,
+    "files": [
+        {
+            "branch_covered": 1,
+            "branch_percent": 100.0,
+            "branch_total": 1,
+            "filename": "include/raberu/impl/algo/drop.hpp",
+            "function_covered": 6,
+            "function_percent": 100.0,
+            "function_total": 6,
+            "line_covered": 4,
+            "line_percent": 100.0,
+            "line_total": 4
+        },
+        {
+            "branch_covered": 1,
+            "branch_percent": 100.0,
+            "branch_total": 1,
+            "filename": "include/raberu/impl/algo/fetch.hpp",
+            "function_covered": 15,
+            "function_percent": 100.0,
+            "function_total": 15,
+            "line_covered": 10,
+            "line_percent": 100.0,
+            "line_total": 10
+        },
+        {
+            "branch_covered": 0,
+            "branch_percent": null,
+            "branch_total": 0,
+            "filename": "include/raberu/impl/algo/keys_values.hpp",
+            "function_covered": 3,
+            "function_percent": 100.0,
+            "function_total": 3,
+            "line_covered": 4,
+            "line_percent": 100.0,
+            "line_total": 4
+        },
+        {
+            "branch_covered": 0,
+            "branch_percent": null,
+            "branch_total": 0,
+            "filename": "include/raberu/impl/algo/merge.hpp",
+            "function_covered": 10,
+            "function_percent": 100.0,
+            "function_total": 10,
+            "line_covered": 7,
+            "line_percent": 100.0,
+            "line_total": 7
+        },
+        {
+            "branch_covered": 5,
+            "branch_percent": 100.0,
+            "branch_total": 5,
+            "filename": "include/raberu/impl/keywords.hpp",
+            "function_covered": 131,
+            "function_percent": 100.0,
+            "function_total": 131,
+            "line_covered": 36,
+            "line_percent": 100.0,
+            "line_total": 36
+        },
+        {
+            "branch_covered": 0,
+            "branch_percent": null,
+            "branch_total": 0,
+            "filename": "include/raberu/impl/literals.hpp",
+            "function_covered": 20,
+            "function_percent": 100.0,
+            "function_total": 20,
+            "line_covered": 6,
+            "line_percent": 100.0,
+            "line_total": 6
+        },
+        {
+            "branch_covered": 10,
+            "branch_percent": 76.9,
+            "branch_total": 13,
+            "filename": "include/raberu/impl/settings.hpp",
+            "function_covered": 288,
+            "function_percent": 100.0,
+            "function_total": 288,
+            "line_covered": 22,
+            "line_percent": 100.0,
+            "line_total": 22
+        }
+    ],
+    "function_covered": 473,
+    "function_percent": 100.0,
+    "function_total": 473,
+    "gcovr/summary_format_version": "0.6",
+    "line_covered": 89,
+    "line_percent": 100.0,
+    "line_total": 89,
+    "root": "../../.."
+}

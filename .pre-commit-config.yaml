@@ -1,0 +1,11 @@
+## clang-format is deliberately absent for now: raberu has no .clang-format, and adopting one rewrites all 51 sources
+## at once. That reformat belongs in its own commit rather than buried in an infrastructure move.
+exclude: ^(doc/.*|cmake/CPM\.cmake|test/integration/cpm-test/cpm\.cmake)$
+
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+  - id: check-yaml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace

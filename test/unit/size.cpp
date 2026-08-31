@@ -7,6 +7,7 @@
 //==================================================================================================
 #define TTS_MAIN
 #include "common.hpp"
+#include <iostream>
 #include <raberu/raberu.hpp>
 #include <tts/tts.hpp>
 #include <iostream>

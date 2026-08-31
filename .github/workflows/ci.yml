@@ -1,0 +1,90 @@
+##======================================================================================================================
+##  RABERU - Fancy Named Parameter Library
+##  Copyright : RABERU Project Contributors
+##  SPDX-License-Identifier: BSL-1.0
+##======================================================================================================================
+name: Unit Tests
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: raberu-unit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ##################################################################################################
+  ## Fast gate: pre-commit checks, standalone generation and sanitizers all start together with no
+  ## interdependency - only once all three pass does the (much heavier) compiler matrix start below.
+  ##################################################################################################
+  precommit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.x'
+      - name: Install pre-commit
+        # Pinned, and binary-only so no dependency gets to run a setup script during install
+        run: pip install --only-binary ":all:" pre-commit==4.6.2
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files --show-diff-on-failure --color=always
+
+  ##################################################################################################
+  ## Ensure Standalone is viable
+  ##################################################################################################
+  standalone-generation:
+    name: Standalone Generation
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/jfalcou/compilers:v10
+    steps:
+      - name: Fetch current branch
+        uses: actions/checkout@v7
+
+      - name: Generate standalone header
+        run: |
+          cmake -S . -B build -G Ninja -DRABERU_BUILD_TEST=OFF -DRABERU_BUILD_DOCUMENTATION=OFF
+          cmake --build build --target raberu-standalone
+
+      - name: Test standalone header
+        run: |
+          cd build
+          g++ -std=c++20 -S -I. ../test/integration/main.cpp -DRABERU_STANDALONE
+
+  ##################################################################################################
+  ## Sanitizers (ASan+UBSan)
+  ##################################################################################################
+  sanitizer-tests:
+    name: Sanitizers
+    uses: jfalcou/copacabana/.github/workflows/sanitizers.yml@3337f916bb581d0829909976773f7a2ee827a25c # v4
+
+  ##################################################################################################
+  ## Coverage report - informational, runs alongside the gate without blocking the matrix
+  ##################################################################################################
+  coverage-report:
+    name: Coverage
+    uses: jfalcou/copacabana/.github/workflows/coverage.yml@3337f916bb581d0829909976773f7a2ee827a25c # v4
+    with:
+      project: raberu
+
+  ##################################################################################################
+  ## Unit Tests - the full compiler matrix, gated behind the fast checks above all passing
+  ##################################################################################################
+  linux-tests:
+    name: Linux
+    needs: [precommit, standalone-generation, sanitizer-tests]
+    uses: ./.github/workflows/linux.yml
+
+  macos-tests:
+    name: MacOS
+    needs: [precommit, standalone-generation, sanitizer-tests]
+    uses: ./.github/workflows/macos.yml
+
+  windows-tests:
+    name: Windows
+    needs: [precommit, standalone-generation, sanitizer-tests]
+    uses: ./.github/workflows/windows.yml

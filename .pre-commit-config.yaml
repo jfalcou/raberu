@@ -1,5 +1,4 @@
-## clang-format is deliberately absent for now: raberu has no .clang-format, and adopting one rewrites all 51 sources
-## at once. That reformat belongs in its own commit rather than buried in an infrastructure move.
+## CPM is vendored upstream code, in both copies, and doc/ holds the Doxygen sources rather than library code.
 exclude: ^(doc/.*|cmake/CPM\.cmake|test/integration/cpm-test/cpm\.cmake)$
 
 repos:
@@ -9,3 +8,8 @@ repos:
   - id: check-yaml
   - id: end-of-file-fixer
   - id: trailing-whitespace
+- repo: https://github.com/pre-commit/mirrors-clang-format
+  rev: v22.1.8
+  hooks:
+  - id: clang-format
+    types_or: [c++]

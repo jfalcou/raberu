@@ -1,0 +1,29 @@
+BasedOnStyle: Microsoft
+AllowAllArgumentsOnNextLine: false
+AllowBreakBeforeNoexceptSpecifier: Always
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+BinPackParameters: OnePerLine
+BreakArrays: false
+CommentPragmas: ''
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+FixNamespaceComments: false
+IncludeBlocks: Regroup
+IncludeIsMainRegex: ''
+IndentRequiresClause: false
+IndentWidth: 2
+InsertNewlineAtEOF: true
+LineEnding: LF
+MainIncludeChar: AngleBracket
+NamespaceIndentation: All
+PointerAlignment: Left
+QualifierAlignment: Custom
+QualifierOrder: [inline, static, type, const]
+ReflowComments: Never
+SortIncludes: {Enabled: false, IgnoreCase: false, IgnoreExtension: false}
+SpaceAfterTemplateKeyword: false
+Standard: c++20
+StatementMacros: [TTS_CASE, TTS_CASE_TPL, TTS_CASE_WITH, TTS_WHEN, TTS_AND_THEN]
+TabWidth: 2

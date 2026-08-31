@@ -22,18 +22,18 @@
 namespace rbr
 {
   /// Type indicating that a [Keyword](@ref rbr::concepts::keyword) is not available
-  struct unknown_key { using type = unknown_key; };
+  struct unknown_key
+  {
+    using type = unknown_key;
+  };
 
   // Option calls aggregator
   template<concepts::option... Ts> struct aggregator : Ts...
   {
-    constexpr aggregator(Ts const&...t) noexcept : Ts(t)... {}
+    constexpr aggregator(Ts const&... t) noexcept : Ts(t)... {}
     using Ts::operator()...;
 
-    template<concepts::keyword K> constexpr auto operator()(K const &) const noexcept
-    {
-      return unknown_key {};
-    }
+    template<concepts::keyword K> constexpr auto operator()(K const&) const noexcept { return unknown_key{}; }
   };
 
   //================================================================================================
@@ -65,8 +65,7 @@ namespace rbr
     //! ## Example:
     //! @include doc/contains.cpp
     //==============================================================================================
-    template<concepts::keyword Key>
-    static constexpr auto contains([[maybe_unused]] Key const& kw) noexcept
+    template<concepts::keyword Key> static constexpr auto contains([[maybe_unused]] Key const& kw) noexcept
     {
       using found = decltype((std::declval<base>())(Key{}));
       return !stdfix::same_as<found, unknown_key>;
@@ -80,8 +79,10 @@ namespace rbr
     //! ## Example:
     //! @include doc/contains_any.cpp
     //==============================================================================================
-    template<concepts::keyword... Keys>
-    static constexpr auto contains_any(Keys... ks) noexcept { return (contains(ks) || ...); }
+    template<concepts::keyword... Keys> static constexpr auto contains_any(Keys... ks) noexcept
+    {
+      return (contains(ks) || ...);
+    }
 
     //==============================================================================================
     //! @brief Checks if rbr::settings contains options based only on selected keywords
@@ -91,13 +92,12 @@ namespace rbr
     //! ## Example:
     //! @include doc/contains_only.cpp
     //==============================================================================================
-    template<concepts::keyword... Keys>
-    static constexpr auto contains_only([[maybe_unused]] Keys const&... ks) noexcept
+    template<concepts::keyword... Keys> static constexpr auto contains_only([[maybe_unused]] Keys const&... ks) noexcept
     {
-      using current_keys    = _::keys<typename Opts::keyword_type...>;
+      using current_keys = _::keys<typename Opts::keyword_type...>;
       using acceptable_keys = _::keys<Keys...>;
-      using unique_set      = typename _::uniques<current_keys,acceptable_keys>::type;
-      return  _::is_equivalent<unique_set, acceptable_keys>::value;
+      using unique_set = typename _::uniques<current_keys, acceptable_keys>::type;
+      return _::is_equivalent<unique_set, acceptable_keys>::value;
     }
 
     //==============================================================================================
@@ -108,8 +108,10 @@ namespace rbr
     //! ## Example:
     //! @include doc/contains_none.cpp
     //==============================================================================================
-    template<concepts::keyword... Keys>
-    static constexpr auto contains_none(Keys... ks) noexcept { return !contains_any(ks...); }
+    template<concepts::keyword... Keys> static constexpr auto contains_none(Keys... ks) noexcept
+    {
+      return !contains_any(ks...);
+    }
 
     //==============================================================================================
     //! @brief Retrieved a value via a keyword
@@ -123,35 +125,27 @@ namespace rbr
     //! ## Example:
     //! @include doc/subscript.cpp
     //==============================================================================================
-    template<concepts::keyword Key> constexpr auto operator[](Key const& k) const noexcept
-    {
-      return content_(k);
-    }
+    template<concepts::keyword Key> constexpr auto operator[](Key const& k) const noexcept { return content_(k); }
 
     //! @overload
-    template<typename Keyword>
-    constexpr auto operator[](flag_keyword<Keyword> const&) const noexcept
+    template<typename Keyword> constexpr auto operator[](flag_keyword<Keyword> const&) const noexcept
     {
       return contains(flag_keyword<Keyword>{});
     }
 
     //! @overload
-    template<concepts::keyword Key, typename Value>
-    constexpr auto operator[](_::type_or_<Key, Value> const & tgt) const
+    template<concepts::keyword Key, typename Value> constexpr auto operator[](_::type_or_<Key, Value> const& tgt) const
     {
-      if constexpr( contains(Key{}) )                           return (*this)[Key{}];
-      else  if constexpr( requires(Value t) { t.perform(); } )  return tgt.value.perform();
-      else                                                      return tgt.value;
+      if constexpr (contains(Key{})) return (*this)[Key{}];
+      else if constexpr (requires(Value t) { t.perform(); }) return tgt.value.perform();
+      else return tgt.value;
     }
 
     //! @related rbr::settings
     //! @brief Output stream insertion
     friend std::ostream& operator<<(std::ostream& os, settings const& s)
     {
-      auto show = [&]<typename T, typename V>(T t, V const& v) -> std::ostream&
-      {
-        return t.show(os,v) << "\n";
-      };
+      auto show = [&]<typename T, typename V>(T t, V const& v) -> std::ostream& { return t.show(os, v) << "\n"; };
 
       (show(typename Opts::keyword_type{}, s[typename Opts::keyword_type{}]), ...);
 
@@ -162,6 +156,5 @@ namespace rbr
   };
 
   /// rbr::settings deduction guide
-  template<concepts::option... Opts>
-  settings(Opts const&... opts) -> settings<Opts...>;
+  template<concepts::option... Opts> settings(Opts const&... opts) -> settings<Opts...>;
 }

@@ -9,16 +9,14 @@
 
 struct unrolling : rbr::as_keyword<unrolling>
 {
-  template<int N>
-  constexpr auto operator=(std::integral_constant<int,N> const&) const noexcept
+  template<int N> constexpr auto operator=(std::integral_constant<int, N> const&) const noexcept
   {
-    return rbr::option<unrolling,std::integral_constant<int,N>>{};
+    return rbr::option<unrolling, std::integral_constant<int, N>>{};
   }
-   std::ostream& display(std::ostream& os, auto v) const { return os << "Unroll Factor: " << v; }
+  std::ostream& display(std::ostream& os, auto v) const { return os << "Unroll Factor: " << v; }
 };
 
-template<int N>
-inline constexpr auto unroll = (unrolling{} = std::integral_constant<int, N>{});
+template<int N> inline constexpr auto unroll = (unrolling{} = std::integral_constant<int, N>{});
 
 void f(rbr::concepts::option auto const& s)
 {
@@ -27,5 +25,5 @@ void f(rbr::concepts::option auto const& s)
 
 int main()
 {
-  f( unroll<8> );
+  f(unroll<8>);
 }

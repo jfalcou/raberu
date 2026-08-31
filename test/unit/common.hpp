@@ -19,7 +19,7 @@ using point = std::array<int, 3>;
 
 struct foo
 {
-  int    value = 42;
+  int value = 42;
   friend std::ostream& operator<<(std::ostream& os, foo f) { return os << f.value; }
 };
 
@@ -29,29 +29,29 @@ struct bar
   friend std::ostream& operator<<(std::ostream& os, bar b) { return os << b.value; }
 };
 
-template<typename T>
-struct small_type : std::bool_constant<(sizeof(T) < 4)> {};
+template<typename T> struct small_type : std::bool_constant<(sizeof(T) < 4)>
+{
+};
 
 inline constexpr auto custom_ = ::rbr::keyword("custom"_id);
-inline constexpr auto coord_  = "coord"_kw;
+inline constexpr auto coord_ = "coord"_kw;
 
-inline constexpr auto value_  = ::rbr::keyword<float>("value"_id);
-inline constexpr auto name_   = ::rbr::keyword<std::string>("name"_id);
+inline constexpr auto value_ = ::rbr::keyword<float>("value"_id);
+inline constexpr auto name_ = ::rbr::keyword<std::string>("name"_id);
 
 inline constexpr auto factor_ = ::rbr::keyword<small_type>("factor"_id);
 
 inline constexpr auto is_transparent_ = ::rbr::flag("is_transparent"_id);
-inline constexpr auto is_modal_       = "is_modal"_fl;
+inline constexpr auto is_modal_ = "is_modal"_fl;
 
 struct unrolling : rbr::as_keyword<unrolling>
 {
-  template<int N>
-  constexpr auto operator=(std::integral_constant<int,N> const&) const noexcept
+  template<int N> constexpr auto operator=(std::integral_constant<int, N> const&) const noexcept
   {
-    return rbr::option<unrolling,std::integral_constant<int,N>>{};
+    return rbr::option<unrolling, std::integral_constant<int, N>>{};
   }
 
   std::ostream& display(std::ostream& os, auto v) const { return os << "Unroll Factor: " << v; }
 };
 
-template<int N> inline constexpr auto unroll = (unrolling{} = std::integral_constant<int,N>{});
+template<int N> inline constexpr auto unroll = (unrolling{} = std::integral_constant<int, N>{});

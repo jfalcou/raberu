@@ -18,7 +18,9 @@ namespace rbr
   //! @namespace rbr::result
   //! @brief Raberu helper traits namespace
   //====================================================================================================================
-  namespace result {}
+  namespace result
+  {
+  }
 }
 
 #include <raberu/impl/helpers.hpp>

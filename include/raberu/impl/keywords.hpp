@@ -43,7 +43,7 @@ namespace rbr
   template<concepts::keyword Keyword, typename Value> struct option
   {
     using stored_value_type = std::decay_t<Value>;
-    using keyword_type      = Keyword;
+    using keyword_type = Keyword;
 
     constexpr stored_value_type operator()(keyword_type const&) const noexcept { return contents; }
     stored_value_type contents;
@@ -61,7 +61,7 @@ namespace rbr
   template<typename Keyword> struct as_keyword
   {
     /// Derived keyword type
-    using tag_type  = Keyword;
+    using tag_type = Keyword;
 
     /// Keyword comparison
     inline constexpr auto operator<=>(as_keyword const&) const noexcept = default;
@@ -84,12 +84,11 @@ namespace rbr
     //! @snippet doc/accept.cpp Custom Accept
     //==================================================================================================================
 
-    template<typename T>
-    static constexpr bool accept()
+    template<typename T> static constexpr bool accept()
     {
-      if      constexpr(stdfix::same_as<std::remove_cvref_t<T>,as_keyword>)             return true;
-      else if constexpr(_::checks_for<Keyword,T>)          return Keyword::template check<T>();
-      else                                                                              return true;
+      if constexpr (stdfix::same_as<std::remove_cvref_t<T>, as_keyword>) return true;
+      else if constexpr (_::checks_for<Keyword, T>) return Keyword::template check<T>();
+      else return true;
     }
 
     //==================================================================================================================
@@ -102,9 +101,10 @@ namespace rbr
     //! @return An rbr::option binding the keyword to `v`.
     //==================================================================================================================
     template<typename Type>
-    constexpr auto operator=(Type&& v) const noexcept requires( accept<Type>() )
+    constexpr auto operator=(Type&& v) const noexcept
+    requires(accept<Type>())
     {
-      return option<Keyword,Type>{RBR_FWD(v)};
+      return option<Keyword, Type>{RBR_FWD(v)};
     }
 
     //==================================================================================================================
@@ -125,11 +125,11 @@ namespace rbr
     //==================================================================================================================
     template<typename V> std::ostream& show(std::ostream& os, V const& v) const
     {
-      if constexpr(_::displayable<Keyword,V>) return Keyword{}.display(os,v);
+      if constexpr (_::displayable<Keyword, V>) return Keyword{}.display(os, v);
       else
       {
-        if constexpr(_::identifiable<Keyword>) os << Keyword::identifier;
-        else                                        os << '[' << _::type<Keyword>.name() << ']';
+        if constexpr (_::identifiable<Keyword>) os << Keyword::identifier;
+        else os << '[' << _::type<Keyword>.name() << ']';
 
         return os << " : " << v << " (" << _::type<V>.name() << ')';
       }
@@ -137,15 +137,16 @@ namespace rbr
 
     /// Specify a default value for the keyword
     template<typename Type>
-    constexpr auto operator|(Type&& v) const noexcept requires( accept<Type>() )
+    constexpr auto operator|(Type&& v) const noexcept
+    requires(accept<Type>())
     {
-      return _::type_or_<Keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
+      return _::type_or_<Keyword, std::remove_cvref_t<Type>>{RBR_FWD(v)};
     }
 
     /// Specify a Callable object as a default value for the keyword
     template<typename Func> constexpr auto operator|(call<Func>&& v) const noexcept
     {
-      return _::type_or_<Keyword,call<Func>>{RBR_FWD(v)};
+      return _::type_or_<Keyword, call<Func>>{RBR_FWD(v)};
     }
 
     //==================================================================================================================
@@ -158,8 +159,10 @@ namespace rbr
     //! ## Example:
     //! @include doc/keyword_fetch.cpp
     //==================================================================================================================
-    template<concepts::option... Os>
-    constexpr decltype(auto) operator()(Os&&... o) const { return fetch(Keyword{}, RBR_FWD(o)...); }
+    template<concepts::option... Os> constexpr decltype(auto) operator()(Os&&... o) const
+    {
+      return fetch(Keyword{}, RBR_FWD(o)...);
+    }
   };
 
   //====================================================================================================================
@@ -172,19 +175,17 @@ namespace rbr
   //! @tparam ID        Unique identifier for the keyword
   //! @tparam Checker   Unary template meta-function acting as predicate
   //====================================================================================================================
-  template<typename ID, template<class> class Checker>
-  struct checked_keyword : as_keyword<checked_keyword<ID, Checker>>
+  template<typename ID, template<class> class Checker> struct checked_keyword : as_keyword<checked_keyword<ID, Checker>>
   {
     using as_keyword<checked_keyword<ID, Checker>>::operator=;
-    template<typename T>  static constexpr bool check() { return Checker<T>::value; }
+    template<typename T> static constexpr bool check() { return Checker<T>::value; }
 
-    template<typename V>
-    std::ostream& display(std::ostream& os, V const& v) const
+    template<typename V> std::ostream& display(std::ostream& os, V const& v) const
     {
-      if constexpr(_::self_identifiable<ID>) os << ID{};
+      if constexpr (_::self_identifiable<ID>) os << ID{};
       else
       {
-        if constexpr(_::identifiable<ID>) os << ID::identifier;
+        if constexpr (_::identifiable<ID>) os << ID::identifier;
         else os << '[' << _::type<ID>.name() << ']';
       }
 
@@ -202,20 +203,17 @@ namespace rbr
   //! @tparam ID    Unique identifier for the keyword
   //! @tparam Type  Type to accept
   //====================================================================================================================
-  template<typename ID, typename Type>
-  struct typed_keyword  : as_keyword<typed_keyword<ID, Type>>
+  template<typename ID, typename Type> struct typed_keyword : as_keyword<typed_keyword<ID, Type>>
   {
     using as_keyword<typed_keyword<ID, Type>>::operator=;
-    template<typename T>
-    static constexpr bool check() { return std::is_same_v<std::remove_cvref_t<T>,Type>; }
+    template<typename T> static constexpr bool check() { return std::is_same_v<std::remove_cvref_t<T>, Type>; }
 
-    template<typename V>
-    std::ostream& display(std::ostream& os, V const& v) const
+    template<typename V> std::ostream& display(std::ostream& os, V const& v) const
     {
-      if constexpr(_::self_identifiable<ID>) os << ID{};
+      if constexpr (_::self_identifiable<ID>) os << ID{};
       else
       {
-        if constexpr(_::identifiable<ID>) os << ID::identifier;
+        if constexpr (_::identifiable<ID>) os << ID::identifier;
         else os << '[' << _::type<ID>.name() << ']';
       }
 
@@ -231,21 +229,19 @@ namespace rbr
   //!
   //! @tparam ID    Unique identifier for the keyword
   //====================================================================================================================
-  template<typename ID>
-  struct any_keyword   : as_keyword<any_keyword<ID>>
+  template<typename ID> struct any_keyword : as_keyword<any_keyword<ID>>
   {
     using as_keyword<any_keyword<ID>>::operator=;
 
     /// ID type associated to the keyword
     using id_type = ID;
 
-    template<typename V>
-    std::ostream& display(std::ostream& os, V const& v) const
+    template<typename V> std::ostream& display(std::ostream& os, V const& v) const
     {
-      if constexpr(_::self_identifiable<ID>) os << ID{};
+      if constexpr (_::self_identifiable<ID>) os << ID{};
       else
       {
-        if constexpr(_::identifiable<ID>) os << ID::identifier;
+        if constexpr (_::identifiable<ID>) os << ID::identifier;
         else os << '[' << _::type<ID>.name() << ']';
       }
 
@@ -272,46 +268,40 @@ namespace rbr
     /// ID type associated to the keyword
     using id_type = ID;
 
-    template<typename T> static constexpr bool accept()
-    {
-      return std::is_same_v<std::true_type, T>;
-    }
+    template<typename T> static constexpr bool accept() { return std::is_same_v<std::true_type, T>; }
 
     std::ostream& show(std::ostream& os, bool) const
     {
-      if constexpr(_::identifiable<ID>) os << ID::identifier;
-      else if constexpr(_::self_identifiable<ID>) os << ID{};
+      if constexpr (_::identifiable<ID>) os << ID::identifier;
+      else if constexpr (_::self_identifiable<ID>) os << ID{};
       else os << '[' << _::type<ID>.name() << ']';
 
       return os << " : set";
     }
 
-    using tag_type          = ID;
-    using keyword_type      = flag_keyword;
+    using tag_type = ID;
+    using keyword_type = flag_keyword;
     using stored_value_type = bool;
 
-    template<typename Type>
-    constexpr auto operator=(Type&&) const noexcept { return *this; }
+    template<typename Type> constexpr auto operator=(Type&&) const noexcept { return *this; }
 
-    template<typename Type>
-    constexpr auto operator|(Type&& v) const noexcept
+    template<typename Type> constexpr auto operator|(Type&& v) const noexcept
     {
-      return _::type_or_<flag_keyword,std::remove_cvref_t<Type>>{RBR_FWD(v)};
+      return _::type_or_<flag_keyword, std::remove_cvref_t<Type>>{RBR_FWD(v)};
     }
 
     template<typename Func> constexpr auto operator|(call<Func>&& v) const noexcept
     {
-      return _::type_or_<flag_keyword,call<Func>>{RBR_FWD(v)};
+      return _::type_or_<flag_keyword, call<Func>>{RBR_FWD(v)};
     }
 
     constexpr auto operator()(keyword_type const&) const noexcept { return true; }
 
-    template<typename O0, typename O1, typename... Os>
-    constexpr decltype(auto) operator()(O0&&, O1&&, Os&&... ) const
+    template<typename O0, typename O1, typename... Os> constexpr decltype(auto) operator()(O0&&, O1&&, Os&&...) const
     {
-      return    stdfix::same_as<keyword_type, typename std::remove_cvref_t<O0>::keyword_type>
-            ||  stdfix::same_as<keyword_type, typename std::remove_cvref_t<O1>::keyword_type>
-            || (stdfix::same_as<keyword_type, typename std::remove_cvref_t<Os>::keyword_type> || ...);
+      return stdfix::same_as<keyword_type, typename std::remove_cvref_t<O0>::keyword_type> ||
+             stdfix::same_as<keyword_type, typename std::remove_cvref_t<O1>::keyword_type> ||
+             (stdfix::same_as<keyword_type, typename std::remove_cvref_t<Os>::keyword_type> || ...);
     }
   };
 
@@ -324,8 +314,10 @@ namespace rbr
   //! ## Example:
   //! @include doc/flag.cpp
   //====================================================================================================================
-  template<typename Tag>
-  constexpr flag_keyword<Tag>  flag([[maybe_unused]] Tag id) noexcept { return {}; }
+  template<typename Tag> constexpr flag_keyword<Tag> flag([[maybe_unused]] Tag id) noexcept
+  {
+    return {};
+  }
 
   //====================================================================================================================
   //! @ingroup kwds
@@ -336,8 +328,10 @@ namespace rbr
   //! ## Example:
   //! @include doc/regular.cpp
   //====================================================================================================================
-  template<typename ID>
-  constexpr any_keyword<ID> keyword([[maybe_unused]] ID id) noexcept { return {}; }
+  template<typename ID> constexpr any_keyword<ID> keyword([[maybe_unused]] ID id) noexcept
+  {
+    return {};
+  }
 
   //====================================================================================================================
   //! @ingroup kwds
@@ -350,7 +344,10 @@ namespace rbr
   //! @include doc/checked.cpp
   //====================================================================================================================
   template<template<class> class Checker, typename ID>
-  constexpr checked_keyword<ID,Checker> keyword([[maybe_unused]] ID id) noexcept { return {}; }
+  constexpr checked_keyword<ID, Checker> keyword([[maybe_unused]] ID id) noexcept
+  {
+    return {};
+  }
 
   //====================================================================================================================
   //! @ingroup kwds
@@ -362,8 +359,10 @@ namespace rbr
   //! ## Example:
   //! @include doc/checked.cpp
   //====================================================================================================================
-  template<typename Type, typename ID>
-  constexpr typed_keyword<ID, Type> keyword([[maybe_unused]] ID id) noexcept { return {}; }
+  template<typename Type, typename ID> constexpr typed_keyword<ID, Type> keyword([[maybe_unused]] ID id) noexcept
+  {
+    return {};
+  }
 
   namespace literals
   {
@@ -373,8 +372,10 @@ namespace rbr
     //! @brief Forms an instance of rbr::any_keyword from a literal string
     //! @return An instance of rbr::any_keyword using the specified string as ID
     //==================================================================================================================
-    template<str ID>
-    constexpr auto operator""_kw() noexcept { return any_keyword<id_<ID>>{}; }
+    template<str ID> constexpr auto operator""_kw() noexcept
+    {
+      return any_keyword<id_<ID>>{};
+    }
 
     //==================================================================================================================
     //! @ingroup udls
@@ -382,7 +383,9 @@ namespace rbr
     //! @brief Forms an instance of rbr::flag_keyword from a literal string
     //! @return An instance of rbr::flag_keyword using the specified string as ID
     //==================================================================================================================
-    template<str ID>
-    constexpr auto operator""_fl() noexcept { return flag_keyword<id_<ID>>{}; }
+    template<str ID> constexpr auto operator""_fl() noexcept
+    {
+      return flag_keyword<id_<ID>>{};
+    }
   }
 }

@@ -17,12 +17,12 @@ TTS_CASE("Check settings(...) size")
   using namespace std::literals;
   using namespace rbr::literals;
 
-  TTS_EQUAL(rbr::settings("custom"_kw = foo {}).size(), 1);
-  TTS_EQUAL(rbr::settings("custom"_kw = foo {}, "border"_fl).size(), 2);
-  TTS_EQUAL(rbr::settings("custom"_kw = foo {}, "name"_kw = "john"s, "border"_fl).size(), 3);
+  TTS_EQUAL(rbr::settings("custom"_kw = foo{}).size(), 1);
+  TTS_EQUAL(rbr::settings("custom"_kw = foo{}, "border"_fl).size(), 2);
+  TTS_EQUAL(rbr::settings("custom"_kw = foo{}, "name"_kw = "john"s, "border"_fl).size(), 3);
 
   constexpr auto any = rbr::any_keyword<rbr::id_<"any">>{};
-  auto set = rbr::settings(any = foo {});
+  auto set = rbr::settings(any = foo{});
   std::cout << set << "\n";
 };
 

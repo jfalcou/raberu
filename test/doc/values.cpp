@@ -14,5 +14,5 @@ int main()
   auto opts = rbr::settings("size"_kw = 75ULL, "modal"_fl, "value"_kw = 13.37);
   auto vs = rbr::values<std::tuple>(opts);
 
-  std::apply([](auto const&... e) {  ((std::cout << e << "\n"),...);  }, vs);
+  std::apply([](auto const&... e) { ((std::cout << e << "\n"), ...); }, vs);
 }

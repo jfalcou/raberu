@@ -10,24 +10,23 @@
 #include <raberu/raberu.hpp>
 #include <tts/tts.hpp>
 
-constexpr auto
-named_interface(rbr::concepts::option auto const &...vs) noexcept
+constexpr auto named_interface(rbr::concepts::option auto const&... vs) noexcept
 {
   rbr::settings s(vs...);
   return s[coord_] * s[value_];
 }
 
 template<rbr::concepts::option... Vs>
-constexpr auto filtered_interface(Vs const &...vs) noexcept
-requires( rbr::settings<Vs...>::contains_any(coord_, value_) )
+constexpr auto filtered_interface(Vs const&... vs) noexcept
+requires(rbr::settings<Vs...>::contains_any(coord_, value_))
 {
   rbr::settings s(vs...);
   return s[coord_] * s[value_];
 }
 
 template<rbr::concepts::option... Vs>
-constexpr auto restricted_interface(Vs const &...vs) noexcept
-requires( rbr::settings<Vs...>::contains_only(coord_, value_) )
+constexpr auto restricted_interface(Vs const&... vs) noexcept
+requires(rbr::settings<Vs...>::contains_only(coord_, value_))
 {
   rbr::settings s(vs...);
   return s[coord_] * s[value_];

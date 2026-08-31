@@ -13,7 +13,7 @@ int main()
   constexpr auto modal = "modal"_fl;
   constexpr auto similar = "similar"_fl;
   auto defaults = rbr::settings("name"_kw = std::string{"Jane Doe"}, "value"_kw = 42.69f, modal);
-  auto opts     = rbr::settings("value"_kw = 956.7f, similar);
+  auto opts = rbr::settings("value"_kw = 956.7f, similar);
 
   auto merged = rbr::merge(opts, defaults);
 

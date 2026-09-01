@@ -1,12 +1,9 @@
-html
-{
-  /* primary theme color. This will affect the entire websites color scheme: links, arrows, labels, ... */
-  --primary-dark-color: hsl(0, 100%, 10%);
+html {
+  --primary-dark-color: hsl(0, 100%, 5%);
   --primary-color: hsl(0, 100%, 25%);
-  --primary-light-color: hsl(0, 100%, 40%);
+  --primary-light-color: hsl(0, 100%, 45%);
 
-  /* page base colors */
   --page-background-color: white;
-  --page-foreground-color: hsl(0, 100%, 10%);
+  --page-foreground-color: hsl(0, 100%, 5%);
   --page-secondary-foreground-color: hsl(0, 100%, 25%);
 }

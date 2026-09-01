@@ -14,7 +14,6 @@
 //======================================================================================================================
 //! @defgroup main Main RABERU components
 //!
-//! @ingroup  main
 //! @{
 //!   @defgroup kwds Keywords definitions and handling
 //!   @brief    Functions and types to handle RABERU keywords

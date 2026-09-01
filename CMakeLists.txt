@@ -55,7 +55,16 @@ copa_setup_install( LIBRARY raberu
 ## Setup doxygen
 ##======================================================================================================================
 if(RABERU_BUILD_DOCUMENTATION)
-  copa_setup_doxygen(${QUIET_OPTION} TARGET raberu-doxygen DESTINATION "${PROJECT_BINARY_DIR}/doc")
+  copa_setup_doxygen(${QUIET_OPTION}
+                     TARGET raberu-doxygen
+                     DESTINATION "${PROJECT_BINARY_DIR}/doc"
+                     URL "https://github.com/jfalcou/raberu"
+                     GODBOLT_LIBRARIES raberu
+                     GODBOLT_COMPILER clang1600
+                     GODBOLT_OPTIONS "-O3 -std=c++20 -DNDEBUG"
+                     COLOR_HUE 0
+                     COLOR_SATURATION 100
+                     COLOR_LIGHTNESS 25)
 endif()
 
 ##======================================================================================================================

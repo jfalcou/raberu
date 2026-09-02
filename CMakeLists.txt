@@ -24,7 +24,7 @@ endif()
 ##======================================================================================================================
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake ${COPACABANA_SOURCE_DIR}/copacabana/cmake)
 include(${COPACABANA_SOURCE_DIR}/copacabana/cmake/copacabana.cmake)
-copa_project_version(MAJOR 1 MINOR 1 PATCH 0)
+copa_project_version(MAJOR 1 MINOR 1 PATCH 0 REPOSITORY https://github.com/jfalcou/raberu)
 
 ##======================================================================================================================
 ## Summary Display
@@ -58,7 +58,6 @@ if(RABERU_BUILD_DOCUMENTATION)
   copa_setup_doxygen(${QUIET_OPTION}
                      TARGET raberu-doxygen
                      DESTINATION "${PROJECT_BINARY_DIR}/doc"
-                     URL "https://github.com/jfalcou/raberu"
                      GODBOLT_LIBRARIES raberu
                      GODBOLT_COMPILER clang1600
                      GODBOLT_OPTIONS "-O3 -std=c++20 -DNDEBUG"

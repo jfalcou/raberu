@@ -61,9 +61,9 @@ if(RABERU_BUILD_DOCUMENTATION)
                      GODBOLT_LIBRARIES raberu
                      GODBOLT_COMPILER clang1600
                      GODBOLT_OPTIONS "-O3 -std=c++20 -DNDEBUG"
-                     COLOR_HUE 0
-                     COLOR_SATURATION 100
-                     COLOR_LIGHTNESS 25)
+                     COLOR_HUE 6
+                     COLOR_SATURATION 66
+                     COLOR_LIGHTNESS 51)
 endif()
 
 ##======================================================================================================================

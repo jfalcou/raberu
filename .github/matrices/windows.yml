@@ -3,17 +3,8 @@
 ##  Copyright : RABERU Project Contributors
 ##  SPDX-License-Identifier: BSL-1.0
 ##======================================================================================================================
-name: RABERU Standalone Generation
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  package-standalone:
-    permissions:
-      contents: write
-      pull-requests: write
-    uses: jfalcou/copacabana/.github/workflows/package-standalone.yml@05d0796125e284daa16d9a4f6424c58f98a2bb5a # v7
-    with:
-      project: raberu
+## Read by copacabana's matrix.yml: the windows jobs, one per row and configuration.
+runs-on: windows-2022
+rows:
+  - { name: "MSVC"    , preset: "msvc"    }
+  - { name: "Clang-CL", preset: "clangcl" }

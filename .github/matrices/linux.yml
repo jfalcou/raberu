@@ -1,0 +1,17 @@
+##======================================================================================================================
+##  RABERU - Fancy Named Parameter Library
+##  Copyright : RABERU Project Contributors
+##  SPDX-License-Identifier: BSL-1.0
+##======================================================================================================================
+## Read by copacabana's matrix.yml: the linux jobs, one per row and configuration.
+runs-on: ubuntu-latest
+memcheck: true
+rows:
+  - { name: "gcc"           , preset: "gcc"           , image: "v10" }
+  - { name: "clang"         , preset: "clang"         , image: "v10" }
+  - { name: "clang libc++"  , preset: "clang-libc++"  , image: "v10" }
+  - { name: "gcc14"         , preset: "gcc"           , image: "v10"    , setup: "./.github/scripts/g++-14.sh"  }
+  - { name: "clang20"       , preset: "clang"         , image: "v10"    , setup: "./.github/scripts/clang20.sh" }
+  - { name: "clang20 libc++", preset: "clang-libc++"  , image: "v10"    , setup: "./.github/scripts/clang20.sh" }
+  - { name: "icpx"          , preset: "icpx"          , image: "sycl-v1", setup: "/opt/intel/oneapi/setvars.sh", memcheck: false }
+  - { name: "wasm"          , preset: "wasm"          , image: "v10"    , wrapper: "emcmake" }

@@ -14,7 +14,9 @@ include(${CMAKE_CURRENT_LIST_DIR}/CPM.cmake)
 ##======================================================================================================================
 CPMAddPackage(NAME COPACABANA GITHUB_REPOSITORY jfalcou/copacabana GIT_TAG v7)
 
-if(RABERU_BUILD_TEST)
+# This file runs before the option is declared, so a cold configure sees it undefined and would
+# skip TTS, leaving tts::tts dangling. A warm cache hides it.
+if(NOT DEFINED RABERU_BUILD_TEST OR RABERU_BUILD_TEST)
   CPMAddPackage(
     NAME TTS
     GITHUB_REPOSITORY jfalcou/tts

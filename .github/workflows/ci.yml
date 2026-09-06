@@ -5,6 +5,11 @@
 ##======================================================================================================================
 name: Unit Tests
 on:
+  ## Main gets the matrix once a night rather than on every merge: a run of its own queued behind each merge held
+  ## the pull requests back. 01:20 UTC, which is 02:20 in Paris in winter, and off the hour that every other
+  ## scheduled workflow on the platform asks for.
+  schedule:
+    - cron: '20 1 * * *'
   pull_request:
     branches:
       - main

@@ -2,6 +2,15 @@
 
 # RABERU - The Fancy Named Parameters Library
 
+[![Release](https://img.shields.io/github/v/release/jfalcou/raberu?style=plastic&label=release)](https://github.com/jfalcou/raberu/releases/latest)
+[![License](https://img.shields.io/badge/license-BSL-green?style=plastic)](./LICENSE.md)
+[![Discord](https://img.shields.io/discord/692734675726237696?style=plastic)](https://discord.gg/rfsYYexss)
+[![Integration](https://github.com/jfalcou/raberu/actions/workflows/integration.yml/badge.svg)](https://github.com/jfalcou/raberu/actions/workflows/integration.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https://jfalcou.github.io/raberu/coverage/badge.json&style=plastic&cacheSeconds=1800)](https://jfalcou.github.io/raberu/coverage/)
+[![CI](https://github.com/jfalcou/raberu/actions/workflows/ci.yml/badge.svg?event=schedule)](https://github.com/jfalcou/raberu/actions/workflows/ci.yml?query=event%3Aschedule)
+
+<br clear="left"/>
+
 **RABERU** provides a way to define and use named parameters, *i.e* a list of values assigned to
 arbitrary keyword-like identifiers, to functions.
 

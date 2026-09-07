@@ -61,6 +61,13 @@
       }
     },
     {
+      "name": "compile-cost",
+      "hidden": true,
+      "cacheVariables": {
+        "RABERU_COMPILE_COST": "ON"
+      }
+    },
+    {
       "name": "clang-libc++",
       "inherits": [
         "libcxx",
@@ -146,6 +153,14 @@
       "name": "clangcl",
       "inherits": "windows-base",
       "toolset": "ClangCL"
+    },
+    {
+      "name": "clang-compile-cost",
+      "inherits": [
+        "clang",
+        "compile-cost"
+      ],
+      "displayName": "Clang, measuring what every unit costs to compile"
     }
   ],
   "buildPresets": [
@@ -215,6 +230,11 @@
       "name": "clangcl",
       "inherits": "base-build",
       "configurePreset": "clangcl"
+    },
+    {
+      "name": "clang-compile-cost",
+      "inherits": "base-build",
+      "configurePreset": "clang-compile-cost"
     }
   ],
   "testPresets": [

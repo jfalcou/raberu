@@ -22,6 +22,7 @@ copa_add_option(RABERU_BUILD_TEST "Build tests for Raberu" ON LABEL "Unit tests"
 copa_add_option(RABERU_BUILD_DOCUMENTATION "Build Doxygen for Raberu" OFF LABEL "Doxygen")
 copa_add_option(RABERU_ENABLE_SANITIZERS "Build tests with AddressSanitizer + UndefinedBehaviorSanitizer" OFF LABEL "Sanitizers")
 copa_add_option(RABERU_ENABLE_COVERAGE "Build tests with code coverage instrumentation" OFF LABEL "Coverage")
+copa_add_option(RABERU_COMPILE_COST "Measure what every test unit costs to compile" OFF)
 
 if(RABERU_BUILD_TEST)
   include(${PROJECT_SOURCE_DIR}/cmake/compiler.cmake)
@@ -87,5 +88,10 @@ if(RABERU_BUILD_TEST)
   # After the test targets exist, so the coverage targets can depend on them
   if(RABERU_ENABLE_COVERAGE)
     copa_setup_coverage(raberu_test)
+  endif()
+
+  # clang only: -fproc-stat-report is its flag. After the test targets, as the measurement rebuilds them.
+  if(RABERU_COMPILE_COST)
+    copa_setup_compile_cost(raberu_test)
   endif()
 endif()

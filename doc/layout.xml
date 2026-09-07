@@ -4,14 +4,14 @@
   <navindex>
     <tab type="mainpage" visible="yes" title=""/>
 
-    <tab type="usergroup" visible="yes"     title="How-Tos">
+    <tab type="usergroup" visible="yes"     title="How-Tos" url="@ref setup">
       <tab type="user" url="@ref setup"     title="Setup"/>
       <tab type="user" url="@ref tutorial"  title="RABERU 101"/>
       <tab type="user" url="@ref custom"    title="Customizing Keywords"/>
     </tab>
 
-    <tab type="usergroup" visible="yes" title="Reference Documentation">
-      <tab type="usergroup" visible="yes" title="Main API">
+    <tab type="usergroup" visible="yes" title="Reference Documentation" url="@ref rbr">
+      <tab type="usergroup" visible="yes" title="Main API" url="@ref kwds">
         <tab type="user" url="@ref kwds"     title="Keywords"/>
         <tab type="user" url="@ref stng"     title="Settings"/>
       </tab>
@@ -19,7 +19,7 @@
       <tab type="user" url="@ref rbr"     title="Raberu Namespace"/>
     </tab>
 
-    <tab type="usergroup" visible="yes" title="About The Library">
+    <tab type="usergroup" visible="yes" title="About The Library" url="@ref changelog">
        <tab type="user" url="@ref changelog" title="Changelog"/>
        <tab type="user" url="@ref licence" title="Licence"/>
     </tab>

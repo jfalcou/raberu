@@ -26,20 +26,20 @@ var NAVTREE =
 [
   [ "raberu", "index.html", [
     [ "The Fancy Named Parameters Library", "index.html", "index" ],
-    [ "How-Tos", "usergroup0.html", [
+    [ "How-Tos", "setup.html", [
       [ "Setup", "setup.html", null ],
       [ "RABERU 101", "tutorial.html", null ],
       [ "Customizing Keywords", "custom.html", null ]
     ] ],
-    [ "Reference Documentation", "usergroup1.html", [
-      [ "Main API", "usergroup2.html", [
+    [ "Reference Documentation", "namespacerbr.html", [
+      [ "Main API", "group__kwds.html", [
         [ "Keywords", "group__kwds.html", null ],
         [ "Settings", "group__stng.html", null ]
       ] ],
       [ "Concepts", "concepts.html", "concepts" ],
       [ "Raberu Namespace", "namespacerbr.html", null ]
     ] ],
-    [ "About The Library", "usergroup3.html", [
+    [ "About The Library", "changelog.html", [
       [ "Changelog", "changelog.html", null ],
       [ "Licence", "licence.html", null ]
     ] ]

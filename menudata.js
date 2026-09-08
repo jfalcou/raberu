@@ -24,16 +24,16 @@
 */
 var menudata={children:[
 {text:"Main Page",url:"index.html"},
-{text:"How-Tos",url:"usergroup0.html",children:[
+{text:"How-Tos",url:"setup.html",children:[
 {text:"Setup",url:"setup.html"},
 {text:"RABERU 101",url:"tutorial.html"},
 {text:"Customizing Keywords",url:"custom.html"}]},
-{text:"Reference Documentation",url:"usergroup1.html",children:[
-{text:"Main API",url:"usergroup2.html",children:[
+{text:"Reference Documentation",url:"namespacerbr.html",children:[
+{text:"Main API",url:"group__kwds.html",children:[
 {text:"Keywords",url:"group__kwds.html"},
 {text:"Settings",url:"group__stng.html"}]},
 {text:"Concepts",url:"concepts.html"},
 {text:"Raberu Namespace",url:"namespacerbr.html"}]},
-{text:"About The Library",url:"usergroup3.html",children:[
+{text:"About The Library",url:"changelog.html",children:[
 {text:"Changelog",url:"changelog.html"},
 {text:"Licence",url:"licence.html"}]}]}

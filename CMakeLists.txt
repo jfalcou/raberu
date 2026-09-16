@@ -25,6 +25,7 @@ copa_add_option(RABERU_ENABLE_COVERAGE "Build tests with code coverage instrumen
 copa_add_option(RABERU_COMPILE_COST "Measure what every test unit costs to compile" OFF)
 
 if(RABERU_BUILD_TEST)
+  CPMGetPackage(TTS)
   include(${PROJECT_SOURCE_DIR}/cmake/compiler.cmake)
 endif()
 copa_project_version(MAJOR 1 MINOR 1 PATCH 0 REPOSITORY https://github.com/jfalcou/raberu)

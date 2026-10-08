@@ -1,0 +1,74 @@
+[
+ {
+  "branch": "main",
+  "cpu_us": 6407689,
+  "date": "2026-09-08T22:08:34Z",
+  "link_cpu_us": 0,
+  "link_peak_kib": 0,
+  "links": 0,
+  "modules": {
+   "unit": {
+    "cpu_us": 6407689,
+    "peak_kib": 139236,
+    "units": 11
+   }
+  },
+  "peak_kib": 139236,
+  "sha": "bc042d5859c464255abe16153c05004909bd913a",
+  "units": 11
+ },
+ {
+  "branch": "main",
+  "cpu_us": 8131184,
+  "date": "2026-09-09T06:30:48Z",
+  "link_cpu_us": 0,
+  "link_peak_kib": 0,
+  "links": 0,
+  "modules": {
+   "unit": {
+    "cpu_us": 8131184,
+    "peak_kib": 138412,
+    "units": 11
+   }
+  },
+  "peak_kib": 138412,
+  "sha": "86d8e9989b5f99d40a2ee27b4524924ece856f9b",
+  "units": 11
+ },
+ {
+  "branch": "main",
+  "cpu_us": 3881334,
+  "date": "2026-09-09T21:22:40Z",
+  "link_cpu_us": 0,
+  "link_peak_kib": 0,
+  "links": 0,
+  "modules": {
+   "unit": {
+    "cpu_us": 3881334,
+    "peak_kib": 139384,
+    "units": 11
+   }
+  },
+  "peak_kib": 139384,
+  "sha": "e66c782e2a85a2063145ba4bb28f46f669a516b2",
+  "units": 11
+ },
+ {
+  "branch": "main",
+  "cpu_us": 3916463,
+  "date": "2026-09-16T18:48:21Z",
+  "link_cpu_us": 0,
+  "link_peak_kib": 0,
+  "links": 0,
+  "modules": {
+   "unit": {
+    "cpu_us": 3916463,
+    "peak_kib": 142624,
+    "units": 11
+   }
+  },
+  "peak_kib": 142624,
+  "sha": "766a7396f19e283d901392b1af7694ba1ca1e2ed",
+  "units": 11
+ }
+]

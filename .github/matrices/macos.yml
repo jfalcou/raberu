@@ -4,7 +4,7 @@
 ##  SPDX-License-Identifier: BSL-1.0
 ##======================================================================================================================
 ## Read by copacabana's matrix.yml: the macos jobs, one per row and configuration.
-runs-on: macos-14
+runs-on: macos-15
 rows:
   - { name: "apple-clang"       , preset: "clang"         }
   - { name: "apple-clang libc++", preset: "clang-libc++"  }

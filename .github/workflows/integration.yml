@@ -18,3 +18,4 @@ jobs:
     uses: jfalcou/copacabana/.github/workflows/integration.yml@main
     with:
       project: raberu
+      image: ghcr.io/jfalcou/compilers:v11

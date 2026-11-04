@@ -21,3 +21,4 @@ jobs:
     with:
       project: raberu
       coverage: true
+      image: ghcr.io/jfalcou/compilers:v11

@@ -9,24 +9,20 @@
 ##======================================================================================================================
 add_library(raberu_test INTERFACE)
 
-target_compile_features ( raberu_test INTERFACE  cxx_std_20 )
+target_compile_features(raberu_test INTERFACE cxx_std_20)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-    target_compile_options( raberu_test INTERFACE /W3 /EHsc )
+    target_compile_options(raberu_test INTERFACE /W3 /EHsc)
   else()
-    target_compile_options( raberu_test INTERFACE -Werror -Wall -Wextra -Wunused-variable -Wdocumentation
-                          )
+    target_compile_options(raberu_test INTERFACE -Werror -Wall -Wextra -Wunused-variable -Wdocumentation)
   endif()
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  target_compile_options( raberu_test INTERFACE /W3 /EHsc /Zc:preprocessor)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  target_compile_options(raberu_test INTERFACE /W3 /EHsc /Zc:preprocessor)
 else()
-  target_compile_options( raberu_test INTERFACE -Werror -Wall -Wextra -Wunused-variable)
+  target_compile_options(raberu_test INTERFACE -Werror -Wall -Wextra -Wunused-variable)
 endif()
 
-target_include_directories( raberu_test INTERFACE
-                            ${PROJECT_SOURCE_DIR}/test
-                            ${PROJECT_SOURCE_DIR}/include
-                          )
+target_include_directories(raberu_test INTERFACE ${PROJECT_SOURCE_DIR}/test ${PROJECT_SOURCE_DIR}/include)
 
 target_link_libraries(raberu_test INTERFACE tts::tts)

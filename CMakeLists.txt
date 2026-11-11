@@ -11,7 +11,6 @@ project(raberu LANGUAGES CXX)
 ##======================================================================================================================
 include(${PROJECT_SOURCE_DIR}/cmake/dependencies.cmake)
 
-
 ##======================================================================================================================
 ## Project setup via copacabana
 ##======================================================================================================================
@@ -20,7 +19,8 @@ include(${COPACABANA_SOURCE_DIR}/copacabana/cmake/copacabana.cmake)
 
 copa_add_option(RABERU_BUILD_TEST "Build tests for Raberu" ON LABEL "Unit tests")
 copa_add_option(RABERU_BUILD_DOCUMENTATION "Build Doxygen for Raberu" OFF LABEL "Doxygen")
-copa_add_option(RABERU_ENABLE_SANITIZERS "Build tests with AddressSanitizer + UndefinedBehaviorSanitizer" OFF LABEL "Sanitizers")
+copa_add_option(RABERU_ENABLE_SANITIZERS "Build tests with AddressSanitizer + UndefinedBehaviorSanitizer" OFF
+                LABEL "Sanitizers")
 copa_add_option(RABERU_ENABLE_COVERAGE "Build tests with code coverage instrumentation" OFF LABEL "Coverage")
 copa_add_option(RABERU_COMPILE_COST "Measure what every test unit costs to compile" OFF)
 
@@ -28,7 +28,11 @@ if(RABERU_BUILD_TEST)
   CPMGetPackage(TTS)
   include(${PROJECT_SOURCE_DIR}/cmake/compiler.cmake)
 endif()
-copa_project_version(MAJOR 1 MINOR 1 PATCH 0 REPOSITORY https://github.com/jfalcou/raberu)
+copa_project_version(
+  MAJOR 1
+  MINOR 1
+  PATCH 0
+  REPOSITORY https://github.com/jfalcou/raberu)
 
 ##======================================================================================================================
 ## Summary Display
@@ -44,34 +48,38 @@ endif()
 ##======================================================================================================================
 ## Install Process setup
 ##======================================================================================================================
-copa_setup_install( LIBRARY raberu
-                    FEATURES cxx_std_20
-                    DOC     ${PROJECT_SOURCE_DIR}/LICENSE.md
-                    INCLUDE ${PROJECT_SOURCE_DIR}/include/raberu
-                  )
+copa_setup_install(
+  LIBRARY raberu
+  FEATURES cxx_std_20
+  DOC ${PROJECT_SOURCE_DIR}/LICENSE.md
+  INCLUDE ${PROJECT_SOURCE_DIR}/include/raberu)
 
 ##======================================================================================================================
 ## Setup doxygen
 ##======================================================================================================================
 if(RABERU_BUILD_DOCUMENTATION)
-  copa_setup_doxygen(${QUIET_OPTION}
-                     TARGET raberu-doxygen
-                     DESTINATION "${PROJECT_BINARY_DIR}/doc"
-                     GODBOLT_LIBRARIES raberu
-                     GODBOLT_COMPILER clang1600
-                     GODBOLT_OPTIONS "-O3 -std=c++20 -DNDEBUG"
-                     COLOR_HUE 6
-                     COLOR_SATURATION 66
-                     COLOR_LIGHTNESS 51)
+  copa_setup_doxygen(
+    ${QUIET_OPTION}
+    TARGET raberu-doxygen
+    DESTINATION "${PROJECT_BINARY_DIR}/doc"
+    GODBOLT_LIBRARIES raberu
+    GODBOLT_COMPILER clang1600
+    GODBOLT_OPTIONS "-O3 -std=c++20 -DNDEBUG"
+    COLOR_HUE 6
+    COLOR_SATURATION 66
+    COLOR_LIGHTNESS 51)
 endif()
 
 ##======================================================================================================================
 ## Standalone generation
 ##======================================================================================================================
-copa_setup_standalone ( ${QUIET_OPTION}
-                        FILE raberu.hpp SOURCE include ROOT raberu TARGET raberu-standalone
-                        OUTPUT "${PROJECT_BINARY_DIR}"
-                      )
+copa_setup_standalone(
+  ${QUIET_OPTION}
+  FILE raberu.hpp
+  SOURCE include
+  ROOT raberu
+  TARGET raberu-standalone
+  OUTPUT "${PROJECT_BINARY_DIR}")
 
 ##======================================================================================================================
 ## Tests setup
@@ -83,7 +91,7 @@ if(RABERU_BUILD_TEST)
 
   include(CTest)
   enable_testing()
-  add_custom_target(raberu-unit)
+  add_custom_target(raberu-unit COMMENT "[raberu] - Building the unit tests")
   add_subdirectory(test)
 
   # After the test targets exist, so the coverage targets can depend on them

@@ -13,10 +13,7 @@ message(STATUS "Testing FetchContent for branch ${GIT_BRANCH}")
 include(FetchContent)
 
 # Retrieve RABERU from relative git directory
-FetchContent_Declare(raberu
-  GIT_REPOSITORY "https://github.com/jfalcou/raberu.git"
-  GIT_TAG ${GIT_BRANCH}
-)
+FetchContent_Declare(raberu GIT_REPOSITORY "https://github.com/jfalcou/raberu.git" GIT_TAG ${GIT_BRANCH})
 
 # make available
 FetchContent_MakeAvailable(raberu)

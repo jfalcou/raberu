@@ -4,12 +4,16 @@
 ##  SPDX-License-Identifier: BSL-1.0
 ##======================================================================================================================
 copa_setup_test_targets()
-set(root "${CMAKE_SOURCE_DIR}/test")
+set(TEST_ROOT "${CMAKE_SOURCE_DIR}/test")
 
-copa_glob_unit( PATTERN "unit/*.cpp"
-                QUIET RELATIVE ${root} INTERFACE raberu_test
-              )
+copa_glob_unit(
+  PATTERN "unit/*.cpp"
+  QUIET
+  RELATIVE ${TEST_ROOT}
+  INTERFACE raberu_test)
 
-copa_glob_unit( PATTERN "doc/*.cpp"
-                QUIET RELATIVE ${root} INTERFACE raberu_test
-              )
+copa_glob_unit(
+  PATTERN "doc/*.cpp"
+  QUIET
+  RELATIVE ${TEST_ROOT}
+  INTERFACE raberu_test)

@@ -5,6 +5,29 @@
 ##======================================================================================================================
 
 ##======================================================================================================================
+## Take the dependencies from the environment, without CPM
+##======================================================================================================================
+option(RABERU_EXTERNAL_DEPENDENCIES "Take dependencies from the environment instead of fetching them" OFF)
+
+##======================================================================================================================
+## Retrieve a package declared below, from the environment or by CPM
+##======================================================================================================================
+macro(raberu_get_package name)
+  if(RABERU_EXTERNAL_DEPENDENCIES)
+    find_package(${name} CONFIG REQUIRED)
+  else()
+    CPMGetPackage(${name})
+  endif()
+endmacro()
+
+if(RABERU_EXTERNAL_DEPENDENCIES)
+  if(NOT COPACABANA_SOURCE_DIR)
+    message(FATAL_ERROR "[RABERU] - RABERU_EXTERNAL_DEPENDENCIES needs COPACABANA_SOURCE_DIR")
+  endif()
+  return()
+endif()
+
+##======================================================================================================================
 ## CPM is vendored: the download bootstrap reports nothing on a failure and leaves an empty file.
 ##======================================================================================================================
 include(${CMAKE_CURRENT_LIST_DIR}/CPM.cmake)

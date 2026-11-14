@@ -23,9 +23,10 @@ copa_add_option(RABERU_ENABLE_SANITIZERS "Build tests with AddressSanitizer + Un
                 LABEL "Sanitizers")
 copa_add_option(RABERU_ENABLE_COVERAGE "Build tests with code coverage instrumentation" OFF LABEL "Coverage")
 copa_add_option(RABERU_COMPILE_COST "Measure what every test unit costs to compile" OFF)
+copa_add_option(RABERU_EXTERNAL_DEPENDENCIES "Take dependencies from the environment instead of fetching them" OFF)
 
 if(RABERU_BUILD_TEST)
-  CPMGetPackage(TTS)
+  raberu_get_package(TTS)
   include(${PROJECT_SOURCE_DIR}/cmake/compiler.cmake)
 endif()
 copa_project_version(

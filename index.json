@@ -268,5 +268,23 @@
   "peak_kib": 151164,
   "sha": "11870e04119838c20e896981868c790d56b0e2f7",
   "units": 11
+ },
+ {
+  "branch": "main",
+  "cpu_us": 8226772,
+  "date": "2026-11-20T21:31:56Z",
+  "link_cpu_us": 356668,
+  "link_peak_kib": 77772,
+  "links": 11,
+  "modules": {
+   "unit": {
+    "cpu_us": 8226772,
+    "peak_kib": 151644,
+    "units": 11
+   }
+  },
+  "peak_kib": 151644,
+  "sha": "6f34468d83ecd5d911e0135b15603275912fe456",
+  "units": 11
  }
 ]

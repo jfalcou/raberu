@@ -28,7 +28,7 @@ jobs:
   ##################################################################################################
   precommit:
     name: Meta Checks
-    uses: jfalcou/copacabana/.github/workflows/precommit.yml@eb45d6163c3cafed95d34b541400500f500ad585
+    uses: jfalcou/copacabana/.github/workflows/precommit.yml@e96014671dfb262482346ddcaa3a1a810b3eebaf
 
   ##################################################################################################
   ## Ensure Standalone is viable
@@ -57,7 +57,7 @@ jobs:
   ##################################################################################################
   sanitizer-tests:
     name: Sanitizers
-    uses: jfalcou/copacabana/.github/workflows/sanitizers.yml@eb45d6163c3cafed95d34b541400500f500ad585
+    uses: jfalcou/copacabana/.github/workflows/sanitizers.yml@e96014671dfb262482346ddcaa3a1a810b3eebaf
     with:
       image: ghcr.io/jfalcou/compilers:v11
 
@@ -66,7 +66,7 @@ jobs:
   ##################################################################################################
   coverage-report:
     name: Coverage
-    uses: jfalcou/copacabana/.github/workflows/coverage.yml@eb45d6163c3cafed95d34b541400500f500ad585
+    uses: jfalcou/copacabana/.github/workflows/coverage.yml@e96014671dfb262482346ddcaa3a1a810b3eebaf
     with:
       project: raberu
       image: ghcr.io/jfalcou/compilers:v11
@@ -77,20 +77,20 @@ jobs:
   linux-tests:
     name: Linux
     needs: [precommit, standalone-generation, sanitizer-tests]
-    uses: jfalcou/copacabana/.github/workflows/matrix.yml@eb45d6163c3cafed95d34b541400500f500ad585
+    uses: jfalcou/copacabana/.github/workflows/matrix.yml@e96014671dfb262482346ddcaa3a1a810b3eebaf
     with:
       file: .github/matrices/linux.yml
 
   macos-tests:
     name: MacOS
     needs: [precommit, standalone-generation, sanitizer-tests]
-    uses: jfalcou/copacabana/.github/workflows/matrix.yml@eb45d6163c3cafed95d34b541400500f500ad585
+    uses: jfalcou/copacabana/.github/workflows/matrix.yml@e96014671dfb262482346ddcaa3a1a810b3eebaf
     with:
       file: .github/matrices/macos.yml
 
   windows-tests:
     name: Windows
     needs: [precommit, standalone-generation, sanitizer-tests]
-    uses: jfalcou/copacabana/.github/workflows/matrix.yml@eb45d6163c3cafed95d34b541400500f500ad585
+    uses: jfalcou/copacabana/.github/workflows/matrix.yml@e96014671dfb262482346ddcaa3a1a810b3eebaf
     with:
       file: .github/matrices/windows.yml

@@ -38,12 +38,12 @@ include(${CMAKE_CURRENT_LIST_DIR}/CPM.cmake)
 ## This file runs before the project can declare an option, copa_add_option arriving with copacabana, so a package
 ## wanted only under an option is declared here and fetched after the options, in CMakeLists.txt.
 ##======================================================================================================================
-CPMAddPackage(NAME COPACABANA GITHUB_REPOSITORY jfalcou/copacabana GIT_TAG eb45d6163c3cafed95d34b541400500f500ad585)
+CPMAddPackage(NAME COPACABANA GITHUB_REPOSITORY jfalcou/copacabana GIT_TAG e96014671dfb262482346ddcaa3a1a810b3eebaf)
 
 CPMDeclarePackage(
   TTS
   NAME TTS
   GITHUB_REPOSITORY jfalcou/tts
-  GIT_TAG 4b486cfc48b95a11c34e2653fc4db0fc74918dcc
+  GIT_TAG 5b268b654b0af9aa46406710f23e5297a7658605
   SYSTEM YES
   OPTIONS "TTS_BUILD_TEST OFF" "TTS_BUILD_DOCUMENTATION OFF" "TTS_QUIET ON")
